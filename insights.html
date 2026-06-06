@@ -117,7 +117,12 @@
     <div class="flex items-center justify-between">
         <a href="/" class="flex items-center gap-3">
             <div class="w-8 h-8 rounded-lg bg-indigo-100 flex items-center justify-center">
-                <span class="text-accent-400 font-bold text-[12px] tracking-wider">dP</span>
+                <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <path d="M12 2L22 8V16L12 22L2 16V8L12 2Z" fill="#6366f1" opacity="0.9"/>
+                  <path d="M12 2L12 22" stroke="#6366f1" stroke-width="1.5" opacity="0.4"/>
+                  <path d="M2 8L22 8" stroke="#6366f1" stroke-width="1.5" opacity="0.4"/>
+                  <path d="M2 16L22 16" stroke="#6366f1" stroke-width="1.5" opacity="0.4"/>
+                </svg>
             </div>
             <span class="text-lg font-semibold tracking-tight text-navy-900">keyPrism</span>
         </a>
@@ -166,7 +171,12 @@
         <footer class="border-t border-slate-200">
             <div class="max-w-7xl mx-auto px-6 py-6 text-sm text-slate-500 flex items-center gap-2">
                 <div class="w-6 h-6 rounded-md bg-navy-900 flex items-center justify-center">
-                    <span class="text-accent-400 font-bold text-[9px] tracking-wider">dP</span>
+                    <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                      <path d="M12 2L22 8V16L12 22L2 16V8L12 2Z" fill="#6366f1" opacity="0.9"/>
+                      <path d="M12 2L12 22" stroke="#6366f1" stroke-width="1.5" opacity="0.4"/>
+                      <path d="M2 8L22 8" stroke="#6366f1" stroke-width="1.5" opacity="0.4"/>
+                      <path d="M2 16L22 16" stroke="#6366f1" stroke-width="1.5" opacity="0.4"/>
+                    </svg>
                 </div>
                 © <span id="year"></span> keyPrism. All rights reserved.
             </div>
@@ -219,7 +229,7 @@
             if (item.imageUrl) {
                 a.innerHTML = `
                     <div class="overflow-hidden">
-                        <img src="${item.imageUrl}" alt="${item.title}">
+                        <img src="${item.imageUrl}" alt="${item.title}" loading="lazy">
                     </div>
                     <div class="p-6">
                         <h3 class="font-semibold text-navy-900 text-sm leading-snug">${item.title}</h3>
