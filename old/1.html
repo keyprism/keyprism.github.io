@@ -1,0 +1,738 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>eCommerce Analytics — Executive Dashboard</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    body { font-family: 'Inter', sans-serif; }
+    
+    /* Premium Gradient Background */
+    .bg-premium {
+      background: linear-gradient(135deg, #fafbfc 0%, #f0f4f8 50%, #e8edf2 100%);
+      min-height: 100vh;
+    }
+    
+    /* Glass Cards */
+    .glass-card {
+      background: rgba(255, 255, 255, 0.85);
+      backdrop-filter: blur(20px);
+      border: 1px solid rgba(255, 255, 255, 0.9);
+      box-shadow: 
+        0 1px 3px rgba(0, 0, 0, 0.04),
+        0 4px 12px rgba(0, 0, 0, 0.03),
+        0 12px 24px rgba(0, 0, 0, 0.02);
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    .glass-card:hover {
+      transform: translateY(-1px);
+      box-shadow: 
+        0 4px 8px rgba(0, 0, 0, 0.04),
+        0 8px 20px rgba(0, 0, 0, 0.04),
+        0 20px 40px rgba(0, 0, 0, 0.03);
+    }
+    
+    /* Gradient Cards for KPIs */
+    .gradient-card {
+      position: relative;
+      overflow: hidden;
+      background: linear-gradient(135deg, #ffffff 0%, #fafbff 100%);
+      border: 1px solid rgba(99, 102, 241, 0.08);
+      box-shadow: 
+        0 1px 2px rgba(0, 0, 0, 0.02),
+        0 4px 12px rgba(0, 0, 0, 0.03),
+        inset 0 1px 0 rgba(255, 255, 255, 1);
+      transition: all 0.3s ease;
+    }
+    .gradient-card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 3px;
+      background: linear-gradient(90deg, #6366f1, #8b5cf6, #a78bfa);
+      opacity: 0;
+      transition: opacity 0.3s ease;
+    }
+    .gradient-card:hover::before {
+      opacity: 1;
+    }
+    .gradient-card:hover {
+      transform: translateY(-2px);
+      box-shadow: 
+        0 8px 16px rgba(99, 102, 241, 0.08),
+        0 16px 32px rgba(99, 102, 241, 0.04);
+    }
+    
+    /* Chart Container */
+    .chart-container { position: relative; height: 320px; width: 100%; }
+    .chart-container-sm { position: relative; height: 320px; width: 100%; }
+    
+    /* Table Styling */
+    .table-row { transition: all 0.15s ease; }
+    .table-row:hover { background-color: rgba(99, 102, 241, 0.02); }
+    
+    /* Loading Overlay */
+    .loading-overlay {
+      position: absolute; 
+      inset: 0; 
+      background: rgba(255, 255, 255, 0.8);
+      backdrop-filter: blur(4px);
+      display: flex; 
+      align-items: center; 
+      justify-content: center;
+      opacity: 0; 
+      pointer-events: none; 
+      transition: opacity 0.3s ease; 
+      z-index: 10;
+      border-radius: inherit;
+    }
+    .loading-overlay.active { opacity: 1; pointer-events: all; }
+    .spinner { 
+      width: 28px; 
+      height: 28px; 
+      border: 3px solid rgba(99, 102, 241, 0.1); 
+      border-top-color: #6366f1; 
+      border-radius: 50%; 
+      animation: spin 0.8s linear infinite; 
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+    
+    /* Custom Scrollbar */
+    ::-webkit-scrollbar { width: 6px; height: 6px; }
+    ::-webkit-scrollbar-track { background: transparent; }
+    ::-webkit-scrollbar-thumb { background: rgba(0, 0, 0, 0.08); border-radius: 3px; }
+    ::-webkit-scrollbar-thumb:hover { background: rgba(0, 0, 0, 0.15); }
+    
+    /* Premium Select Styling - FIXED */
+    .custom-select {
+      appearance: none;
+      -webkit-appearance: none;
+      -moz-appearance: none;
+      background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%2364748b' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M6 8l4 4 4-4'/%3e%3c/svg%3e");
+      background-position: right 0.75rem center;
+      background-repeat: no-repeat;
+      background-size: 1.25em 1.25em;
+      padding-right: 2.5rem;
+      cursor: pointer;
+    }
+    
+    /* Animated Gradient Text */
+    .gradient-text {
+      background: linear-gradient(135deg, #1e293b 0%, #334155 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+    
+    /* Badge Styles */
+    .badge-trend {
+      display: inline-flex;
+      align-items: center;
+      padding: 0.25rem 0.625rem;
+      border-radius: 9999px;
+      font-size: 0.75rem;
+      font-weight: 600;
+      letter-spacing: 0.01em;
+    }
+    .badge-positive {
+      background: linear-gradient(135deg, #ecfdf5 0%, #d1fae5 100%);
+      color: #059669;
+    }
+    .badge-warning {
+      background: linear-gradient(135deg, #fffbeb 0%, #fef3c7 100%);
+      color: #d97706;
+    }
+    
+    /* Logo Glow */
+    .logo-glow {
+      filter: drop-shadow(0 4px 6px rgba(99, 102, 241, 0.2));
+    }
+  </style>
+</head>
+<body class="bg-premium text-slate-800 antialiased">
+
+  <div class="max-w-7xl mx-auto p-4 md:p-6 lg:p-8">
+    
+    <!-- PREMIUM HEADER -->
+    <header class="mb-8">
+      <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-6 mb-6">
+        <!-- Logo & Title -->
+        <div class="flex items-center gap-4">
+          <div class="w-12 h-12 rounded-xl bg-gradient-to-br from-indigo-500 via-purple-500 to-indigo-600 flex items-center justify-center shadow-lg shadow-indigo-500/20 logo-glow">
+            <!-- Clean Shopping Bag Icon -->
+            <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" />
+            </svg>
+          </div>
+          <div>
+            <h1 class="text-2xl font-bold gradient-text tracking-tight">eCommerce Analytics</h1>
+            <p class="text-sm text-slate-400 mt-0.5 font-medium">Executive Performance Overview</p>
+          </div>
+        </div>
+        
+        <!-- Actions -->
+        <div class="flex items-center gap-3">
+          <div class="relative">
+            <select id="timeFilter" class="custom-select appearance-none px-4 py-2.5 text-sm font-semibold text-slate-700 bg-white border border-slate-200 rounded-xl focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 outline-none transition shadow-sm hover:border-slate-300 cursor-pointer">
+              <option value="last30">Apr 11 – May 10, 2026</option>
+              <option value="last7">Last 7 Days</option>
+              <option value="lastMonth">Last Month</option>
+              <option value="ytd">Year to Date</option>
+            </select>
+          </div>
+          <button class="flex items-center gap-2 px-4 py-2.5 text-sm font-semibold text-slate-600 bg-white border border-slate-200 rounded-xl hover:bg-slate-50 hover:border-slate-300 transition shadow-sm">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path></svg>
+            Refresh
+          </button>
+          <button class="flex items-center gap-2 px-4 py-2.5 text-sm font-semibold text-white bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-700 hover:to-purple-700 rounded-xl transition shadow-md shadow-indigo-500/20">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path></svg>
+            Export
+          </button>
+        </div>
+      </div>
+
+      <!-- PREMIUM FILTER BAR -->
+      <div class="glass-card p-4 rounded-2xl">
+        <div class="flex flex-wrap items-center gap-3">
+          <label class="text-xs font-bold text-slate-400 uppercase tracking-widest flex items-center gap-2">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z"></path></svg>
+            Filters
+          </label>
+          <div class="w-px h-6 bg-slate-200"></div>
+          <select id="sourceFilter" class="custom-select px-4 py-2 text-sm font-semibold text-slate-700 bg-white border border-slate-200 rounded-xl focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 outline-none transition hover:bg-slate-50 shadow-sm">
+            <option value="all">All Traffic Sources</option>
+            <option value="direct">Direct / None</option>
+            <option value="organic">Organic Search</option>
+            <option value="paid">Paid Social / CPC</option>
+          </select>
+          <select id="deviceFilter" class="custom-select px-4 py-2 text-sm font-semibold text-slate-700 bg-white border border-slate-200 rounded-xl focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 outline-none transition hover:bg-slate-50 shadow-sm">
+            <option value="all">All Devices</option>
+            <option value="desktop">Desktop</option>
+            <option value="mobile">Mobile</option>
+            <option value="tablet">Tablet</option>
+          </select>
+          <select id="countryFilter" class="custom-select px-4 py-2 text-sm font-semibold text-slate-700 bg-white border border-slate-200 rounded-xl focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 outline-none transition hover:bg-slate-50 shadow-sm">
+            <option value="all">All Countries</option>
+            <option value="usa">United States</option>
+            <option value="canada">Canada</option>
+            <option value="uk">United Kingdom</option>
+          </select>
+          <button id="resetBtn" class="ml-auto text-sm font-semibold text-indigo-600 hover:text-indigo-800 transition flex items-center gap-1.5 px-3 py-2 rounded-xl hover:bg-indigo-50">
+            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+            Reset
+          </button>
+        </div>
+      </div>
+    </header>
+
+    <!-- KPI CARDS -->
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5 mb-8">
+      <!-- Revenue -->
+      <div class="gradient-card p-6 rounded-2xl relative">
+        <div class="loading-overlay" id="load-rev"><div class="spinner"></div></div>
+        <div class="flex justify-between items-start mb-3">
+          <div class="p-2.5 rounded-xl bg-gradient-to-br from-indigo-50 to-purple-50">
+            <svg class="w-5 h-5 text-indigo-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+          </div>
+          <span id="trend-rev" class="badge-trend badge-positive">↑ 12.5%</span>
+        </div>
+        <p class="text-sm font-semibold text-slate-400 mb-1">Total Revenue</p>
+        <h3 id="kpi-rev" class="text-3xl font-bold text-slate-900 tracking-tight">$171,072</h3>
+        <p class="text-xs text-slate-400 mt-2 font-medium">vs previous period</p>
+      </div>
+
+      <!-- AOV -->
+      <div class="gradient-card p-6 rounded-2xl relative">
+        <div class="loading-overlay" id="load-aov"><div class="spinner"></div></div>
+        <div class="flex justify-between items-start mb-3">
+          <div class="p-2.5 rounded-xl bg-gradient-to-br from-emerald-50 to-teal-50">
+            <svg class="w-5 h-5 text-emerald-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 7h6m0 10v-3m-3 3h.01M9 17h.01M9 14h.01M12 14h.01M15 11h.01M12 11h.01M9 11h.01M7 21h10a2 2 0 002-2V5a2 2 0 00-2-2H7a2 2 0 00-2 2v14a2 2 0 002 2z"></path></svg>
+          </div>
+          <span id="trend-aov" class="badge-trend badge-positive">↑ 4.2%</span>
+        </div>
+        <p class="text-sm font-semibold text-slate-400 mb-1">Avg. Order Value</p>
+        <h3 id="kpi-aov" class="text-3xl font-bold text-slate-900 tracking-tight">$95.68</h3>
+        <p class="text-xs text-slate-400 mt-2 font-medium">Revenue / Transactions</p>
+      </div>
+
+      <!-- Transactions -->
+      <div class="gradient-card p-6 rounded-2xl relative">
+        <div class="loading-overlay" id="load-trans"><div class="spinner"></div></div>
+        <div class="flex justify-between items-start mb-3">
+          <div class="p-2.5 rounded-xl bg-gradient-to-br from-violet-50 to-purple-50">
+            <svg class="w-5 h-5 text-violet-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"></path></svg>
+          </div>
+          <span id="trend-trans" class="badge-trend badge-positive">↑ 8.1%</span>
+        </div>
+        <p class="text-sm font-semibold text-slate-400 mb-1">Transactions</p>
+        <h3 id="kpi-trans" class="text-3xl font-bold text-slate-900 tracking-tight">1,788</h3>
+        <p class="text-xs text-slate-400 mt-2 font-medium">Completed checkouts</p>
+      </div>
+
+      <!-- Conversion Rate -->
+      <div class="gradient-card p-6 rounded-2xl relative">
+        <div class="loading-overlay" id="load-cr"><div class="spinner"></div></div>
+        <div class="flex justify-between items-start mb-3">
+          <div class="p-2.5 rounded-xl bg-gradient-to-br from-amber-50 to-orange-50">
+            <svg class="w-5 h-5 text-amber-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"></path></svg>
+          </div>
+          <span id="trend-cr" class="badge-trend badge-warning">↑ 0.4%</span>
+        </div>
+        <p class="text-sm font-semibold text-slate-400 mb-1">Conversion Rate</p>
+        <h3 id="kpi-cr" class="text-3xl font-bold text-slate-900 tracking-tight">2.00%</h3>
+        <p id="cr-detail" class="text-xs text-slate-400 mt-2 font-medium">1,788 / 89,401 users</p>
+      </div>
+    </div>
+
+    <!-- CHARTS SECTION -->
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-5 mb-8">
+      <!-- Revenue Over Time -->
+      <div class="lg:col-span-2 glass-card p-6 rounded-2xl relative">
+        <div class="loading-overlay" id="load-chart1"><div class="spinner"></div></div>
+        <div class="flex justify-between items-center mb-6">
+          <div>
+            <h3 class="text-lg font-bold text-slate-900">Revenue & Users Over Time</h3>
+            <p class="text-sm text-slate-400 mt-0.5">Performance trends</p>
+          </div>
+          <div class="flex gap-5 text-xs font-semibold">
+            <span class="flex items-center gap-2">
+              <span class="w-2.5 h-2.5 rounded-full bg-gradient-to-r from-indigo-500 to-purple-500"></span>
+              <span class="text-slate-500">Revenue</span>
+            </span>
+            <span class="flex items-center gap-2">
+              <span class="w-2.5 h-2.5 rounded-full bg-slate-300"></span>
+              <span class="text-slate-500">Users</span>
+            </span>
+          </div>
+        </div>
+        <div class="chart-container">
+          <canvas id="revenueChart"></canvas>
+        </div>
+      </div>
+
+      <!-- CR by Day of Week -->
+      <div class="glass-card p-6 rounded-2xl relative">
+        <div class="loading-overlay" id="load-chart2"><div class="spinner"></div></div>
+        <div class="mb-6">
+          <h3 class="text-lg font-bold text-slate-900">Conversion by Day</h3>
+          <p class="text-sm text-slate-400 mt-0.5">Weekly performance</p>
+        </div>
+        <div class="chart-container-sm">
+          <canvas id="crChart"></canvas>
+        </div>
+      </div>
+    </div>
+
+    <!-- DATA TABLES -->
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-5">
+      <!-- Acquisition Table -->
+      <div class="glass-card rounded-2xl overflow-hidden relative">
+        <div class="loading-overlay" id="load-tbl1"><div class="spinner"></div></div>
+        <div class="px-6 py-5 border-b border-slate-100/80 flex justify-between items-center bg-gradient-to-r from-white to-slate-50/50">
+          <div>
+            <h3 class="text-lg font-bold text-slate-900">Acquisition Sources</h3>
+            <p class="text-sm text-slate-400 mt-0.5">Traffic breakdown</p>
+          </div>
+          <button class="text-sm font-semibold text-indigo-600 hover:text-indigo-800 transition flex items-center gap-1">
+            View All
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path></svg>
+          </button>
+        </div>
+        <div class="overflow-x-auto">
+          <table class="w-full text-left text-sm">
+            <thead class="bg-gradient-to-r from-slate-50 to-slate-50/50 text-slate-500 font-semibold border-b border-slate-100">
+              <tr>
+                <th class="px-6 py-4">Source / Medium</th>
+                <th class="px-6 py-4 text-right">Users</th>
+                <th class="px-6 py-4 text-right">AOV</th>
+                <th class="px-6 py-4 text-right">CR</th>
+                <th class="px-6 py-4 text-right">Revenue</th>
+              </tr>
+            </thead>
+            <tbody id="tbl-acq-body" class="divide-y divide-slate-50">
+              <!-- Rows injected via JS -->
+            </tbody>
+            <tfoot class="bg-gradient-to-r from-slate-50 to-slate-50/50 font-bold text-slate-900 border-t border-slate-200">
+              <tr>
+                <td class="px-6 py-4">Grand Total</td>
+                <td id="tbl-acq-users" class="px-6 py-4 text-right">89,401</td>
+                <td id="tbl-acq-aov" class="px-6 py-4 text-right">$95.68</td>
+                <td id="tbl-acq-cr" class="px-6 py-4 text-right">2.00%</td>
+                <td id="tbl-acq-rev" class="px-6 py-4 text-right">$171,072</td>
+              </tr>
+            </tfoot>
+          </table>
+        </div>
+      </div>
+
+      <!-- Products Table -->
+      <div class="glass-card rounded-2xl overflow-hidden relative">
+        <div class="loading-overlay" id="load-tbl2"><div class="spinner"></div></div>
+        <div class="px-6 py-5 border-b border-slate-100/80 flex justify-between items-center bg-gradient-to-r from-white to-slate-50/50">
+          <div>
+            <h3 class="text-lg font-bold text-slate-900">Top Products</h3>
+            <p class="text-sm text-slate-400 mt-0.5">Best performers</p>
+          </div>
+          <button class="text-sm font-semibold text-indigo-600 hover:text-indigo-800 transition flex items-center gap-1">
+            View All
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path></svg>
+          </button>
+        </div>
+        <div class="overflow-x-auto">
+          <table class="w-full text-left text-sm">
+            <thead class="bg-gradient-to-r from-slate-50 to-slate-50/50 text-slate-500 font-semibold border-b border-slate-100">
+              <tr>
+                <th class="px-6 py-4">Product Name</th>
+                <th class="px-6 py-4 text-right">Purchased</th>
+                <th class="px-6 py-4 text-right">Revenue</th>
+              </tr>
+            </thead>
+            <tbody id="tbl-prod-body" class="divide-y divide-slate-50">
+              <!-- Rows injected via JS -->
+            </tbody>
+            <tfoot class="bg-gradient-to-r from-slate-50 to-slate-50/50 font-bold text-slate-900 border-t border-slate-200">
+              <tr>
+                <td class="px-6 py-4">Total Tracked</td>
+                <td id="tbl-prod-count" class="px-6 py-4 text-right">994</td>
+                <td id="tbl-prod-rev" class="px-6 py-4 text-right">$21,763</td>
+              </tr>
+            </tfoot>
+          </table>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- JAVASCRIPT LOGIC -->
+  <script>
+    // --- 1. MOCK DATA ENGINE ---
+    const baseData = {
+      kpis: { revenue: 171072, transactions: 1788, users: 89401, aov: 95.68, cr: 2.00 },
+      charts: {
+        revenue: { labels: ['Apr 11', 'Apr 14', 'Apr 17', 'Apr 20', 'Apr 23', 'Apr 26', 'Apr 29', 'May 2', 'May 5', 'May 8'], users: [2800, 3100, 2950, 3200, 3050, 2900, 3400, 3150, 3300, 3100], rev: [5200, 6100, 5400, 6800, 5900, 5600, 7200, 6400, 7100, 6200] },
+        cr: { labels: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'], values: [1.8, 2.1, 2.4, 2.0, 1.9, 2.6, 1.5] }
+      },
+      tables: {
+        acquisition: [
+          { source: 'Direct / None', users: 60660, aov: 149.56, cr: 2.4, rev: 93475 },
+          { source: 'Google / Organic', users: 11506, aov: 190.46, cr: 1.8, rev: 33532 },
+          { source: 'Google / CPC', users: 4953, aov: 174.82, cr: 3.1, rev: 20628 },
+          { source: 'Social / Referral', users: 12282, aov: 48.90, cr: 1.2, rev: 23437 }
+        ],
+        products: [
+          { name: 'Nano Banana Sweatshirt', count: 90, rev: 5920 },
+          { name: 'Chrome Dino Dark Mode Tee', count: 214, rev: 4518 },
+          { name: 'Google Bike Socks', count: 333, rev: 4089 },
+          { name: 'Recycled Black Hoodie', count: 78, rev: 3815 },
+          { name: 'YouTube Old School Socks', count: 279, rev: 3421 }
+        ]
+      }
+    };
+
+    const multipliers = {
+      time: { last30: 1, last7: 0.3, lastMonth: 1.1, ytd: 4.5 },
+      source: { all: 1, direct: 0.6, organic: 0.3, paid: 0.1 },
+      device: { all: 1, desktop: 0.6, mobile: 0.4, tablet: 0.15 },
+      country: { all: 1, usa: 0.65, canada: 0.15, uk: 0.12 }
+    };
+
+    function getMultiplier(filters) {
+      return multipliers.time[filters.time] * multipliers.source[filters.source] * multipliers.device[filters.device] * multipliers.country[filters.country];
+    }
+
+    // --- 2. CHART INSTANCES ---
+    Chart.defaults.font.family = "'Inter', sans-serif";
+    Chart.defaults.color = '#94a3b8';
+    Chart.defaults.scale.grid.color = 'rgba(148, 163, 184, 0.08)';
+    Chart.defaults.plugins.tooltip.backgroundColor = 'rgba(15, 23, 42, 0.9)';
+    Chart.defaults.plugins.tooltip.titleFont = { size: 13, weight: '600' };
+    Chart.defaults.plugins.tooltip.bodyFont = { size: 12 };
+    Chart.defaults.plugins.tooltip.padding = 12;
+    Chart.defaults.plugins.tooltip.cornerRadius = 8;
+    Chart.defaults.plugins.tooltip.displayColors = true;
+    Chart.defaults.plugins.tooltip.boxPadding = 4;
+
+    let revenueChart, crChart;
+
+    function initCharts() {
+      // Revenue Chart
+      const ctxRev = document.getElementById('revenueChart').getContext('2d');
+      
+      // Create gradient for line
+      const gradientLine = ctxRev.createLinearGradient(0, 0, 0, 320);
+      gradientLine.addColorStop(0, 'rgba(99, 102, 241, 0.2)');
+      gradientLine.addColorStop(1, 'rgba(99, 102, 241, 0)');
+      
+      // Create gradient for bars
+      const gradientBar = ctxRev.createLinearGradient(0, 0, 0, 320);
+      gradientBar.addColorStop(0, 'rgba(148, 163, 184, 0.3)');
+      gradientBar.addColorStop(1, 'rgba(148, 163, 184, 0.1)');
+      
+      revenueChart = new Chart(ctxRev, {
+        type: 'bar',
+        data: {
+          labels: baseData.charts.revenue.labels,
+          datasets: [
+            { 
+              label: 'Total Users', 
+              data: baseData.charts.revenue.users, 
+              backgroundColor: gradientBar,
+              borderColor: 'rgba(148, 163, 184, 0.3)',
+              borderWidth: 1,
+              borderRadius: 8,
+              borderSkipped: false,
+              yAxisID: 'y1', 
+              order: 2 
+            },
+            { 
+              label: 'Total Revenue', 
+              data: baseData.charts.revenue.rev, 
+              type: 'line', 
+              borderColor: '#6366f1', 
+              backgroundColor: gradientLine,
+              borderWidth: 3, 
+              tension: 0.4, 
+              fill: true, 
+              pointRadius: 0,
+              pointHoverRadius: 6,
+              pointHoverBackgroundColor: '#fff',
+              pointHoverBorderColor: '#6366f1',
+              pointHoverBorderWidth: 3,
+              yAxisID: 'y', 
+              order: 1 
+            }
+          ]
+        },
+        options: {
+          responsive: true, 
+          maintainAspectRatio: false, 
+          interaction: { mode: 'index', intersect: false },
+          plugins: { 
+            legend: { display: false },
+            tooltip: {
+              callbacks: {
+                label: function(context) {
+                  let label = context.dataset.label || '';
+                  if (label) label += ': ';
+                  if (context.dataset.yAxisID === 'y') label += '$' + context.parsed.y.toLocaleString();
+                  else label += context.parsed.y.toLocaleString();
+                  return label;
+                }
+              }
+            }
+          },
+          scales: {
+            x: { 
+              grid: { display: false },
+              ticks: { font: { size: 11, weight: '500' } }
+            },
+            y: { 
+              type: 'linear', 
+              display: true, 
+              position: 'left', 
+              ticks: { 
+                callback: v => '$' + v/1000 + 'k',
+                font: { size: 11, weight: '500' }
+              }, 
+              grid: { borderDash: [4, 4], color: 'rgba(148, 163, 184, 0.06)' } 
+            },
+            y1: { 
+              type: 'linear', 
+              display: true, 
+              position: 'right', 
+              grid: { drawOnChartArea: false }, 
+              ticks: { 
+                callback: v => (v/1000).toFixed(1) + 'k',
+                font: { size: 11, weight: '500' }
+              } 
+            }
+          }
+        }
+      });
+
+      // CR Chart
+      const ctxCR = document.getElementById('crChart').getContext('2d');
+      
+      // Create gradient for CR bars
+      const gradientCR = ctxCR.createLinearGradient(0, 0, 0, 320);
+      gradientCR.addColorStop(0, 'rgba(99, 102, 241, 0.6)');
+      gradientCR.addColorStop(1, 'rgba(139, 92, 246, 0.2)');
+      
+      crChart = new Chart(ctxCR, {
+        type: 'bar',
+        data: {
+          labels: baseData.charts.cr.labels,
+          datasets: [{ 
+            label: 'Conversion Rate', 
+            data: baseData.charts.cr.values, 
+            backgroundColor: gradientCR,
+            borderColor: 'rgba(99, 102, 241, 0.4)',
+            borderWidth: 1,
+            borderRadius: 8,
+            borderSkipped: false 
+          }]
+        },
+        options: {
+          responsive: true, 
+          maintainAspectRatio: false, 
+          plugins: { 
+            legend: { display: false },
+            tooltip: {
+              callbacks: {
+                label: ctx => ctx.parsed.y.toFixed(2) + '%'
+              }
+            }
+          },
+          scales: { 
+            x: { 
+              grid: { display: false },
+              ticks: { font: { size: 11, weight: '500' } }
+            }, 
+            y: { 
+              beginAtZero: true, 
+              max: 3.5, 
+              ticks: { 
+                callback: v => v + '%',
+                font: { size: 11, weight: '500' }
+              }, 
+              grid: { borderDash: [4, 4], color: 'rgba(148, 163, 184, 0.06)' } 
+            } 
+          }
+        }
+      });
+    }
+
+    // --- 3. UPDATE LOGIC ---
+    function formatCurrency(val) { return '$' + Math.round(val).toLocaleString(); }
+    function formatNum(val) { return Math.round(val).toLocaleString(); }
+    function formatPct(val) { return val.toFixed(2) + '%'; }
+
+    function updateDashboard() {
+      // Show loading
+      document.querySelectorAll('.loading-overlay').forEach(el => el.classList.add('active'));
+
+      // Get filter values
+      const filters = {
+        time: document.getElementById('timeFilter').value,
+        source: document.getElementById('sourceFilter').value,
+        device: document.getElementById('deviceFilter').value,
+        country: document.getElementById('countryFilter').value
+      };
+
+      const mult = getMultiplier(filters);
+
+      // Simulate network delay
+      setTimeout(() => {
+        // Update KPIs
+        const newRev = baseData.kpis.revenue * mult;
+        const newTrans = baseData.kpis.transactions * mult;
+        const newUsers = baseData.kpis.users * mult;
+        const newAOV = newRev / newTrans;
+        const newCR = (newTrans / newUsers) * 100;
+
+        document.getElementById('kpi-rev').textContent = formatCurrency(newRev);
+        document.getElementById('kpi-trans').textContent = formatNum(newTrans);
+        document.getElementById('kpi-aov').textContent = '$' + newAOV.toFixed(2);
+        document.getElementById('kpi-cr').textContent = formatPct(newCR);
+        document.getElementById('cr-detail').textContent = `${formatNum(newTrans)} / ${formatNum(newUsers)} users`;
+
+        // Update Charts
+        if(filters.time === 'last7') {
+            revenueChart.data.labels = ['May 4', 'May 5', 'May 6', 'May 7', 'May 8'];
+            revenueChart.data.datasets[0].data = [3100, 3300, 2900, 3400, 3100].map(v=>v*mult);
+            revenueChart.data.datasets[1].data = [5600, 6200, 5400, 6800, 6200].map(v=>v*mult);
+        } else {
+            revenueChart.data.labels = baseData.charts.revenue.labels;
+            revenueChart.data.datasets[0].data = baseData.charts.revenue.users.map(v => v * mult);
+            revenueChart.data.datasets[1].data = baseData.charts.revenue.rev.map(v => v * mult);
+        }
+        revenueChart.update();
+
+        const crMultiplier = filters.device === 'mobile' ? 0.8 : 1;
+        crChart.data.datasets[0].data = baseData.charts.cr.values.map(v => v * crMultiplier);
+        crChart.update();
+
+        // Update Tables
+        const acqBody = document.getElementById('tbl-acq-body');
+        acqBody.innerHTML = '';
+        let totalAcqUsers = 0, totalAcqRev = 0, totalAcqTrans = 0;
+
+        baseData.tables.acquisition.forEach(row => {
+            if(filters.source !== 'all' && !row.source.toLowerCase().includes(filters.source)) return;
+            
+            const rUsers = row.users * mult * 0.5;
+            const rRev = row.rev * mult * 0.5;
+            const rTrans = rRev / row.aov;
+            const rCR = (rTrans / rUsers) * 100;
+            
+            totalAcqUsers += rUsers;
+            totalAcqRev += rRev;
+            totalAcqTrans += rTrans;
+
+            const tr = document.createElement('tr');
+            tr.className = 'table-row transition';
+            tr.innerHTML = `
+              <td class="px-6 py-4 font-semibold text-slate-700">${row.source}</td>
+              <td class="px-6 py-4 text-right text-slate-600 font-medium">${formatNum(rUsers)}</td>
+              <td class="px-6 py-4 text-right text-slate-600 font-medium">$${row.aov.toFixed(2)}</td>
+              <td class="px-6 py-4 text-right font-bold text-emerald-600">${rCR.toFixed(1)}%</td>
+              <td class="px-6 py-4 text-right font-bold text-slate-900">${formatCurrency(rRev)}</td>
+            `;
+            acqBody.appendChild(tr);
+        });
+        
+        document.getElementById('tbl-acq-users').textContent = formatNum(totalAcqUsers);
+        document.getElementById('tbl-acq-rev').textContent = formatCurrency(totalAcqRev);
+        document.getElementById('tbl-acq-aov').textContent = '$' + (totalAcqRev/totalAcqTrans).toFixed(2);
+        document.getElementById('tbl-acq-cr').textContent = ((totalAcqTrans/totalAcqUsers)*100).toFixed(2) + '%';
+
+        const prodBody = document.getElementById('tbl-prod-body');
+        prodBody.innerHTML = '';
+        let totalProdCount = 0, totalProdRev = 0;
+        baseData.tables.products.forEach(row => {
+            const rCount = row.count * mult;
+            const rRev = row.rev * mult;
+            totalProdCount += rCount;
+            totalProdRev += rRev;
+            const tr = document.createElement('tr');
+            tr.className = 'table-row transition';
+            tr.innerHTML = `
+              <td class="px-6 py-4 font-semibold text-slate-700">${row.name}</td>
+              <td class="px-6 py-4 text-right text-slate-600 font-medium">${formatNum(rCount)}</td>
+              <td class="px-6 py-4 text-right font-bold text-slate-900">${formatCurrency(rRev)}</td>
+            `;
+            prodBody.appendChild(tr);
+        });
+        document.getElementById('tbl-prod-count').textContent = formatNum(totalProdCount);
+        document.getElementById('tbl-prod-rev').textContent = formatCurrency(totalProdRev);
+
+        // Hide loading
+        document.querySelectorAll('.loading-overlay').forEach(el => el.classList.remove('active'));
+
+      }, 600);
+    }
+
+    // --- 4. EVENT LISTENERS ---
+    document.getElementById('timeFilter').addEventListener('change', updateDashboard);
+    document.getElementById('sourceFilter').addEventListener('change', updateDashboard);
+    document.getElementById('deviceFilter').addEventListener('change', updateDashboard);
+    document.getElementById('countryFilter').addEventListener('change', updateDashboard);
+    
+    document.getElementById('resetBtn').addEventListener('click', () => {
+        document.getElementById('timeFilter').value = 'last30';
+        document.getElementById('sourceFilter').value = 'all';
+        document.getElementById('deviceFilter').value = 'all';
+        document.getElementById('countryFilter').value = 'all';
+        updateDashboard();
+    });
+
+    // Init
+    initCharts();
+  </script>
+</body>
+</html>

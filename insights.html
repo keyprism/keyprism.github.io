@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Insights - dPrism</title>
+    <meta name="description" content="Research reports and technical analysis from dPrism.">
+    <link rel="icon" href="/favicon.ico">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Syne&family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: { sans: ['Inter', 'sans-serif'], serif: ['Syne', 'serif'] },
+          colors: {
+            navy: { 50:'#f0f3f9', 100:'#dce3f0', 200:'#b9c7e1', 300:'#8da3cb', 400:'#617fb3', 500:'#3d5a8a', 600:'#2c4270', 700:'#1e2f53', 800:'#141f3a', 900:'#0b1224', 950:'#060a14' },
+            accent: { 50:'#eef2ff', 100:'#e0e7ff', 200:'#c7d2fe', 300:'#a5b4fc', 400:'#818cf8', 500:'#6366f1', 600:'#4f46e5', 700:'#4338ca', 800:'#3730a3', 900:'#312e81' },
+          }
+        }
+      }
+    }
+    </script>
+
+    <link rel="stylesheet" href="styles/main.css">
+
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-2G28QN91F1"></script>
+    <script src="js/gtag.js"></script>
+
+    <style>
+      * { -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale; }
+      body { font-family: 'Inter', sans-serif; scroll-behavior: smooth; }
+
+      .card-premium {
+        background: #fff;
+        border: 1px solid #e8ecf2;
+        border-radius: 16px;
+        box-shadow: 0 1px 3px rgba(0,0,0,0.04), 0 8px 32px rgba(0,0,0,0.03);
+        transition: all 0.35s cubic-bezier(0.4,0,0.2,1);
+      }
+      .card-premium:hover {
+        box-shadow: 0 2px 6px rgba(0,0,0,0.06), 0 16px 48px rgba(0,0,0,0.06);
+        transform: translateY(-3px);
+      }
+
+      .stat-card { position: relative; overflow: hidden; }
+      .stat-card::before {
+        content: '';
+        position: absolute;
+        top: 0; left: 0; right: 0;
+        height: 2px;
+        background: linear-gradient(90deg, transparent, #6366f1, transparent);
+        opacity: 0;
+        transition: opacity 0.3s;
+      }
+      .stat-card:hover::before { opacity: 1; }
+
+      .text-gradient-accent {
+        background: linear-gradient(135deg, #818cf8, #6366f1, #4f46e5);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+      }
+
+      .section-label {
+        font-size: 11px;
+        font-weight: 600;
+        letter-spacing: 0.15em;
+        text-transform: uppercase;
+        color: #6366f1;
+      }
+
+      .divider-accent { height: 1px; background: linear-gradient(90deg, transparent, #c7d2fe, transparent); opacity: 0.6; }
+
+      .insight-card {
+        display: block;
+        text-decoration: none;
+        color: inherit;
+        border-radius: 16px;
+        overflow: hidden;
+        border: 1px solid #e8ecf2;
+        box-shadow: 0 1px 3px rgba(0,0,0,0.04), 0 8px 32px rgba(0,0,0,0.03);
+        transition: all 0.35s cubic-bezier(0.4,0,0.2,1);
+        background: #fff;
+        position: relative;
+      }
+      .insight-card::after {
+        content: '';
+        position: absolute;
+        bottom: 0; left: 0; right: 0;
+        height: 3px;
+        background: linear-gradient(90deg, #818cf8, #6366f1, #4f46e5);
+        transform: scaleX(0);
+        transition: transform 0.4s ease;
+        transform-origin: left;
+      }
+      .insight-card:hover {
+        box-shadow: 0 2px 6px rgba(0,0,0,0.06), 0 16px 48px rgba(0,0,0,0.06);
+        transform: translateY(-4px);
+      }
+      .insight-card:hover::after { transform: scaleX(1); }
+      .insight-card img {
+        transition: transform 0.5s cubic-bezier(0.4,0,0.2,1);
+        display: block;
+        width: 100%;
+      }
+      .insight-card:hover img { transform: scale(1.03); }
+    </style>
+</head>
+<body>
+    <main class="bg-white text-slate-900">
+        <!-- Header -->
+<header class="max-w-7xl mx-auto px-6 py-5">
+    <div class="flex items-center justify-between">
+        <a href="/" class="flex items-center gap-3">
+            <div class="w-8 h-8 rounded-lg bg-indigo-100 flex items-center justify-center">
+                <span class="text-accent-400 font-bold text-[12px] tracking-wider">dP</span>
+            </div>
+            <span class="text-lg font-semibold tracking-tight text-navy-900">dPrism</span>
+        </a>
+        <nav class="hidden sm:flex items-center gap-8 text-sm text-gray-500">
+            <a href="/" class="hover:text-navy-900 transition-colors">Home</a>
+            <a href="/#work" class="hover:text-navy-900 transition-colors">Work</a>
+            <a href="/insights.html" class="text-navy-900 font-medium">Insights</a>
+        </nav>
+        <a href="#contact" class="px-5 py-2 text-sm font-medium text-white bg-accent-500 rounded-lg hover:bg-accent-600 transition">
+            Contact
+        </a>
+    </div>
+</header>
+
+        <!-- Hero -->
+        <section class="relative overflow-hidden bg-gradient-to-br from-white via-slate-50 to-accent-50/30 py-20 md:py-28 px-6">
+            <div class="absolute top-0 right-0 w-[500px] h-[500px] bg-accent-200/20 rounded-full blur-3xl -translate-y-1/2 translate-x-1/4"></div>
+            <div class="absolute bottom-0 left-0 w-72 h-72 bg-navy-200/15 rounded-full blur-3xl translate-y-1/2 -translate-x-1/4"></div>
+            <div class="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-accent-300/40 to-transparent"></div>
+            <div class="max-w-7xl mx-auto relative">
+                <div class="text-center mb-12">
+                <h1 class="text-4xl md:text-[56px] font-light leading-[1.1] max-w-3xl mx-auto tracking-tight">
+                    Research & <span class="font-serif font-semibold text-gradient-accent">Insights</span>
+                </h1>
+                <p class="mt-6 text-lg text-slate-500 max-w-2xl mx-auto leading-relaxed font-light">
+                    <!-- Reports, analysis, and deep dives. -->
+                     Independent market briefs, competitive analysis, and data-driven research.
+                     <!-- on financial markets and digital assets. -->
+                </p>
+                </div>
+
+            </div>
+        </section>
+
+        <!-- Insights Grid -->
+        <section class="max-w-7xl mx-auto px-6 py-16 md:py-24">
+            <div class="flex items-center gap-3 mb-10">
+                <span class="section-label">Latest</span>
+                <div class="divider-accent flex-1"></div>
+            </div>
+            <div id="insights-grid" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 gap-6">
+            </div>
+        </section>
+
+        <!-- Footer -->
+        <footer class="border-t border-slate-200">
+            <div class="max-w-7xl mx-auto px-6 py-6 text-sm text-slate-500 flex items-center gap-2">
+                <div class="w-6 h-6 rounded-md bg-navy-900 flex items-center justify-center">
+                    <span class="text-accent-400 font-bold text-[9px] tracking-wider">dP</span>
+                </div>
+                © <span id="year"></span> dPrism. All rights reserved.
+            </div>
+        </footer>
+    </main>
+
+    <script>
+    document.getElementById('year').textContent = new Date().getFullYear();
+
+    async function initializeInsights() {
+        const grid = document.getElementById('insights-grid');
+        const paths = ['/data/insights.json', 'data/insights.json', './data/insights.json'];
+        let response = null;
+        let usedPath = null;
+
+        for (const path of paths) {
+            try {
+                const res = await fetch(path);
+                if (res.ok) {
+                    response = res;
+                    usedPath = path;
+                    break;
+                }
+            } catch (e) {}
+        }
+
+        if (!response) {
+            grid.innerHTML = '<p class="col-span-full text-center text-slate-500 py-12">Insights could not be loaded. Make sure <code class="text-xs bg-slate-100 px-1.5 py-0.5 rounded">data/insights.json</code> exists.</p>';
+            return;
+        }
+
+        try {
+            const items = await response.json();
+            console.log(`✓ Loaded ${items.length} insights from ${usedPath}`);
+            renderInsights(items);
+        } catch (error) {
+            grid.innerHTML = '<p class="col-span-full text-center text-slate-500 py-12">Insights data was found but could not be parsed.</p>';
+        }
+    }
+
+    function renderInsights(items) {
+        const grid = document.getElementById('insights-grid');
+        grid.innerHTML = '';
+
+        items.forEach(item => {
+            const a = document.createElement('a');
+            a.href = item.url;
+            a.className = 'insight-card';
+
+            if (item.imageUrl) {
+                a.innerHTML = `
+                    <div class="overflow-hidden">
+                        <img src="${item.imageUrl}" alt="${item.title}">
+                    </div>
+                    <div class="p-6">
+                        <h3 class="font-semibold text-navy-900 text-sm leading-snug">${item.title}</h3>
+                        <div class="flex items-center gap-1.5 mt-4 text-accent-500 text-xs font-medium">
+                            <span>Read report</span>
+                            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+                        </div>
+                    </div>
+                `;
+            } else {
+                a.innerHTML = `
+                    <div class="p-6">
+                        <h3 class="font-semibold text-navy-900 text-sm leading-snug">${item.title}</h3>
+                        <div class="flex items-center gap-1.5 mt-4 text-accent-500 text-xs font-medium">
+                            <span>Read report</span>
+                            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+                        </div>
+                    </div>
+                `;
+            }
+
+            grid.appendChild(a);
+        });
+    }
+
+    document.addEventListener('DOMContentLoaded', initializeInsights);
+    </script>
+</body>
+</html>

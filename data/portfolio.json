@@ -1,0 +1,238 @@
+[
+       {
+    "id": "live-global-market-pulse-dashboard-design-development",
+    "title": "Live Global Market Pulse Dashboard Design & Development",
+    "imageUrl": "./img/Market_Pulse_Dash.png",
+    "tags": ["dashboard"]
+  },  
+   {
+    "id": "real-estate-investment-portfolio-dashboard-design-development",
+    "title": "Real Estate Investment Portfolio Dashboard Design & Development",
+    "imageUrl": "./img/RE_Dash.png",
+    "tags": ["dashboard"]
+  },
+  {
+    "id": "investment-fund-portfolio-dashboard-design-development",
+    "title": "Investment Fund Portfolio Dashboard Design & Development",
+    "imageUrl": "./img/Fund_Portfolio_Dash.png",
+    "tags": ["dashboard"]
+  }, 
+  {
+    "id": "bitcoin-intelligence-dashboard-design-development",
+    "title": "Bitcoin Intelligence Dashboard Design & Development",
+    "imageUrl": "./img/Bitcoin_Dash.png",
+    "tags": ["dashboard"]
+  },
+  {
+    "id": "the-state-of-crypto---annual-report-design-templat",
+    "title": "The State of Crypto - Annual Report Design Template",
+    "imageUrl": "./img/the-state-of-crypto---annual-report-design-templat.jpg",
+    "tags": ["report"]
+  },
+  {
+    "id": "global-web3-and-defi-research-report-design-exampl",
+    "title": "\"Global Web3 & DeFi\" Research Report Design Example",
+    "imageUrl": "./img/global-web3-and-defi-research-report-design-exampl.jpg",
+    "tags": ["report"]
+  },
+  {
+    "id": "exchange-landscape---quarterly-financial-report-de",
+    "title": "Exchange Landscape - Quarterly Financial Report Design",
+    "imageUrl": "./img/exchange-landscape---quarterly-financial-report-de.jpg",
+    "tags": ["report"]
+  },
+   {
+    "id": "emdx-investor-deck",
+    "title": "EMDX Exchange - Investor Deck",
+    "imageUrl": "./img/decks/EMDX Investor Deck.png",
+    "tags": ["deck"]
+  },    
+
+  {
+    "id": "digital-assets-volatility-index-q4-2025---financia",
+    "title": "Digital Assets Volatility Index Q4 2025 - Financial Report Design Template",
+    "imageUrl": "./img/digital-assets-volatility-index-q4-2025---financia.jpg",
+    "tags": ["report"]
+  },
+  {
+    "id": "coinstage-pro---crypto-investment-platform-saas-ui",
+    "title": "CoinStage Pro - Crypto Investment Platform SaaS UI/UX Design",
+    "imageUrl": "./img/coinstage-pro---crypto-investment-platform-saas-ui.jpg",
+    "tags": ["dashboard"]
+  },
+  {
+    "id": "tradfi-and-macro-research---september-2025-report-",
+    "title": "TradFi & Macro Research - September 2025 Report Design",
+    "imageUrl": "./img/tradfi-and-macro-research---september-2025-report-.jpg",
+    "tags": ["report"]
+  },
+  {
+    "id": "september-2025-tradfi-and-macro-research-report-de",
+    "title": "September 2025 TradFi & Macro Research Report Design",
+    "imageUrl": "./img/september-2025-tradfi-and-macro-research-report-de.jpg",
+    "tags": ["report"]    
+  },
+  {
+    "id": "ui/ux-design-for-cryptovolt--exchange---a-simple-w",
+    "title": "UI/UX Design for CryptoVolt  Exchange - A Simple Way to Buy & Sell Cryptocurrency",
+    "imageUrl": "./img/ui-ux-design-for-cryptovolt--exchange---a-simple-w.jpg",
+    "tags": ["dashboard"]
+  },
+  {
+    "id": "edgeswap-dex---insights-dashboard-design",
+    "title": "edgeSwap DEX - Insights Dashboard Design",
+    "imageUrl": "./img/edgeswap-dex---insights-dashboard-design.jpg",
+    "tags": ["dashboard"]
+  },
+  {
+    "id": "financial-report-template-design",
+    "title": "Financial Report Template Design",
+    "imageUrl": "./img/financial-report-template-design.jpg",
+    "tags": ["report"]
+  },
+  {
+    "id": "stablecoins---october-2025-research-report-design",
+    "title": "Stablecoins - October 2025 Research Report Design",
+    "imageUrl": "./img/stablecoins---october-2025-research-report-design.jpg",
+    "tags": ["report"]
+  },
+  {
+    "id": "financial-report-design:-tokenization-outlook-2025",
+    "title": "Financial Report Design: Tokenization Outlook 2025",
+    "imageUrl": "./img/financial-report-design:-tokenization-outlook-2025.jpg",
+    "tags": ["report"]
+  },
+  {
+    "id": "otc-trade-p2p-trading-platform-pitch-deck",
+    "title": "OTC Trade: P2P Trading Platform - Pitch Deck",
+    "imageUrl": "./img/decks/OTC Trade - Pitch Deck.png",
+    "tags": ["deck"]
+  },    
+
+  {
+    "id": "nft-and-metaverse---industry-review-2025-report-de",
+    "title": "NFT & Metaverse - Industry Review 2025 Report Design",
+    "imageUrl": "./img/nft-and-metaverse---industry-review-2025-report-de.jpg",
+    "tags": ["report"]
+  },
+  {
+    "id": "heybank---online-banking-dashboard-design",
+    "title": "HeyBank - Online Banking Dashboard Design",
+    "imageUrl": "./img/heybank---online-banking-dashboard-design.jpg",
+    "tags": ["dashboard"]
+  },
+  {
+    "id": "nexa-crm-dashboard-design",
+    "title": "Nexa CRM Dashboard Design",
+    "imageUrl": "./img/nexa-crm-dashboard-design.jpg",
+    "tags": ["dashboard"]
+  },
+   {
+    "id": "otc-trade-p2p-trading-platform-trading-desks-deck",
+    "title": "OTC Trade: P2P Trading Platform - Trading Desks Deck",
+    "imageUrl": "./img/decks/OTC Trade - Desks Deck.png",
+    "tags": ["deck"]
+  },    
+
+  {
+    "id": "trader's-portfolio-dashboard-design",
+    "title": "Trader's Portfolio Dashboard Design",
+    "imageUrl": "./img/trader's-portfolio-dashboard-design.jpg",
+    "tags": ["dashboard"]
+  },
+  {
+    "id": "financial-report-design:-digital-assets-investment",
+    "title": "Financial Report Design: Digital Assets Investment Landscape 2025",
+    "imageUrl": "./img/financial-report-design:-digital-assets-investment.jpg",
+    "tags": ["report"]
+  },
+  {
+    "id": "property-management-dashboard-design",
+    "title": "Property Management Dashboard Design",
+    "imageUrl": "./img/property-management-dashboard-design.jpg",
+    "tags": ["dashboard"]
+  },
+    {
+    "id": "emdx-pitch-deck",
+    "title": "EMDX Exchange - Pitch Deck",
+    "imageUrl": "./img/decks/EMDX Pitch Deck.png",
+    "tags": ["deck"]
+  },    
+
+  {
+    "id": "bankify---digital-banking-dashboard-design",
+    "title": "Bankify - Digital Banking Dashboard Design",
+    "imageUrl": "./img/bankify---digital-banking-dashboard-design.jpg",
+    "tags": ["dashboard"]
+  },
+  {
+    "id": "social-profile-overview-dashboard",
+    "title": "Social Profile Overview Dashboard",
+    "imageUrl": "./img/social-profile-overview-dashboard.jpg",
+    "tags": ["dashboard"]
+  },
+
+  {
+    "id": "user-management-dashboard-design:-admin-settings",
+    "title": "User Management Dashboard Design: Admin Settings",
+    "imageUrl": "./img/user-management-dashboard-design:-admin-settings.jpg",
+    "tags": ["dashboard"]
+  },
+    {
+    "id": "otc-trade-p2p-trading-platform-product-flow-presentation",
+    "title": "OTC Trade: P2P Trading Platform - Product Flow Presentation",
+    "imageUrl": "./img/decks/OTC Trade - Product Flow Deck.png",
+    "tags": ["deck"]
+  },    
+
+  {
+    "id": "investor-portfolio-dashboard-design-for-blackmoon-",
+    "title": "Investor Portfolio Dashboard Design for Blackmoon Crypto",
+    "imageUrl": "./img/investor-portfolio-dashboard-design-for-blackmoon-.jpg",
+    "tags": ["dashboard"]
+  },
+  {
+    "id": "crypto-investment-platform-|-token-overview-dashbo",
+    "title": "Crypto Investment Platform | Token Overview Dashboard",
+    "imageUrl": "./img/crypto-investment-platform-|-token-overview-dashbo.jpg",
+    "tags": ["dashboard"]
+  },
+  {
+    "id": "copy-trading-dashboard-design",
+    "title": "Copy Trading Dashboard Design",
+    "imageUrl": "./img/copy-trading-dashboard-design.jpg",
+    "tags": ["dashboard"]
+  },
+   {
+    "id": "teroxx-digital-assets-boutique-t4-0-presentation",
+    "title": "Teroxx Digital Assets Boutique - Teroxx 4.0 Presentation",
+    "imageUrl": "./img/decks/Teroxx 4 presentation.png",
+    "tags": ["deck"]
+  },    
+
+  {
+    "id": "the-state-of-crypto---digital-assets-market-report",
+    "title": "\"The State of Crypto\" - Digital Assets Market Report Design",
+    "imageUrl": "./img/the-state-of-crypto---digital-assets-market-report.jpg", 
+    "tags": ["report"]
+  },
+  {
+    "id": "global-web3-and-defi-research-report-design",
+    "title": "\"Global Web3 & DeFi\" Research Report Design",
+    "imageUrl": "./img/global-web3-and-defi-research-report-design.jpg",
+    "tags": ["report"]
+  },
+  {
+    "id": "token-sales-launchpad---token-metrics-dashboard-de",
+    "title": "Token Sales Launchpad - Token Metrics Dashboard Design",
+    "imageUrl": "./img/token-sales-launchpad---token-metrics-dashboard-de.jpg",
+    "tags": ["dashboard", "report"]
+  },
+
+  {
+    "id": "digital-assets-volatility-index:-financial-researc",
+    "title": "Digital Assets Volatility Index: Financial Research Report Design",
+    "imageUrl": "./img/digital-assets-volatility-index:-financial-researc.jpg",
+    "tags": ["report"]
+  }
+]

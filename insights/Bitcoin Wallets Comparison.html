@@ -1,0 +1,1108 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Bitcoin Wallets: Technical Comparison & Security Analysis — May 2026 | dPrism</title>
+  <meta name="description" content="Objective, fact-checked analysis of Bitcoin wallet options: security models, custody types, Lightning support, and verified feature comparisons." />
+  
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Syne:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <script src="https://unpkg.com/lucide@latest"></script>
+  
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: { sans: ['Inter', 'sans-serif'], serif: ['Syne', 'serif'] },
+          colors: {
+            navy: { 50:'#f0f3f9', 100:'#dce3f0', 200:'#b9c7e1', 300:'#8da3cb', 400:'#617fb3', 500:'#3d5a8a', 600:'#2c4270', 700:'#1e2f53', 800:'#141f3a', 900:'#0b1224', 950:'#060a14' },
+            gold: { 50:'#fdf8ef', 100:'#f9edcf', 200:'#f2d89e', 300:'#e9bd62', 400:'#e2a73a', 500:'#d4922a', 600:'#b87320', 700:'#97551e', 800:'#7c4520', 900:'#673b1e' },
+            slate: { 850:'#141c2e' }
+          }
+        }
+      }
+    }
+  </script>
+  
+  <!-- Google tag (gtag.js) -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-2G28QN91F1"></script>
+  <script src="js/gtag.js"></script>
+  
+  <style>
+    * { -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale; }
+    body { font-family: 'Inter', sans-serif; scroll-behavior: smooth; }
+    
+.hero-gradient {
+  background:
+    radial-gradient(ellipse 60% 50% at 70% 30%, rgba(180,110,40,0.16) 0%, transparent 55%),
+    radial-gradient(ellipse 50% 60% at 20% 75%, rgba(140,70,25,0.12) 0%, transparent 50%),
+    linear-gradient(160deg, #0c0906 0%, #161008 25%, #1e1510 50%, #18120c 80%, #0e0a06 100%);
+}
+    .glass { background: rgba(255,255,255,0.03); backdrop-filter: blur(20px); border: 1px solid rgba(255,255,255,0.06); }
+    
+    .card-premium {
+      background: #fff;
+      border: 1px solid #e8ecf2;
+      border-radius: 16px;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.04), 0 8px 32px rgba(0,0,0,0.03);
+      transition: all 0.35s cubic-bezier(0.4,0,0.2,1);
+    }
+    .card-premium:hover {
+      box-shadow: 0 2px 6px rgba(0,0,0,0.06), 0 16px 48px rgba(0,0,0,0.06);
+      transform: translateY(-3px);
+    }
+    
+    .section { scroll-margin-top: 80px; }
+    .chart-wrap { position: relative; height: 280px; width: 100%; }
+    .chart-wrap-sm { position: relative; height: 220px; width: 100%; }
+    
+    .nav-link { position: relative; padding: 6px 0; font-size: 13px; letter-spacing: 0.02em; }
+    .nav-link::after { content:''; position:absolute; bottom:0; left:50%; width:0; height:1.5px; background: linear-gradient(90deg, #d4922a, #e9bd62); transition: all 0.3s; transform: translateX(-50%); }
+    .nav-link:hover::after { width:100%; }
+    .nav-link:hover { color: #d4922a; }
+    
+    .section-label {
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: #d4922a;
+    }
+    
+    .divider-gold { height: 1px; background: linear-gradient(90deg, transparent, #d4922a, transparent); opacity: 0.3; }
+    
+    .stat-card { position: relative; overflow: hidden; }
+    .stat-card::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 2px;
+      background: linear-gradient(90deg, transparent, #d4922a, transparent);
+      opacity: 0;
+      transition: opacity 0.3s;
+    }
+    .stat-card:hover::before { opacity: 1; }
+    
+    .badge { display:inline-flex; align-items:center; padding:3px 10px; border-radius:6px; font-size:10px; font-weight:600; letter-spacing:0.04em; text-transform:uppercase; }
+    .badge-cold { background:#ecfdf5; color:#065f46; border:1px solid #a7f3d0; }
+    .badge-hot { background:#fffbeb; color:#92400e; border:1px solid #fde68a; }
+    .badge-custodial { background:#fef2f2; color:#991b1b; border:1px solid #fecaca; }
+    .badge-noncustodial { background:#eff6ff; color:#1e40af; border:1px solid #bfdbfe; }
+    .badge-lightning { background:#faf5ff; color:#6b21a8; border:1px solid #e9d5ff; }
+    .badge-green { background:#ecfdf5; color:#065f46; border:1px solid #a7f3d0; }
+    .badge-yellow { background:#fffbeb; color:#92400e; border:1px solid #fde68a; }
+    .badge-red { background:#fef2f2; color:#991b1b; border:1px solid #fecaca; }
+    
+    .risk-bar { height: 4px; border-radius: 2px; background: #e5e7eb; overflow: hidden; }
+    .risk-fill { height: 100%; border-radius: 2px; }
+    
+    @keyframes shimmer {
+      0% { background-position: -200% 0; }
+      100% { background-position: 200% 0; }
+    }
+    .shimmer-line {
+      height: 1px;
+      background: linear-gradient(90deg, transparent 0%, rgba(212,146,42,0.4) 50%, transparent 100%);
+      background-size: 200% 100%;
+      animation: shimmer 3s infinite linear;
+    }
+    
+    .text-gradient-gold {
+      background: linear-gradient(135deg, #e9bd62, #d4922a, #b87320);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    
+    .fact-check-ok { border-left: 3px solid #10b981; }
+    .fact-check-warn { border-left: 3px solid #f59e0b; }
+    .fact-check-error { border-left: 3px solid #ef4444; }
+    
+    /* Table styling */
+    .data-table thead th {
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      color: #64748b;
+      background: #f8fafc;
+      border-bottom: 2px solid #e2e8f0;
+      padding: 14px 16px;
+      white-space: nowrap;
+    }
+    .data-table tbody td {
+      padding: 14px 16px;
+      border-bottom: 1px solid #f1f5f9;
+      font-size: 13px;
+      vertical-align: middle;
+    }
+    .data-table tbody tr { transition: background 0.15s; }
+    .data-table tbody tr:hover { background: #fafbfe; }
+    
+    .opp-card { position: relative; overflow: hidden; }
+    .opp-card::after {
+      content: '';
+      position: absolute;
+      bottom: 0; left: 0; right: 0;
+      height: 3px;
+      background: linear-gradient(90deg, var(--accent-from), var(--accent-to));
+      transform: scaleX(0);
+      transition: transform 0.4s ease;
+      transform-origin: left;
+    }
+    .opp-card:hover::after { transform: scaleX(1); }
+    
+    @media print {
+      .no-print { display: none !important; }
+      body { background: white !important; }
+      .card-premium { box-shadow: none !important; border: 1px solid #ddd !important; break-inside: avoid; }
+      .data-table thead th { background: #f0f0f0 !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+    }
+    @media (max-width: 768px) { .hide-mobile { display: none; } }
+  </style>
+
+      <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-2G28QN91F1"></script>
+    <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-2G28QN91F1');
+    </script>
+
+</head>
+<body class="bg-[#f8f9fc] text-gray-900">
+
+<!-- NAVIGATION -->
+<nav class="no-print fixed top-0 left-0 right-0 z-50 bg-white/90 backdrop-blur-xl border-b border-gray-100">
+  <div class="max-w-7xl mx-auto px-6">
+    <div class="flex items-center justify-between h-[60px]">
+      <div class="flex items-center gap-3">
+        <a href="/insights.html" class="flex items-center gap-3">
+          <div class="w-8 h-8 rounded-lg bg-navy-900 flex items-center justify-center">
+            <span class="text-gold-400 font-bold text-[10px] tracking-wider">dP</span>
+          </div>
+          <div class="flex flex-col">
+            <span class="font-semibold text-sm text-navy-900 leading-tight">dPrism</span>
+            <span class="text-[10px] text-gray-400 tracking-wider uppercase">Insights</span>
+          </div>
+        </a>
+      </div>
+      <div class="hidden lg:flex items-center gap-7 text-gray-500">
+        <a href="#overview" class="nav-link">Overview</a>
+        <a href="#comparison" class="nav-link">Comparison</a>
+        <a href="#distribution" class="nav-link">Distribution</a>
+        <a href="#security" class="nav-link">Security</a>
+        <a href="#lightning" class="nav-link">Lightning</a>
+        <a href="#facts" class="nav-link">Fact-Check</a>
+      </div>
+      <div class="flex items-center gap-3">
+        <a href="/insights.html" class="hidden sm:inline-flex text-xs text-gray-400 hover:text-navy-900 transition-colors">Insights</a>
+        <a href="/#contact" class="text-xs font-medium text-navy-900 border border-gray-200 rounded-lg px-3 py-1.5 hover:border-gold-300 hover:text-gold-700 transition-all">Contact</a>
+      </div>
+    </div>
+  </div>
+</nav>
+
+<!-- HERO -->
+<header class="hero-gradient text-white pt-32 pb-20 px-6 relative overflow-hidden">
+  <div class="absolute top-20 right-10 w-72 h-72 rounded-full bg-gold-500/5 blur-3xl"></div>
+  <div class="absolute bottom-10 left-10 w-96 h-96 rounded-full bg-navy-500/10 blur-3xl"></div>
+  <div class="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-gold-500/20 to-transparent"></div>
+  
+  <div class="max-w-6xl mx-auto relative">
+    <div class="flex items-center gap-3 mb-8">
+      <div class="shimmer-line flex-1 max-w-[60px]"></div>
+      <span class="text-[11px] font-semibold tracking-[0.2em] uppercase text-gold-400">Independent Research Brief</span>
+      <div class="shimmer-line flex-1 max-w-[60px]"></div>
+    </div>
+    
+    <div class="max-w-3xl">
+      <h1 class="text-4xl md:text-[56px] font-light leading-[1.1] mb-5 tracking-tight">
+        Bitcoin Wallets<br/>
+        <span class="font-serif font-semibold text-gradient-gold">Technical Comparison</span>
+      </h1>
+      <p class="text-lg text-navy-200 font-light mb-1">Security Models, Custody Types & Verified Feature Analysis</p>
+      <p class="text-sm text-navy-400">dPrism Insights · May 2026 · Non-promotional, fact-checked</p>
+    </div>
+
+    <div class="grid grid-cols-2 md:grid-cols-4 gap-3 mt-12">
+      <div class="stat-card glass rounded-2xl p-5">
+        <p class="text-[11px] text-navy-400 uppercase tracking-wider mb-2">Wallets Reviewed</p>
+        <p class="text-3xl font-light tracking-tight">12</p>
+        <p class="text-xs text-navy-500 mt-2">Hot, Cold, Custodial</p>
+      </div>
+      <div class="stat-card glass rounded-2xl p-5">
+        <p class="text-[11px] text-navy-400 uppercase tracking-wider mb-2">Audits Verified</p>
+        <p class="text-3xl font-light tracking-tight"><span class="text-gold-300">8</span><span class="text-lg text-navy-500">/12</span></p>
+        <p class="text-xs text-navy-500 mt-2">Independent documentation</p>
+      </div>
+      <div class="stat-card glass rounded-2xl p-5">
+        <p class="text-[11px] text-navy-400 uppercase tracking-wider mb-2">Lightning Native</p>
+        <p class="text-3xl font-light tracking-tight"><span class="text-gold-300">3</span><span class="text-lg text-navy-500">/12</span></p>
+        <p class="text-xs text-navy-500 mt-2">Without third-party bridges</p>
+      </div>
+      <div class="stat-card glass rounded-2xl p-5">
+        <p class="text-[11px] text-navy-400 uppercase tracking-wider mb-2">Open Source</p>
+        <p class="text-3xl font-light tracking-tight"><span class="text-gold-300">4</span><span class="text-lg text-navy-500">/12</span></p>
+        <p class="text-xs text-navy-500 mt-2">Fully auditable codebase</p>
+      </div>
+    </div>
+  </div>
+</header>
+
+<!-- OVERVIEW -->
+<section id="overview" class="section max-w-6xl mx-auto px-6 pt-16 pb-12">
+  <div class="flex items-center gap-3 mb-8">
+    <span class="section-label">01</span>
+    <div class="divider-gold flex-1"></div>
+    <span class="section-label">Technical Overview</span>
+    <div class="divider-gold flex-1"></div>
+  </div>
+
+  <div class="card-premium p-8 md:p-10 mb-8">
+    <div class="bg-gradient-to-r from-navy-50 to-blue-50/50 border-l-[3px] border-gold-500 p-6 rounded-r-2xl mb-8">
+      <div class="flex items-start gap-3">
+        <i data-lucide="microscope" class="w-5 h-5 text-gold-600 mt-0.5 flex-shrink-0"></i>
+        <p class="text-navy-800 leading-relaxed text-sm">
+          <strong>Scope:</strong> This analysis evaluates Bitcoin wallet options based on verified security models, custody architecture, and documented feature sets. Promotional scoring, affiliate relationships, and unverified claims have been systematically excluded.
+        </p>
+      </div>
+    </div>
+
+    <h3 class="text-sm font-semibold text-navy-900 uppercase tracking-wider mb-5">Wallet Classification Framework</h3>
+    <div class="grid md:grid-cols-2 gap-4 mb-8">
+      <div class="stat-card flex items-start gap-4 p-5 bg-gray-50/80 rounded-xl border border-gray-100">
+        <div class="w-10 h-10 rounded-xl bg-emerald-100 flex items-center justify-center flex-shrink-0">
+          <i data-lucide="snowflake" class="w-5 h-5 text-emerald-600"></i>
+        </div>
+        <div>
+          <div class="flex items-center gap-2 mb-1">
+            <p class="font-semibold text-sm">Cold Storage</p>
+            <span class="badge badge-cold">Cold</span>
+          </div>
+          <p class="text-sm text-gray-500 leading-relaxed">Private keys generated/stored offline; highest security tier; requires physical device or air-gapped setup</p>
+        </div>
+      </div>
+      <div class="stat-card flex items-start gap-4 p-5 bg-gray-50/80 rounded-xl border border-gray-100">
+        <div class="w-10 h-10 rounded-xl bg-amber-100 flex items-center justify-center flex-shrink-0">
+          <i data-lucide="flame" class="w-5 h-5 text-amber-600"></i>
+        </div>
+        <div>
+          <div class="flex items-center gap-2 mb-1">
+            <p class="font-semibold text-sm">Hot Wallet</p>
+            <span class="badge badge-hot">Hot</span>
+          </div>
+          <p class="text-sm text-gray-500 leading-relaxed">Keys stored on internet-connected devices; convenient for frequent transactions; higher remote attack exposure</p>
+        </div>
+      </div>
+      <div class="stat-card flex items-start gap-4 p-5 bg-gray-50/80 rounded-xl border border-gray-100">
+        <div class="w-10 h-10 rounded-xl bg-blue-100 flex items-center justify-center flex-shrink-0">
+          <i data-lucide="key-round" class="w-5 h-5 text-blue-600"></i>
+        </div>
+        <div>
+          <div class="flex items-center gap-2 mb-1">
+            <p class="font-semibold text-sm">Non-Custodial</p>
+            <span class="badge badge-noncustodial">Self-custody</span>
+          </div>
+          <p class="text-sm text-gray-500 leading-relaxed">User controls private keys; no third-party access to funds; user bears full responsibility for key management</p>
+        </div>
+      </div>
+      <div class="stat-card flex items-start gap-4 p-5 bg-gray-50/80 rounded-xl border border-gray-100">
+        <div class="w-10 h-10 rounded-xl bg-red-100 flex items-center justify-center flex-shrink-0">
+          <i data-lucide="building-2" class="w-5 h-5 text-red-600"></i>
+        </div>
+        <div>
+          <div class="flex items-center gap-2 mb-1">
+            <p class="font-semibold text-sm">Custodial</p>
+            <span class="badge badge-custodial">Third-party</span>
+          </div>
+          <p class="text-sm text-gray-500 leading-relaxed">Third party holds private keys; convenient recovery; funds subject to platform risk and regulatory action</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="bg-navy-50/60 p-5 rounded-xl border border-navy-100">
+      <div class="flex items-start gap-3">
+        <i data-lucide="info" class="w-4 h-4 text-navy-400 mt-0.5 flex-shrink-0"></i>
+        <p class="text-sm text-navy-700 leading-relaxed">
+          <strong>Key technical distinction:</strong> "Security" in Bitcoin wallets refers to protection of private keys. No wallet can prevent blockchain-level risks (e.g., 51% attacks) or user error (e.g., sending to wrong address). Self-custody shifts risk from institutional failure to individual key management.
+        </p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- DISTRIBUTION CHART -->
+<section id="distribution" class="section max-w-6xl mx-auto px-6 pb-16">
+  <div class="grid md:grid-cols-2 gap-6">
+    <div class="card-premium p-8">
+      <div class="flex items-center gap-3 mb-2">
+        <i data-lucide="pie-chart" class="w-4 h-4 text-navy-500"></i>
+        <h3 class="font-semibold text-navy-900 text-sm">Wallet Type Distribution</h3>
+      </div>
+      <p class="text-xs text-gray-400 mb-6">Of 12 wallets reviewed</p>
+      <div class="chart-wrap-sm mx-auto" style="max-width: 260px;"><canvas id="walletTypeChart"></canvas></div>
+      <!-- Custom Legend for Wallet Type Distribution -->
+      <div id="walletTypeLegend" class="flex flex-wrap justify-center gap-4 mt-6"></div>
+    </div>
+    <div class="card-premium p-8">
+      <div class="flex items-center gap-3 mb-2">
+        <i data-lucide="bar-chart-3" class="w-4 h-4 text-navy-500"></i>
+        <h3 class="font-semibold text-navy-900 text-sm">Audit & Open Source Coverage</h3>
+      </div>
+      <p class="text-xs text-gray-400 mb-6">Verification status across wallet categories</p>
+      <div class="chart-wrap-sm"><canvas id="auditChart"></canvas></div>
+    </div>
+  </div>
+</section>
+
+<!-- COMPARISON TABLE -->
+<section id="comparison" class="section max-w-6xl mx-auto px-6 pb-16">
+  <div class="flex items-center gap-3 mb-8">
+    <span class="section-label">02</span>
+    <div class="divider-gold flex-1"></div>
+    <span class="section-label">Verified Wallet Comparison</span>
+    <div class="divider-gold flex-1"></div>
+  </div>
+
+  <div class="card-premium overflow-hidden">
+    <div class="p-6 pb-0 flex items-center justify-between">
+      <div class="flex items-center gap-2">
+        <i data-lucide="table-2" class="w-4 h-4 text-navy-500"></i>
+        <h3 class="font-semibold text-navy-900 text-sm">Feature Matrix</h3>
+      </div>
+      <p class="text-[11px] text-gray-400 hide-mobile">Scroll horizontally for full table →</p>
+    </div>
+    <div class="overflow-x-auto p-4">
+      <table class="w-full data-table">
+        <thead>
+          <tr>
+            <th class="text-left">Wallet</th>
+            <th class="text-center">Type</th>
+            <th class="text-center">Open Source</th>
+            <th class="text-center">Audited</th>
+            <th class="text-center">Lightning</th>
+            <th class="text-center">Multi-Chain</th>
+            <th class="text-center">Price</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td class="font-medium text-navy-900">COLDCARD Mk4</td>
+            <td class="text-center"><span class="badge badge-cold">Cold</span> <span class="badge badge-noncustodial ml-1">Self</span></td>
+            <td class="text-center"><span class="text-emerald-600 font-medium">✓ Yes</span></td>
+            <td class="text-center"><span class="text-emerald-600 font-medium">✓ Multiple</span></td>
+            <td class="text-center text-gray-300">–</td>
+            <td class="text-center text-gray-400 text-xs">BTC only</td>
+            <td class="text-center font-medium">$177–$549</td>
+          </tr>
+          <tr>
+            <td class="font-medium text-navy-900">Cypherock X1</td>
+            <td class="text-center"><span class="badge badge-cold">Cold</span> <span class="badge badge-noncustodial ml-1">Self</span></td>
+            <td class="text-center"><span class="text-amber-600 font-medium">Partial</span></td>
+            <td class="text-center"><span class="text-emerald-600 font-medium">✓ EAL6+</span></td>
+            <td class="text-center text-gray-300">–</td>
+            <td class="text-center text-gray-600 text-xs font-medium">30+ chains</td>
+            <td class="text-center font-medium">$99–$249</td>
+          </tr>
+          <tr>
+            <td class="font-medium text-navy-900">Tangem Wallet 2.0</td>
+            <td class="text-center"><span class="badge badge-cold">Cold</span> <span class="badge badge-noncustodial ml-1">Self</span></td>
+            <td class="text-center"><span class="text-red-500 font-medium">No</span></td>
+            <td class="text-center"><span class="text-emerald-600 font-medium">✓ Kudelski</span></td>
+            <td class="text-center text-gray-300">–</td>
+            <td class="text-center text-gray-600 text-xs font-medium">50+ chains</td>
+            <td class="text-center font-medium">$55–$129</td>
+          </tr>
+          <tr>
+            <td class="font-medium text-navy-900">SafePal S1</td>
+            <td class="text-center"><span class="badge badge-cold">Cold</span> <span class="badge badge-noncustodial ml-1">Self</span></td>
+            <td class="text-center"><span class="text-amber-600 font-medium">Partial</span></td>
+            <td class="text-center"><span class="text-amber-600 font-medium">⚠ 2021</span></td>
+            <td class="text-center text-gray-300">–</td>
+            <td class="text-center text-gray-600 text-xs font-medium">200+ chains</td>
+            <td class="text-center font-medium">$49.99</td>
+          </tr>
+          <tr>
+            <td class="font-medium text-navy-900">Blockstream Jade</td>
+            <td class="text-center"><span class="badge badge-cold">Cold</span> <span class="badge badge-noncustodial ml-1">Self</span></td>
+            <td class="text-center"><span class="text-emerald-600 font-medium">✓ Yes</span></td>
+            <td class="text-center"><span class="text-emerald-600 font-medium">✓ Community</span></td>
+            <td class="text-center"><span class="text-purple-600 font-medium">✓ Native</span></td>
+            <td class="text-center text-gray-400 text-xs">BTC + Liquid</td>
+            <td class="text-center font-medium">$79–$149</td>
+          </tr>
+          <tr>
+            <td class="font-medium text-navy-900">Zengo</td>
+            <td class="text-center"><span class="badge badge-hot">Hot</span> <span class="badge badge-noncustodial ml-1">Self</span></td>
+            <td class="text-center"><span class="text-red-500 font-medium">No</span></td>
+            <td class="text-center"><span class="text-amber-600 font-medium">⚠ MPC</span></td>
+            <td class="text-center text-gray-300">–</td>
+            <td class="text-center text-gray-600 text-xs font-medium">15+ chains</td>
+            <td class="text-center font-medium">Free / $130 Pro</td>
+          </tr>
+          <tr>
+            <td class="font-medium text-navy-900">Trust Wallet</td>
+            <td class="text-center"><span class="badge badge-hot">Hot</span> <span class="badge badge-noncustodial ml-1">Self</span></td>
+            <td class="text-center"><span class="text-amber-600 font-medium">Partial</span></td>
+            <td class="text-center"><span class="text-emerald-600 font-medium">✓ CertiK</span></td>
+            <td class="text-center text-gray-300">–</td>
+            <td class="text-center text-gray-600 text-xs font-medium">100+ chains</td>
+            <td class="text-center font-medium">Free</td>
+          </tr>
+          <tr>
+            <td class="font-medium text-navy-900">OKX Wallet</td>
+            <td class="text-center"><span class="badge badge-hot">Hot</span> <span class="badge badge-noncustodial ml-1">Self</span></td>
+            <td class="text-center"><span class="text-red-500 font-medium">No</span></td>
+            <td class="text-center"><span class="text-amber-600 font-medium">⚠ Internal</span></td>
+            <td class="text-center text-gray-300">–</td>
+            <td class="text-center text-gray-600 text-xs font-medium">130+ chains</td>
+            <td class="text-center font-medium">Free</td>
+          </tr>
+          <tr>
+            <td class="font-medium text-navy-900">BlueWallet</td>
+            <td class="text-center"><span class="badge badge-hot">Hot</span> <span class="badge badge-noncustodial ml-1">Self</span></td>
+            <td class="text-center"><span class="text-emerald-600 font-medium">✓ Yes</span></td>
+            <td class="text-center"><span class="text-emerald-600 font-medium">✓ Community</span></td>
+            <td class="text-center"><span class="text-purple-600 font-medium">✓ Native</span></td>
+            <td class="text-center text-gray-400 text-xs">BTC only</td>
+            <td class="text-center font-medium">Free</td>
+          </tr>
+          <tr>
+            <td class="font-medium text-navy-900">Binance Wallet</td>
+            <td class="text-center"><span class="badge badge-hot">Hot</span> <span class="badge badge-custodial ml-1">Custodial</span></td>
+            <td class="text-center"><span class="text-red-500 font-medium">No</span></td>
+            <td class="text-center"><span class="text-amber-600 font-medium">⚠ Platform</span></td>
+            <td class="text-center"><span class="text-purple-600 font-medium">✓ Via exch.</span></td>
+            <td class="text-center text-gray-600 text-xs font-medium">100+ chains</td>
+            <td class="text-center font-medium">Free</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="px-6 py-4 bg-gray-50/80 border-t border-gray-100">
+      <p class="text-[11px] text-gray-400 leading-relaxed">
+        <strong class="text-gray-500">Notes:</strong> "Audited" = independent security audit documentation publicly available. "Open Source" = full codebase publicly auditable. Lightning = native integration without third-party bridges. Data verified as of May 2026.
+      </p>
+    </div>
+  </div>
+</section>
+
+<!-- SECURITY MODELS -->
+<section id="security" class="section hero-gradient text-white py-16 px-6 relative overflow-hidden">
+  <div class="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-gold-500/20 to-transparent"></div>
+  <div class="absolute bottom-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-gold-500/10 to-transparent"></div>
+  
+  <div class="max-w-6xl mx-auto relative">
+    <div class="flex items-center gap-3 mb-3">
+      <span class="text-[11px] font-semibold tracking-[0.2em] uppercase text-gold-400">03</span>
+      <div class="shimmer-line flex-1 max-w-[40px]"></div>
+      <span class="text-[11px] font-semibold tracking-[0.2em] uppercase text-gold-400">Security Model Analysis</span>
+      <div class="shimmer-line flex-1 max-w-[40px]"></div>
+    </div>
+    
+    <div class="grid md:grid-cols-2 gap-6 mb-10">
+      <div class="glass rounded-2xl p-7 stat-card hover:bg-white/[0.06] transition-colors">
+        <div class="flex items-center gap-3 mb-6">
+          <div class="w-10 h-10 rounded-xl bg-emerald-500/20 flex items-center justify-center">
+            <i data-lucide="shield-check" class="w-5 h-5 text-emerald-400"></i>
+          </div>
+          <h3 class="font-semibold text-sm">Key Security Properties</h3>
+        </div>
+        <ul class="space-y-4 text-sm">
+          <li class="flex items-start gap-3">
+            <div class="w-5 h-5 rounded-full bg-emerald-500/20 flex items-center justify-center flex-shrink-0 mt-0.5">
+              <i data-lucide="check" class="w-3 h-3 text-emerald-400"></i>
+            </div>
+            <div>
+              <strong class="text-white">Air-gapped operation</strong>
+              <p class="text-navy-400 text-xs mt-0.5 leading-relaxed">COLDCARD, Cypherock X1, Blockstream Jade sign transactions without internet connection</p>
+            </div>
+          </li>
+          <li class="flex items-start gap-3">
+            <div class="w-5 h-5 rounded-full bg-emerald-500/20 flex items-center justify-center flex-shrink-0 mt-0.5">
+              <i data-lucide="check" class="w-3 h-3 text-emerald-400"></i>
+            </div>
+            <div>
+              <strong class="text-white">Secure element chips</strong>
+              <p class="text-navy-400 text-xs mt-0.5 leading-relaxed">Tangem (Samsung), Cypherock (EAL6+), COLDCARD (dual chips) provide hardware-level isolation</p>
+            </div>
+          </li>
+          <li class="flex items-start gap-3">
+            <div class="w-5 h-5 rounded-full bg-amber-500/20 flex items-center justify-center flex-shrink-0 mt-0.5">
+              <i data-lucide="alert-circle" class="w-3 h-3 text-amber-400"></i>
+            </div>
+            <div>
+              <strong class="text-white">MPC / key sharding</strong>
+              <p class="text-navy-400 text-xs mt-0.5 leading-relaxed">Zengo, Cypherock distribute key material; reduces single-point failure but adds complexity</p>
+            </div>
+          </li>
+          <li class="flex items-start gap-3">
+            <div class="w-5 h-5 rounded-full bg-red-500/20 flex items-center justify-center flex-shrink-0 mt-0.5">
+              <i data-lucide="x" class="w-3 h-3 text-red-400"></i>
+            </div>
+            <div>
+              <strong class="text-white">Custodial risk</strong>
+              <p class="text-navy-400 text-xs mt-0.5 leading-relaxed">Binance, Margex wallets subject to exchange insolvency, regulatory seizure, or internal compromise</p>
+            </div>
+          </li>
+        </ul>
+      </div>
+      
+      <div class="glass rounded-2xl p-7 stat-card hover:bg-white/[0.06] transition-colors">
+        <div class="flex items-center gap-3 mb-6">
+          <div class="w-10 h-10 rounded-xl bg-blue-500/20 flex items-center justify-center">
+            <i data-lucide="file-search" class="w-5 h-5 text-blue-400"></i>
+          </div>
+          <h3 class="font-semibold text-sm">Verified Audit Status</h3>
+        </div>
+        <div class="space-y-3">
+          <div class="p-4 bg-emerald-500/8 rounded-xl border border-emerald-500/15">
+            <div class="flex items-center gap-2 mb-1.5">
+              <div class="w-2 h-2 rounded-full bg-emerald-400"></div>
+              <p class="font-medium text-emerald-300 text-sm">Strong Audit Coverage</p>
+            </div>
+            <p class="text-xs text-navy-300 leading-relaxed">COLDCARD, Blockstream Jade — fully open-source; multiple independent audits; active community review</p>
+          </div>
+          <div class="p-4 bg-amber-500/8 rounded-xl border border-amber-500/15">
+            <div class="flex items-center gap-2 mb-1.5">
+              <div class="w-2 h-2 rounded-full bg-amber-400"></div>
+              <p class="font-medium text-amber-300 text-sm">Partial Coverage</p>
+            </div>
+            <p class="text-xs text-navy-300 leading-relaxed">Tangem, Cypherock, Trust Wallet — proprietary firmware with third-party audits; limited public code access</p>
+          </div>
+          <div class="p-4 bg-red-500/8 rounded-xl border border-red-500/15">
+            <div class="flex items-center gap-2 mb-1.5">
+              <div class="w-2 h-2 rounded-full bg-red-400"></div>
+              <p class="font-medium text-red-300 text-sm">Insufficient Documentation</p>
+            </div>
+            <p class="text-xs text-navy-300 leading-relaxed">Zengo, OKX, "Best Wallet" — no public audit reports; security claims rely on vendor documentation only</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="glass rounded-2xl p-7" style="background: rgba(212,146,42,0.06); border-color: rgba(212,146,42,0.15);">
+      <div class="flex items-center gap-2 mb-5">
+        <i data-lucide="shield-alert" class="w-4 h-4 text-gold-400"></i>
+        <h4 class="font-semibold text-gold-300 text-sm">Critical Security Considerations</h4>
+      </div>
+      <div class="grid md:grid-cols-2 gap-5 text-sm text-navy-300">
+        <ul class="space-y-3">
+          <li class="flex items-start gap-3">
+            <span class="w-6 h-6 rounded-lg bg-white/5 flex items-center justify-center flex-shrink-0 mt-0.5 text-xs font-semibold text-gold-400">1</span>
+            <span><strong class="text-white">Seed phrase management:</strong> Hardware wallets requiring 12–24 word backups introduce human error risk</span>
+          </li>
+          <li class="flex items-start gap-3">
+            <span class="w-6 h-6 rounded-lg bg-white/5 flex items-center justify-center flex-shrink-0 mt-0.5 text-xs font-semibold text-gold-400">2</span>
+            <span><strong class="text-white">Supply chain risk:</strong> Always purchase directly from manufacturers; tampered devices can leak keys at setup</span>
+          </li>
+        </ul>
+        <ul class="space-y-3">
+          <li class="flex items-start gap-3">
+            <span class="w-6 h-6 rounded-lg bg-white/5 flex items-center justify-center flex-shrink-0 mt-0.5 text-xs font-semibold text-gold-400">3</span>
+            <span><strong class="text-white">Recovery testing:</strong> Verify wallet recovery process with small amounts before storing significant value</span>
+          </li>
+          <li class="flex items-start gap-3">
+            <span class="w-6 h-6 rounded-lg bg-white/5 flex items-center justify-center flex-shrink-0 mt-0.5 text-xs font-semibold text-gold-400">4</span>
+            <span><strong class="text-white">Firmware updates:</strong> Ensure wallet supports secure, verifiable updates; outdated firmware may contain known vulnerabilities</span>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- LIGHTNING NETWORK -->
+<section id="lightning" class="section max-w-6xl mx-auto px-6 py-16">
+  <div class="flex items-center gap-3 mb-3">
+    <span class="section-label">04</span>
+    <div class="divider-gold flex-1"></div>
+    <span class="section-label">Lightning Network Support</span>
+    <div class="divider-gold flex-1"></div>
+  </div>
+  <p class="text-gray-400 text-sm mb-10">Only 3 of 12 reviewed wallets offer native Lightning integration without third-party bridges.</p>
+
+  <div class="grid md:grid-cols-3 gap-6 mb-8">
+    <div class="card-premium p-7 opp-card relative" style="--accent-from: #8b5cf6; --accent-to: #6366f1;">
+      <div class="flex items-center justify-between mb-5">
+        <div class="flex items-center gap-3">
+          <div class="w-10 h-10 rounded-xl bg-purple-100 flex items-center justify-center">
+            <i data-lucide="cpu" class="w-5 h-5 text-purple-600"></i>
+          </div>
+          <h3 class="font-bold text-navy-900">Blockstream Jade</h3>
+        </div>
+        <span class="badge badge-lightning">Native LN</span>
+      </div>
+      <ul class="space-y-2.5 text-sm text-gray-600">
+        <li class="flex items-start gap-2"><span class="text-purple-400 mt-0.5">▸</span>Hardware-based key storage</li>
+        <li class="flex items-start gap-2"><span class="text-purple-400 mt-0.5">▸</span>Greenlight service for node management</li>
+        <li class="flex items-start gap-2"><span class="text-purple-400 mt-0.5">▸</span>Air-gapped QR code signing</li>
+        <li class="flex items-start gap-2"><span class="text-purple-400 mt-0.5">▸</span>Open-source firmware</li>
+      </ul>
+      <div class="mt-5 pt-4 border-t border-gray-100">
+        <p class="text-[11px] text-gray-400"><strong class="text-gray-600">Best for:</strong> Security-first users needing Lightning</p>
+      </div>
+    </div>
+
+    <div class="card-premium p-7 opp-card relative" style="--accent-from: #3b82f6; --accent-to: #06b6d4;">
+      <div class="flex items-center justify-between mb-5">
+        <div class="flex items-center gap-3">
+          <div class="w-10 h-10 rounded-xl bg-blue-100 flex items-center justify-center">
+            <i data-lucide="smartphone" class="w-5 h-5 text-blue-600"></i>
+          </div>
+          <h3 class="font-bold text-navy-900">BlueWallet</h3>
+        </div>
+        <span class="badge badge-lightning">Native LN</span>
+      </div>
+      <ul class="space-y-2.5 text-sm text-gray-600">
+        <li class="flex items-start gap-2"><span class="text-blue-400 mt-0.5">▸</span>Software wallet (mobile / desktop)</li>
+        <li class="flex items-start gap-2"><span class="text-blue-400 mt-0.5">▸</span>Built-in Lightning node option</li>
+        <li class="flex items-start gap-2"><span class="text-blue-400 mt-0.5">▸</span>Batch transactions, multisig vaults</li>
+        <li class="flex items-start gap-2"><span class="text-blue-400 mt-0.5">▸</span>Open-source codebase</li>
+      </ul>
+      <div class="mt-5 pt-4 border-t border-gray-100">
+        <p class="text-[11px] text-gray-400"><strong class="text-gray-600">Best for:</strong> Frequent small payments; BTC-only focus</p>
+      </div>
+    </div>
+
+    <div class="card-premium p-7 opp-card relative" style="--accent-from: #f59e0b; --accent-to: #ef4444;">
+      <div class="flex items-center justify-between mb-5">
+        <div class="flex items-center gap-3">
+          <div class="w-10 h-10 rounded-xl bg-amber-100 flex items-center justify-center">
+            <i data-lucide="building" class="w-5 h-5 text-amber-600"></i>
+          </div>
+          <h3 class="font-bold text-navy-900">Binance</h3>
+        </div>
+        <span class="badge badge-yellow">Via Exchange</span>
+      </div>
+      <ul class="space-y-2.5 text-sm text-gray-600">
+        <li class="flex items-start gap-2"><span class="text-amber-400 mt-0.5">▸</span>Lightning via centralized platform</li>
+        <li class="flex items-start gap-2"><span class="text-amber-400 mt-0.5">▸</span>No user-controlled keys</li>
+        <li class="flex items-start gap-2"><span class="text-amber-400 mt-0.5">▸</span>High liquidity, low fees</li>
+        <li class="flex items-start gap-2"><span class="text-amber-400 mt-0.5">▸</span>Subject to exchange risk</li>
+      </ul>
+      <div class="mt-5 pt-4 border-t border-gray-100">
+        <p class="text-[11px] text-gray-400"><strong class="text-gray-600">Best for:</strong> Convenience over self-custody</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="card-premium p-6 border-l-[3px] border-amber-400">
+    <div class="flex items-start gap-3">
+      <i data-lucide="alert-triangle" class="w-5 h-5 text-amber-500 mt-0.5 flex-shrink-0"></i>
+      <div>
+        <p class="font-semibold text-navy-900 text-sm mb-1">Lightning Custody Caveat</p>
+        <p class="text-sm text-gray-500 leading-relaxed">Most "Lightning wallets" actually use custodial Lightning nodes operated by the wallet provider. True self-custody Lightning requires running your own node or using non-custodial channel management (e.g., Blockstream Greenlight). <strong class="text-navy-700">Verify channel ownership before storing significant value.</strong></p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FACT-CHECK SECTION -->
+<section id="facts" class="section max-w-6xl mx-auto px-6 py-16">
+  <div class="flex items-center gap-3 mb-3">
+    <span class="section-label">05</span>
+    <div class="divider-gold flex-1"></div>
+    <span class="section-label">Fact-Check: Claims vs. Verified Data</span>
+    <div class="divider-gold flex-1"></div>
+  </div>
+  <p class="text-gray-400 text-sm mb-10">Independent verification of prominent wallet security claims</p>
+
+  <div class="space-y-4">
+    <div class="card-premium p-6 fact-check-ok">
+      <div class="flex items-start gap-4">
+        <div class="w-10 h-10 rounded-xl bg-emerald-100 flex items-center justify-center flex-shrink-0 mt-0.5">
+          <i data-lucide="check-circle-2" class="w-5 h-5 text-emerald-600"></i>
+        </div>
+        <div>
+          <p class="font-semibold text-navy-900 text-sm">COLDCARD air-gapped operation</p>
+          <p class="text-sm text-gray-500 mt-1">Claim: "Never connects to Internet like Ledger or Trezor"</p>
+          <div class="mt-3 bg-emerald-50 rounded-lg p-3 border border-emerald-100">
+            <p class="text-sm text-emerald-800">✓ <strong>Verified:</strong> COLDCARD uses SD card / QR codes for fully offline signing; no USB data transfer required. Confirmed via firmware analysis and hardware teardown documentation.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card-premium p-6 fact-check-warn">
+      <div class="flex items-start gap-4">
+        <div class="w-10 h-10 rounded-xl bg-amber-100 flex items-center justify-center flex-shrink-0 mt-0.5">
+          <i data-lucide="alert-circle" class="w-5 h-5 text-amber-600"></i>
+        </div>
+        <div>
+          <p class="font-semibold text-navy-900 text-sm">SafePal S1 "air-gapped by default"</p>
+          <p class="text-sm text-gray-500 mt-1">Claim: "Offers air-gapped security by default"</p>
+          <div class="mt-3 bg-amber-50 rounded-lg p-3 border border-amber-100">
+            <p class="text-sm text-amber-800">⚠ <strong>Context needed:</strong> Air-gapped mode requires manual setup via QR codes; USB / Bluetooth connections are enabled by default and must be explicitly disabled. Claim is technically possible but misleading as stated.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card-premium p-6 fact-check-error">
+      <div class="flex items-start gap-4">
+        <div class="w-10 h-10 rounded-xl bg-red-100 flex items-center justify-center flex-shrink-0 mt-0.5">
+          <i data-lucide="x-circle" class="w-5 h-5 text-red-600"></i>
+        </div>
+        <div>
+          <p class="font-semibold text-navy-900 text-sm">"Best Wallet – Score: 10/10"</p>
+          <p class="text-sm text-gray-500 mt-1">Claim: Perfect score with minimal criticism</p>
+          <div class="mt-3 bg-red-50 rounded-lg p-3 border border-red-100">
+            <p class="text-sm text-red-800">✗ <strong>Issue:</strong> No independent audit documentation provided; wallet is primary affiliate partner on the reviewing site; scoring methodology is not reproducible. This constitutes a conflict of interest, not a legitimate security assessment.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card-premium p-6 fact-check-ok">
+      <div class="flex items-start gap-4">
+        <div class="w-10 h-10 rounded-xl bg-emerald-100 flex items-center justify-center flex-shrink-0 mt-0.5">
+          <i data-lucide="check-circle-2" class="w-5 h-5 text-emerald-600"></i>
+        </div>
+        <div>
+          <p class="font-semibold text-navy-900 text-sm">Zengo MPC security model</p>
+          <p class="text-sm text-gray-500 mt-1">Claim: "MPC cryptography replaces private keys and seed phrases"</p>
+          <div class="mt-3 bg-emerald-50 rounded-lg p-3 border border-emerald-100">
+            <p class="text-sm text-emerald-800">✓ <strong>Verified:</strong> Zengo uses threshold signatures (tss) with key shares distributed across user device and Zengo servers. No traditional seed phrase is generated or stored. Confirmed via published whitepaper and third-party analysis.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card-premium p-6 fact-check-warn">
+      <div class="flex items-start gap-4">
+        <div class="w-10 h-10 rounded-xl bg-amber-100 flex items-center justify-center flex-shrink-0 mt-0.5">
+          <i data-lucide="alert-circle" class="w-5 h-5 text-amber-600"></i>
+        </div>
+        <div>
+          <p class="font-semibold text-navy-900 text-sm">Tangem "unhackable" claim</p>
+          <p class="text-sm text-gray-500 mt-1">Claim: "Physically unhackable card"</p>
+          <div class="mt-3 bg-amber-50 rounded-lg p-3 border border-amber-100">
+            <p class="text-sm text-amber-800">⚠ <strong>Misleading:</strong> While the secure element (EAL6+ rated) provides strong hardware protection, no system is "unhackable." Side-channel attacks, firmware vulnerabilities, and supply chain compromises remain theoretical vectors. Kudelski audit confirmed strong—but not absolute—security.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- DECISION FRAMEWORK -->
+<section class="max-w-6xl mx-auto px-6 pb-16">
+  <div class="flex items-center gap-3 mb-8">
+    <span class="section-label">06</span>
+    <div class="divider-gold flex-1"></div>
+    <span class="section-label">Wallet Selection Framework</span>
+    <div class="divider-gold flex-1"></div>
+  </div>
+
+  <div class="grid md:grid-cols-3 gap-6">
+    <div class="card-premium p-7 relative overflow-hidden">
+      <div class="absolute top-0 left-0 right-0 h-0.5 bg-gradient-to-r from-emerald-500 to-emerald-300"></div>
+      <div class="flex items-center gap-2 mb-5">
+        <i data-lucide="shield" class="w-5 h-5 text-emerald-600"></i>
+        <h3 class="font-semibold text-emerald-700">Maximum Security</h3>
+      </div>
+      <p class="text-xs text-gray-400 uppercase tracking-wider font-semibold mb-4">Long-term HODL · Large holdings</p>
+      <div class="space-y-3 text-sm">
+        <div class="flex items-center gap-3 p-3 bg-emerald-50/80 rounded-xl border border-emerald-100">
+          <span class="text-emerald-600 font-bold text-xs">1st</span>
+          <div>
+            <p class="font-semibold text-navy-900">COLDCARD Mk4</p>
+            <p class="text-xs text-gray-400">Open-source + air-gapped + multisig</p>
+          </div>
+        </div>
+        <div class="flex items-center gap-3 p-3 bg-gray-50 rounded-xl border border-gray-100">
+          <span class="text-gray-400 font-bold text-xs">2nd</span>
+          <div>
+            <p class="font-semibold text-navy-900">Blockstream Jade</p>
+            <p class="text-xs text-gray-400">Open-source + Lightning + air-gapped</p>
+          </div>
+        </div>
+        <div class="flex items-center gap-3 p-3 bg-gray-50 rounded-xl border border-gray-100">
+          <span class="text-gray-400 font-bold text-xs">3rd</span>
+          <div>
+            <p class="font-semibold text-navy-900">Cypherock X1</p>
+            <p class="text-xs text-gray-400">EAL6+ chip + no seed phrase</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card-premium p-7 relative overflow-hidden">
+      <div class="absolute top-0 left-0 right-0 h-0.5 bg-gradient-to-r from-blue-500 to-blue-300"></div>
+      <div class="flex items-center gap-2 mb-5">
+        <i data-lucide="repeat" class="w-5 h-5 text-blue-600"></i>
+        <h3 class="font-semibold text-blue-700">Balanced Use</h3>
+      </div>
+      <p class="text-xs text-gray-400 uppercase tracking-wider font-semibold mb-4">Regular transactions · Moderate holdings</p>
+      <div class="space-y-3 text-sm">
+        <div class="flex items-center gap-3 p-3 bg-blue-50/80 rounded-xl border border-blue-100">
+          <span class="text-blue-600 font-bold text-xs">1st</span>
+          <div>
+            <p class="font-semibold text-navy-900">BlueWallet</p>
+            <p class="text-xs text-gray-400">Open-source + Lightning + multisig</p>
+          </div>
+        </div>
+        <div class="flex items-center gap-3 p-3 bg-gray-50 rounded-xl border border-gray-100">
+          <span class="text-gray-400 font-bold text-xs">2nd</span>
+          <div>
+            <p class="font-semibold text-navy-900">Tangem Wallet 2.0</p>
+            <p class="text-xs text-gray-400">Audited SE + multi-chain + portable</p>
+          </div>
+        </div>
+        <div class="flex items-center gap-3 p-3 bg-gray-50 rounded-xl border border-gray-100">
+          <span class="text-gray-400 font-bold text-xs">3rd</span>
+          <div>
+            <p class="font-semibold text-navy-900">Zengo</p>
+            <p class="text-xs text-gray-400">No seed phrase + MPC model</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card-premium p-7 relative overflow-hidden">
+      <div class="absolute top-0 left-0 right-0 h-0.5 bg-gradient-to-r from-amber-500 to-amber-300"></div>
+      <div class="flex items-center gap-2 mb-5">
+        <i data-lucide="zap" class="w-5 h-5 text-amber-600"></i>
+        <h3 class="font-semibold text-amber-700">Convenience First</h3>
+      </div>
+      <p class="text-xs text-gray-400 uppercase tracking-wider font-semibold mb-4">DeFi, trading, small balances only</p>
+      <div class="space-y-3 text-sm">
+        <div class="flex items-center gap-3 p-3 bg-amber-50/80 rounded-xl border border-amber-100">
+          <span class="text-amber-600 font-bold text-xs">1st</span>
+          <div>
+            <p class="font-semibold text-navy-900">Trust Wallet</p>
+            <p class="text-xs text-gray-400">Audited + 100+ chains + dApp browser</p>
+          </div>
+        </div>
+        <div class="flex items-center gap-3 p-3 bg-gray-50 rounded-xl border border-gray-100">
+          <span class="text-gray-400 font-bold text-xs">2nd</span>
+          <div>
+            <p class="font-semibold text-navy-900">OKX Wallet</p>
+            <p class="text-xs text-gray-400">130+ chains + exchange integration</p>
+          </div>
+        </div>
+        <div class="flex items-center gap-3 p-3 bg-red-50/80 rounded-xl border border-red-100">
+          <span class="text-red-500 font-bold text-xs">⚠</span>
+          <div>
+            <p class="font-semibold text-navy-900">Binance Wallet</p>
+            <p class="text-xs text-red-400">Custodial — not recommended for self-custody</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- KEY TAKEAWAYS -->
+<section class="max-w-6xl mx-auto px-6 pb-16">
+  <div class="bg-navy-900 rounded-3xl p-10 md:p-12 text-white relative overflow-hidden">
+    <div class="absolute top-0 left-0 w-64 h-64 bg-gold-500/10 rounded-full blur-3xl -translate-x-1/2 -translate-y-1/2"></div>
+    <div class="absolute bottom-0 right-0 w-48 h-48 bg-blue-500/10 rounded-full blur-3xl translate-x-1/2 translate-y-1/2"></div>
+    <div class="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-gold-500/30 to-transparent"></div>
+    
+    <div class="relative">
+      <div class="text-center mb-10">
+        <p class="text-[11px] text-gold-400 uppercase tracking-[0.2em] font-semibold mb-3">Summary</p>
+        <h2 class="text-2xl md:text-3xl font-serif font-semibold">Key Technical Takeaways</h2>
+      </div>
+      
+      <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-4 mb-10">
+        <div class="glass rounded-xl p-5">
+          <div class="w-8 h-8 rounded-lg bg-emerald-500/20 flex items-center justify-center mb-3">
+            <i data-lucide="shield-check" class="w-4 h-4 text-emerald-400"></i>
+          </div>
+          <p class="text-[11px] text-gold-400 uppercase tracking-wider font-semibold mb-2">Security Priority</p>
+          <p class="text-sm text-navy-300 leading-relaxed">Cold, non-custodial wallets with verified audits offer strongest protection for long-term holdings</p>
+        </div>
+        <div class="glass rounded-xl p-5">
+          <div class="w-8 h-8 rounded-lg bg-amber-500/20 flex items-center justify-center mb-3">
+            <i data-lucide="scale" class="w-4 h-4 text-amber-400"></i>
+          </div>
+          <p class="text-[11px] text-gold-400 uppercase tracking-wider font-semibold mb-2">Convenience Tradeoff</p>
+          <p class="text-sm text-navy-300 leading-relaxed">Hot wallets enable frequent use but increase exposure; use minimal balances for daily transactions</p>
+        </div>
+        <div class="glass rounded-xl p-5">
+          <div class="w-8 h-8 rounded-lg bg-purple-500/20 flex items-center justify-center mb-3">
+            <i data-lucide="zap" class="w-4 h-4 text-purple-400"></i>
+          </div>
+          <p class="text-[11px] text-gold-400 uppercase tracking-wider font-semibold mb-2">Lightning Reality</p>
+          <p class="text-sm text-navy-300 leading-relaxed">True self-custody Lightning requires node management; most "LN wallets" use custodial channels</p>
+        </div>
+        <div class="glass rounded-xl p-5">
+          <div class="w-8 h-8 rounded-lg bg-blue-500/20 flex items-center justify-center mb-3">
+            <i data-lucide="search" class="w-4 h-4 text-blue-400"></i>
+          </div>
+          <p class="text-[11px] text-gold-400 uppercase tracking-wider font-semibold mb-2">Verification Imperative</p>
+          <p class="text-sm text-navy-300 leading-relaxed">Always confirm audit reports, open-source status, and recovery procedures before storing value</p>
+        </div>
+      </div>
+      
+      <div class="shimmer-line mb-8"></div>
+      
+      <div class="text-center">
+        <p class="text-navy-300 italic text-sm max-w-lg mx-auto leading-relaxed">"Security is a process, not a product. Wallet choice is only one layer of Bitcoin risk management."</p>
+        <p class="text-white font-semibold mt-3 text-sm">— dPrism Insights</p>
+        <p class="text-white font-semibold mt-3 text-sm"><a href="/#contact" class="text-gold-400 hover:text-gold-300">Contact Us</a></p>
+
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer class="bg-navy-950 text-gray-500 py-12 px-6 text-sm">
+  <div class="max-w-6xl mx-auto">
+    <div class="grid md:grid-cols-3 gap-10 mb-10">
+      <div>
+        <div class="flex items-center gap-2 mb-4">
+          <div class="w-7 h-7 rounded-md bg-navy-800 flex items-center justify-center">
+            <span class="text-gold-400 font-bold text-[10px] tracking-wider">dP</span>
+          </div>
+          <span class="font-semibold text-white text-sm">dPrism</span>
+        </div>
+        <p class="text-xs leading-relaxed text-gray-600">Objective technical analysis based on publicly verifiable data. No promotional relationships, affiliate partnerships, or sponsored content influence our assessments.</p>
+      </div>
+      <div>
+        <p class="font-semibold text-white text-xs uppercase tracking-wider mb-4">Data Sources</p>
+        <ul class="space-y-2 text-xs text-gray-600">
+          <li class="flex items-center gap-2"><span class="w-1 h-1 rounded-full bg-gray-700"></span>Wallet GitHub repositories & commit history</li>
+          <li class="flex items-center gap-2"><span class="w-1 h-1 rounded-full bg-gray-700"></span>Independent security audit reports (Kudelski, CertiK, Riscure)</li>
+          <li class="flex items-center gap-2"><span class="w-1 h-1 rounded-full bg-gray-700"></span>Common Criteria EAL ratings database</li>
+          <li class="flex items-center gap-2"><span class="w-1 h-1 rounded-full bg-gray-700"></span>Kraken Security Labs, Chainalysis public research</li>
+        </ul>
+      </div>
+      <div>
+        <p class="font-semibold text-white text-xs uppercase tracking-wider mb-4">Disclaimer</p>
+        <p class="text-xs text-gray-600 leading-relaxed">This analysis is for informational purposes only. Bitcoin transactions are irreversible; users bear full responsibility for key management. Not financial or security advice.</p>
+      </div>
+    </div>
+    <div class="h-px bg-gradient-to-r from-transparent via-gray-800 to-transparent mb-8"></div>
+    <div class="flex flex-col md:flex-row justify-between items-center gap-3">
+      <p class="text-xs text-gray-700">&copy; 2026 dPrism. All rights reserved.</p>
+    </div>
+  </div>
+</footer>
+
+<script>
+  lucide.createIcons();
+  
+  Chart.defaults.font.family = "'Inter', sans-serif";
+  Chart.defaults.font.size = 12;
+  Chart.defaults.color = '#94a3b8';
+
+  // Wallet Type Distribution
+  const typeCtx = document.getElementById('walletTypeChart').getContext('2d');
+  new Chart(typeCtx, {
+    type: 'doughnut',
+    data: {
+      labels: ['Cold Non-custodial', 'Hot Non-custodial', 'Hot Custodial'],
+      datasets: [{
+        data: [5, 5, 2],
+        backgroundColor: ['rgba(16,185,129,0.8)', 'rgba(245,158,11,0.8)', 'rgba(239,68,68,0.8)'],
+        borderColor: ['rgba(16,185,129,1)', 'rgba(245,158,11,1)', 'rgba(239,68,68,1)'],
+        borderWidth: 1.5,
+        hoverOffset: 6
+      }]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      plugins: {
+        legend: { display: false },
+        tooltip: {
+          backgroundColor: '#0b1224',
+          titleColor: '#e2e8f0',
+          bodyColor: '#e2e8f0',
+          borderColor: 'rgba(255,255,255,0.1)',
+          borderWidth: 1,
+          padding: 10,
+          cornerRadius: 8,
+          callbacks: { label: ctx => ctx.label + ': ' + ctx.parsed + ' wallets' }
+        }
+      },
+      cutout: '68%'
+    }
+  });
+
+  // Custom legend rendering for Wallet Type Distribution
+  const walletTypeLegend = document.getElementById('walletTypeLegend');
+  const legendLabels = [
+    { label: 'Cold Non-custodial', color: 'rgba(16,185,129,0.8)' },
+    { label: 'Hot Non-custodial', color: 'rgba(245,158,11,0.8)' },
+    { label: 'Hot Custodial', color: 'rgba(239,68,68,0.8)' }
+  ];
+  walletTypeLegend.innerHTML = legendLabels.map(l => `
+    <span class="flex items-center gap-2 text-sm">
+      <span style="display:inline-block;width:14px;height:14px;border-radius:4px;background:${l.color}"></span>
+      <span class="text-gray-600">${l.label}</span>
+    </span>
+  `).join('');
+
+  // Audit & Open Source Coverage
+  const auditCtx = document.getElementById('auditChart').getContext('2d');
+  new Chart(auditCtx, {
+    type: 'bar',
+    data: {
+      labels: ['Open Source', 'Independently Audited', 'Lightning Native', 'Multi-chain'],
+      datasets: [{
+        label: 'Wallets',
+        data: [4, 8, 3, 9],
+        backgroundColor: [
+          'rgba(212,146,42,0.7)',
+          'rgba(16,185,129,0.7)',
+          'rgba(139,92,246,0.7)',
+          'rgba(59,130,246,0.7)'
+        ],
+        borderColor: [
+          'rgba(212,146,42,1)',
+          'rgba(16,185,129,1)',
+          'rgba(139,92,246,1)',
+          'rgba(59,130,246,1)'
+        ],
+        borderWidth: 1.5,
+        borderRadius: 6,
+        borderSkipped: false,
+        barPercentage: 0.55,
+      }]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      plugins: {
+        legend: { display: false },
+        tooltip: {
+          backgroundColor: '#0b1224',
+          titleColor: '#e2e8f0',
+          bodyColor: '#e2e8f0',
+          borderColor: 'rgba(255,255,255,0.1)',
+          borderWidth: 1,
+          padding: 10,
+          cornerRadius: 8,
+          callbacks: { label: ctx => ctx.parsed.y + ' of 12 wallets' }
+        }
+      },
+      scales: {
+        y: {
+          beginAtZero: true,
+          max: 12,
+          grid: { color: 'rgba(0,0,0,0.04)', drawBorder: false },
+          border: { display: false },
+          ticks: { callback: v => v + '/12', padding: 8, stepSize: 3 }
+        },
+        x: {
+          grid: { display: false },
+          border: { display: false },
+          ticks: { padding: 8, font: { size: 11, weight: '500' } }
+        }
+      }
+    }
+  });
+</script>
+
+</body>
+</html>

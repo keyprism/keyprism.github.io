@@ -1,0 +1,467 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Crypto Exchange Traffic Analysis — April 2026 | dPrism Insights</title>
+
+  <!-- Google tag (gtag.js) -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-2G28QN91F1"></script>
+  <script src="js/gtag.js"></script>
+
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Syne:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <script src="https://unpkg.com/lucide@latest"></script>
+
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: { sans: ['Inter', 'sans-serif'], serif: ['Syne', 'sans-serif'] },
+          colors: {
+            navy: { 50:'#f0f3f9', 100:'#dce3f0', 200:'#b9c7e1', 300:'#8da3cb', 400:'#617fb3', 500:'#3d5a8a', 600:'#2c4270', 700:'#1e2f53', 800:'#141f3a', 900:'#0b1224', 950:'#060a14' },
+            mint: { 50:'#ecfdf5', 100:'#d1fae5', 200:'#a7f3d0', 300:'#6ee7b7', 400:'#34d399', 500:'#10b981', 600:'#059669', 700:'#047857', 800:'#065f46', 900:'#064e3b' }
+          }
+        }
+      }
+    }
+  </script>
+
+  <style>
+    * { -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale; }
+    body { font-family: 'Inter', sans-serif; scroll-behavior: smooth; }
+
+    .hero-gradient-green {
+      background:
+        radial-gradient(ellipse 60% 50% at 65% 25%, rgba(16,185,129,0.20) 0%, transparent 55%),
+        radial-gradient(ellipse 40% 40% at 20% 80%, rgba(5,150,105,0.12) 0%, transparent 45%),
+        linear-gradient(160deg, #030a06 0%, #061510 25%, #0a1f15 50%, #0d2920 75%, #061510 100%);
+    }
+
+    .glass { background: rgba(255,255,255,0.03); backdrop-filter: blur(20px); border: 1px solid rgba(255,255,255,0.06); }
+    .glass-green { background: rgba(16,185,129,0.06); backdrop-filter: blur(20px); border: 1px solid rgba(16,185,129,0.12); }
+
+    .card-premium {
+      background: #fff; border: 1px solid #e8ecf2; border-radius: 16px;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.04), 0 8px 32px rgba(0,0,0,0.03);
+      transition: all 0.35s cubic-bezier(0.4,0,0.2,1);
+    }
+    .card-premium:hover {
+      box-shadow: 0 2px 6px rgba(0,0,0,0.06), 0 16px 48px rgba(0,0,0,0.06);
+      transform: translateY(-3px);
+    }
+
+    .section { scroll-margin-top: 80px; }
+    .chart-wrap { position: relative; height: 300px; width: 100%; }
+
+    .nav-link { position: relative; padding: 6px 0; font-size: 13px; letter-spacing: 0.02em; }
+    .nav-link::after { content:''; position:absolute; bottom:0; left:50%; width:0; height:1.5px; background: linear-gradient(90deg, #10b981, #34d399); transition: all 0.3s; transform: translateX(-50%); }
+    .nav-link:hover::after { width:100%; }
+    .nav-link:hover { color: #10b981; }
+
+    .section-label { font-size: 11px; font-weight: 600; letter-spacing: 0.15em; text-transform: uppercase; color: #10b981; }
+    .divider-green { height: 1px; background: linear-gradient(90deg, transparent, #a7f3d0, transparent); opacity: 0.5; }
+
+    .stat-card { position: relative; overflow: hidden; }
+    .stat-card::before { content:''; position:absolute; top:0; left:0; right:0; height:2px; background: linear-gradient(90deg, transparent, #10b981, transparent); opacity:0; transition: opacity 0.3s; }
+    .stat-card:hover::before { opacity: 1; }
+
+    .text-gradient-mint { background: linear-gradient(135deg, #34d399, #10b981, #059669); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+
+    @keyframes shimmer { 0% { background-position: -200% 0; } 100% { background-position: 200% 0; } }
+    .shimmer-line { height: 1px; background: linear-gradient(90deg, transparent 0%, rgba(16,185,129,0.4) 50%, transparent 100%); background-size: 200% 100%; animation: shimmer 3s infinite linear; }
+
+    .badge { display:inline-flex; align-items:center; padding:3px 10px; border-radius:6px; font-size:10px; font-weight:600; letter-spacing:0.04em; text-transform:uppercase; }
+    .badge-green { background:#ecfdf5; color:#065f46; border:1px solid #a7f3d0; }
+    .badge-red { background:#fef2f2; color:#991b1b; border:1px solid #fecaca; }
+    .badge-amber { background:#fffbeb; color:#92400e; border:1px solid #fde68a; }
+    .badge-blue { background:#eff6ff; color:#1e40af; border:1px solid #bfdbfe; }
+
+    .data-table thead th { font-size: 11px; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; color: #64748b; background: #f8fafc; border-bottom: 2px solid #e2e8f0; padding: 14px 16px; white-space: nowrap; }
+    .data-table tbody td { padding: 14px 16px; border-bottom: 1px solid #f1f5f9; font-size: 13px; vertical-align: middle; }
+    .data-table tbody tr { transition: background 0.15s; }
+    .data-table tbody tr:hover { background: #f0fdf4; }
+
+    .exchange-logo { width: 28px; height: 28px; border-radius: 6px; object-fit: contain; background: #f1f5f9; padding: 2px; }
+
+    .highlight-row-green { background: #ecfdf5 !important; }
+    .highlight-row-red { background: #fef2f2 !important; }
+
+    @media print { .no-print { display: none !important; } body { background: white !important; } .card-premium { box-shadow: none !important; border: 1px solid #ddd !important; break-inside: avoid; } }
+    @media (max-width: 768px) { .hide-mobile { display: none; } }
+  </style>
+</head>
+<body class="bg-[#f8f9fc] text-gray-900">
+
+<!-- NAVIGATION -->
+<nav class="no-print fixed top-0 left-0 right-0 z-50 bg-white/90 backdrop-blur-xl border-b border-gray-100">
+  <div class="max-w-7xl mx-auto px-6">
+    <div class="flex items-center justify-between h-[60px]">
+      <a href="/insights.html" class="flex items-center gap-3">
+        <div class="w-8 h-8 rounded-lg bg-navy-900 flex items-center justify-center">
+          <span class="text-mint-400 font-bold text-xs tracking-wider">dp</span>
+        </div>
+        <div class="flex flex-col">
+          <span class="font-semibold text-sm text-navy-900 leading-tight">dPrism</span>
+          <span class="text-[10px] text-gray-400 tracking-wider uppercase">Insights</span>
+        </div>
+      </a>
+      <div class="hidden lg:flex items-center gap-7 text-gray-500">
+        <a href="#summary" class="nav-link">Summary</a>
+        <a href="#distribution" class="nav-link">Distribution</a>
+        <a href="#rankings" class="nav-link">Rankings</a>
+        <a href="#movers" class="nav-link">Movers</a>
+        <a href="#intelligence" class="nav-link">Intelligence</a>
+        <a href="#implications" class="nav-link">Outlook</a>
+      </div>
+      <div class="flex items-center gap-3">
+        <a href="/insights.html" class="hidden sm:inline-flex text-xs text-gray-400 hover:text-navy-900 transition-colors">Insights</a>
+        <a href="/#contact" class="text-xs font-medium text-navy-900 border border-gray-200 rounded-lg px-3 py-1.5 hover:border-mint-300 hover:text-mint-700 transition-all">Contact</a>
+      </div>
+    </div>
+  </div>
+</nav>
+
+<!-- HERO -->
+<header class="hero-gradient-green text-white pt-32 pb-20 px-6 relative overflow-hidden">
+  <div class="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-mint-500/25 to-transparent"></div>
+  <div class="max-w-6xl mx-auto relative">
+    <div class="flex items-center gap-3 mb-8">
+      <div class="shimmer-line flex-1 max-w-[60px]"></div>
+      <span class="text-[11px] font-semibold tracking-[0.2em] uppercase text-mint-300">Market Brief · SimilarWeb Data</span>
+      <div class="shimmer-line flex-1 max-w-[60px]"></div>
+    </div>
+    <div class="max-w-3xl">
+      <h1 class="text-4xl md:text-[56px] font-light leading-[1.1] mb-5 tracking-tight">
+        Crypto Exchange<br/><span class="font-serif font-semibold text-gradient-mint">Traffic Analysis</span>
+      </h1>
+      <p class="text-lg text-mint-200/60 font-light mb-1">Web traffic intelligence for institutional investors · April 2026</p>
+      <p class="text-sm text-mint-300/40">Published May 7, 2026</p>
+    </div>
+    <div class="grid grid-cols-2 md:grid-cols-4 gap-3 mt-12">
+      <div class="stat-card glass rounded-2xl p-5">
+        <p class="text-[11px] text-mint-300/60 uppercase tracking-wider mb-2">Total Market Traffic</p>
+        <p class="text-3xl font-light tracking-tight">270<span class="text-lg text-mint-400/50">M</span></p>
+        <div class="flex items-center gap-1.5 mt-2"><i data-lucide="trending-down" class="w-3.5 h-3.5 text-red-400"></i><span class="text-xs text-red-400 font-medium">12% vs March</span></div>
+      </div>
+      <div class="stat-card glass rounded-2xl p-5">
+        <p class="text-[11px] text-mint-300/60 uppercase tracking-wider mb-2">Market Leader</p>
+        <p class="text-3xl font-light tracking-tight">Binance</p>
+        <p class="text-xs text-mint-400/50 mt-2">38M visits · 14.1% share</p>
+      </div>
+      <div class="stat-card glass rounded-2xl p-5">
+        <p class="text-[11px] text-mint-300/60 uppercase tracking-wider mb-2">Top Performer</p>
+        <p class="text-3xl font-light tracking-tight text-emerald-300">BingX</p>
+        <div class="flex items-center gap-1.5 mt-2"><i data-lucide="trending-up" class="w-3.5 h-3.5 text-emerald-400"></i><span class="text-xs text-emerald-400 font-medium">+103% MoM</span></div>
+      </div>
+      <div class="stat-card glass rounded-2xl p-5">
+        <p class="text-[11px] text-mint-300/60 uppercase tracking-wider mb-2">Exchanges Tracked</p>
+        <p class="text-3xl font-light tracking-tight">20</p>
+        <p class="text-xs text-mint-400/50 mt-2">Global coverage</p>
+      </div>
+    </div>
+  </div>
+</header>
+
+<!-- EXECUTIVE SUMMARY -->
+<section id="summary" class="section max-w-6xl mx-auto px-6 pt-16 pb-12">
+  <div class="flex items-center gap-3 mb-8">
+    <span class="section-label">01</span>
+    <div class="divider-green flex-1"></div>
+    <span class="section-label">Executive Summary</span>
+    <div class="divider-green flex-1"></div>
+  </div>
+  <div class="grid md:grid-cols-2 gap-6">
+    <div class="card-premium p-7">
+      <div class="flex items-center gap-3 mb-5">
+        <div class="w-10 h-10 rounded-xl bg-mint-50 flex items-center justify-center"><i data-lucide="target" class="w-5 h-5 text-mint-600"></i></div>
+        <h3 class="font-semibold text-navy-900 text-sm">Market Contraction</h3>
+      </div>
+      <p class="text-sm text-gray-600 leading-relaxed mb-4">Cumulative web traffic to centralized cryptocurrency exchanges declined <strong class="text-navy-900">12% month-over-month</strong> in April 2026, signaling a market consolidation phase following Q1 volatility.</p>
+      <p class="text-sm text-gray-600 leading-relaxed">While aggregate traffic contracted, significant divergence emerged among platforms—highlighting shifting competitive dynamics and the growing importance of product differentiation through AI integration, TradFi access, and regulatory compliance.</p>
+    </div>
+    <div class="card-premium p-7">
+      <div class="flex items-center gap-3 mb-5">
+        <div class="w-10 h-10 rounded-xl bg-amber-50 flex items-center justify-center"><i data-lucide="radio" class="w-5 h-5 text-amber-600"></i></div>
+        <h3 class="font-semibold text-navy-900 text-sm">Key Signals</h3>
+      </div>
+      <ul class="space-y-3 text-sm">
+        <li class="flex items-start gap-3"><div class="w-5 h-5 rounded-full bg-emerald-100 flex items-center justify-center flex-shrink-0 mt-0.5"><i data-lucide="check" class="w-3 h-3 text-emerald-600"></i></div><span class="text-gray-600">Top 3 exchanges control <strong class="text-navy-900">33%</strong> of total traffic</span></li>
+        <li class="flex items-start gap-3"><div class="w-5 h-5 rounded-full bg-emerald-100 flex items-center justify-center flex-shrink-0 mt-0.5"><i data-lucide="check" class="w-3 h-3 text-emerald-600"></i></div><span class="text-gray-600">BingX emerges as growth leader <strong class="text-navy-900">(+103%)</strong></span></li>
+        <li class="flex items-start gap-3"><div class="w-5 h-5 rounded-full bg-red-100 flex items-center justify-center flex-shrink-0 mt-0.5"><i data-lucide="x" class="w-3 h-3 text-red-600"></i></div><span class="text-gray-600">MEXC experiences severe decline <strong class="text-navy-900">(-61%)</strong></span></li>
+        <li class="flex items-start gap-3"><div class="w-5 h-5 rounded-full bg-blue-100 flex items-center justify-center flex-shrink-0 mt-0.5"><i data-lucide="info" class="w-3 h-3 text-blue-600"></i></div><span class="text-gray-600">Market fragmentation accelerating</span></li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- CHARTS -->
+<section id="distribution" class="section max-w-6xl mx-auto px-6 pb-16">
+  <div class="flex items-center gap-3 mb-8">
+    <span class="section-label">02</span>
+    <div class="divider-green flex-1"></div>
+    <span class="section-label">Traffic Distribution</span>
+    <div class="divider-green flex-1"></div>
+  </div>
+  <div class="grid md:grid-cols-2 gap-6">
+    <div class="card-premium p-7">
+      <div class="flex items-center gap-3 mb-2"><i data-lucide="pie-chart" class="w-4 h-4 text-navy-500"></i><h3 class="font-semibold text-navy-900 text-sm">Market Share Distribution</h3></div>
+      <p class="text-xs text-gray-400 mb-6">April 2026 · Top 5 vs. Others</p>
+      <div class="chart-wrap mx-auto" style="max-width:320px;"><canvas id="distributionChart"></canvas></div>
+    </div>
+    <div class="card-premium p-7">
+      <div class="flex items-center gap-3 mb-2"><i data-lucide="bar-chart-3" class="w-4 h-4 text-navy-500"></i><h3 class="font-semibold text-navy-900 text-sm">Top 10 Exchanges by Visits</h3></div>
+      <p class="text-xs text-gray-400 mb-6">Millions of visits · April 2026</p>
+      <div class="chart-wrap"><canvas id="top10Chart"></canvas></div>
+    </div>
+  </div>
+</section>
+
+<!-- RANKINGS -->
+<section id="rankings" class="section max-w-6xl mx-auto px-6 pb-16">
+  <div class="flex items-center gap-3 mb-8">
+    <span class="section-label">03</span>
+    <div class="divider-green flex-1"></div>
+    <span class="section-label">Complete Rankings</span>
+    <div class="divider-green flex-1"></div>
+  </div>
+  <div class="card-premium overflow-hidden">
+    <div class="p-6 pb-0 flex items-center gap-2"><i data-lucide="trophy" class="w-4 h-4 text-navy-500"></i><h3 class="font-semibold text-navy-900 text-sm">All 20 Tracked Exchanges · April 2026</h3></div>
+    <div class="overflow-x-auto p-4">
+      <table class="w-full data-table">
+        <thead><tr><th class="text-center" style="width:50px;">#</th><th>Exchange</th><th class="text-right">Visits</th><th class="text-center">MoM</th><th>Status</th><th>Position</th></tr></thead>
+        <tbody>
+          <tr><td class="text-center font-bold text-mint-600">1</td><td><div class="flex items-center gap-3"><img src="https://www.google.com/s2/favicons?domain=binance.com&sz=32" alt="" class="exchange-logo"><span class="font-semibold text-navy-900">Binance</span></div></td><td class="text-right font-mono font-semibold">38.0M</td><td class="text-center"><span class="badge badge-red"><i data-lucide="arrow-down" class="w-3 h-3 mr-1 inline"></i>9.5%</span></td><td><span class="text-xs text-gray-500">Leader</span></td><td class="text-xs text-gray-500">Dominant liquidity; regulatory overhang</td></tr>
+          <tr><td class="text-center font-bold text-mint-600">2</td><td><div class="flex items-center gap-3"><img src="https://www.google.com/s2/favicons?domain=whitebit.com&sz=32" alt="" class="exchange-logo"><span class="font-semibold text-navy-900">WhiteBIT</span></div></td><td class="text-right font-mono font-semibold">29.0M</td><td class="text-center"><span class="badge badge-red"><i data-lucide="arrow-down" class="w-3 h-3 mr-1 inline"></i>4.7%</span></td><td><span class="text-xs text-gray-500">Stable</span></td><td class="text-xs text-gray-500">EU-focused; limited growth catalysts</td></tr>
+          <tr><td class="text-center font-bold text-mint-600">3</td><td><div class="flex items-center gap-3"><img src="https://www.google.com/s2/favicons?domain=okx.com&sz=32" alt="" class="exchange-logo"><span class="font-semibold text-navy-900">OKX</span></div></td><td class="text-right font-mono font-semibold">23.0M</td><td class="text-center"><span class="badge badge-red"><i data-lucide="arrow-down" class="w-3 h-3 mr-1 inline"></i>5.3%</span></td><td><span class="text-xs text-gray-500">Stable</span></td><td class="text-xs text-gray-500">Strong derivatives; Asia exposure</td></tr>
+          <tr><td class="text-center font-bold text-mint-600">4</td><td><div class="flex items-center gap-3"><img src="https://www.google.com/s2/favicons?domain=coinbase.com&sz=32" alt="" class="exchange-logo"><span class="font-semibold text-navy-900">Coinbase</span></div></td><td class="text-right font-mono font-semibold">22.0M</td><td class="text-center"><span class="badge badge-red"><i data-lucide="arrow-down" class="w-3 h-3 mr-1 inline"></i>8.2%</span></td><td><span class="text-xs text-gray-500">Institutional</span></td><td class="text-xs text-gray-500">U.S. gateway; ETF flow correlation</td></tr>
+          <tr class="highlight-row-green"><td class="text-center font-bold text-emerald-600">5</td><td><div class="flex items-center gap-3"><img src="https://www.google.com/s2/favicons?domain=bingx.com&sz=32" alt="" class="exchange-logo"><span class="font-semibold text-navy-900">BingX</span><span class="badge badge-green ml-1">⭐ Top Gainer</span></div></td><td class="text-right font-mono font-semibold text-emerald-700">17.0M</td><td class="text-center"><span class="badge badge-green"><i data-lucide="arrow-up" class="w-3 h-3 mr-1 inline"></i>+103%</span></td><td><strong class="text-xs text-emerald-700">Top Gainer</strong></td><td class="text-xs text-gray-600">AI-native strategy; TradFi integration</td></tr>
+          <tr><td class="text-center font-bold text-mint-600">6</td><td><div class="flex items-center gap-3"><img src="https://www.google.com/s2/favicons?domain=kucoin.com&sz=32" alt="" class="exchange-logo"><span class="font-semibold text-navy-900">KuCoin</span></div></td><td class="text-right font-mono font-semibold">16.0M</td><td class="text-center"><span class="badge badge-green"><i data-lucide="arrow-up" class="w-3 h-3 mr-1 inline"></i>+2.6%</span></td><td><span class="text-xs text-emerald-600">Growing</span></td><td class="text-xs text-gray-500">Broad asset selection; emerging markets</td></tr>
+          <tr class="highlight-row-red"><td class="text-center font-bold text-red-500">7</td><td><div class="flex items-center gap-3"><img src="https://www.google.com/s2/favicons?domain=mexc.com&sz=32" alt="" class="exchange-logo"><span class="font-semibold text-navy-900">MEXC</span><span class="badge badge-red ml-1">⚠ Decline</span></div></td><td class="text-right font-mono font-semibold text-red-600">15.0M</td><td class="text-center"><span class="badge badge-red"><i data-lucide="arrow-down" class="w-3 h-3 mr-1 inline"></i>61%</span></td><td><strong class="text-xs text-red-600">Major Decline</strong></td><td class="text-xs text-gray-600">Regulatory/liquidity concerns</td></tr>
+          <tr><td class="text-center font-bold text-mint-600">8</td><td><div class="flex items-center gap-3"><img src="https://www.google.com/s2/favicons?domain=gate.io&sz=32" alt="" class="exchange-logo"><span class="font-semibold text-navy-900">Gate.io</span></div></td><td class="text-right font-mono font-semibold">14.0M</td><td class="text-center"><span class="badge badge-red"><i data-lucide="arrow-down" class="w-3 h-3 mr-1 inline"></i>0.8%</span></td><td><span class="text-xs text-gray-500">Stable</span></td><td class="text-xs text-gray-500">Mid-tier; limited differentiation</td></tr>
+          <tr><td class="text-center font-bold text-mint-600">9</td><td><div class="flex items-center gap-3"><img src="https://www.google.com/s2/favicons?domain=bitmart.com&sz=32" alt="" class="exchange-logo"><span class="font-semibold text-navy-900">BitMart</span></div></td><td class="text-right font-mono font-semibold">11.0M</td><td class="text-center"><span class="badge badge-red"><i data-lucide="arrow-down" class="w-3 h-3 mr-1 inline"></i>8.7%</span></td><td><span class="text-xs text-red-500">Declining</span></td><td class="text-xs text-gray-500">U.S. regulatory scrutiny</td></tr>
+          <tr><td class="text-center font-bold text-mint-600">10</td><td><div class="flex items-center gap-3"><img src="https://www.google.com/s2/favicons?domain=bybit.com&sz=32" alt="" class="exchange-logo"><span class="font-semibold text-navy-900">Bybit</span></div></td><td class="text-right font-mono font-semibold">11.0M</td><td class="text-center"><span class="badge badge-red"><i data-lucide="arrow-down" class="w-3 h-3 mr-1 inline"></i>11%</span></td><td><span class="text-xs text-red-500">Declining</span></td><td class="text-xs text-gray-500">Derivatives focus; retail fatigue</td></tr>
+          <tr><td class="text-center font-bold text-mint-600">11</td><td><div class="flex items-center gap-3"><img src="https://www.google.com/s2/favicons?domain=bitget.com&sz=32" alt="" class="exchange-logo"><span class="font-semibold text-navy-900">Bitget</span></div></td><td class="text-right font-mono font-semibold">9.9M</td><td class="text-center"><span class="badge badge-red"><i data-lucide="arrow-down" class="w-3 h-3 mr-1 inline"></i>47%</span></td><td><span class="text-xs text-red-500">Sharp Decline</span></td><td class="text-xs text-gray-500">Copy trading platform; competition</td></tr>
+          <tr><td class="text-center font-bold text-mint-600">12</td><td><div class="flex items-center gap-3"><img src="https://www.google.com/s2/favicons?domain=bitpanda.com&sz=32" alt="" class="exchange-logo"><span class="font-semibold text-navy-900">Bitpanda</span></div></td><td class="text-right font-mono font-semibold">9.6M</td><td class="text-center"><span class="badge badge-red"><i data-lucide="arrow-down" class="w-3 h-3 mr-1 inline"></i>3.4%</span></td><td><span class="text-xs text-gray-500">Stable</span></td><td class="text-xs text-gray-500">European compliance leader</td></tr>
+          <tr><td class="text-center font-bold text-mint-600">13</td><td><div class="flex items-center gap-3"><img src="https://www.google.com/s2/favicons?domain=kraken.com&sz=32" alt="" class="exchange-logo"><span class="font-semibold text-navy-900">Kraken</span></div></td><td class="text-right font-mono font-semibold">6.5M</td><td class="text-center"><span class="badge badge-red"><i data-lucide="arrow-down" class="w-3 h-3 mr-1 inline"></i>5.6%</span></td><td><span class="text-xs text-gray-500">Stable</span></td><td class="text-xs text-gray-500">Institutional-grade security</td></tr>
+          <tr><td class="text-center font-bold text-mint-600">14</td><td><div class="flex items-center gap-3"><img src="https://www.google.com/s2/favicons?domain=upbit.com&sz=32" alt="" class="exchange-logo"><span class="font-semibold text-navy-900">Upbit</span></div></td><td class="text-right font-mono font-semibold">5.7M</td><td class="text-center"><span class="badge badge-red"><i data-lucide="arrow-down" class="w-3 h-3 mr-1 inline"></i>15%</span></td><td><span class="text-xs text-gray-500">Regional</span></td><td class="text-xs text-gray-500">South Korea market leader</td></tr>
+          <tr><td class="text-center font-bold text-mint-600">15</td><td><div class="flex items-center gap-3"><img src="https://www.google.com/s2/favicons?domain=hyperliquid.xyz&sz=32" alt="" class="exchange-logo"><span class="font-semibold text-navy-900">Hyperliquid</span></div></td><td class="text-right font-mono font-semibold">5.4M</td><td class="text-center"><span class="badge badge-green"><i data-lucide="arrow-up" class="w-3 h-3 mr-1 inline"></i>+5.5%</span></td><td><span class="text-xs text-emerald-600">Growing</span></td><td class="text-xs text-gray-500">DEX aggregator; DeFi focus</td></tr>
+          <tr><td class="text-center font-bold text-mint-600">16</td><td><div class="flex items-center gap-3"><img src="https://www.google.com/s2/favicons?domain=jupiter.exchange&sz=32" alt="" class="exchange-logo"><span class="font-semibold text-navy-900">Jupiter</span></div></td><td class="text-right font-mono font-semibold">5.1M</td><td class="text-center"><span class="badge badge-red"><i data-lucide="arrow-down" class="w-3 h-3 mr-1 inline"></i>11%</span></td><td><span class="text-xs text-gray-500">DEX</span></td><td class="text-xs text-gray-500">Solana DEX aggregator</td></tr>
+          <tr><td class="text-center font-bold text-mint-600">17</td><td><div class="flex items-center gap-3"><img src="https://www.google.com/s2/favicons?domain=bithumb.com&sz=32" alt="" class="exchange-logo"><span class="font-semibold text-navy-900">Bithumb</span></div></td><td class="text-right font-mono font-semibold">4.3M</td><td class="text-center"><span class="badge badge-red"><i data-lucide="arrow-down" class="w-3 h-3 mr-1 inline"></i>15%</span></td><td><span class="text-xs text-gray-500">Regional</span></td><td class="text-xs text-gray-500">South Korean exchange</td></tr>
+          <tr><td class="text-center font-bold text-mint-600">18</td><td><div class="flex items-center gap-3"><img src="https://www.google.com/s2/favicons?domain=crypto.com&sz=32" alt="" class="exchange-logo"><span class="font-semibold text-navy-900">Crypto.com</span></div></td><td class="text-right font-mono font-semibold">3.1M</td><td class="text-center"><span class="badge badge-red"><i data-lucide="arrow-down" class="w-3 h-3 mr-1 inline"></i>8.5%</span></td><td><span class="text-xs text-red-500">Declining</span></td><td class="text-xs text-gray-500">Consumer-focused; card program</td></tr>
+          <tr><td class="text-center font-bold text-mint-600">19</td><td><div class="flex items-center gap-3"><img src="https://www.google.com/s2/favicons?domain=gemini.com&sz=32" alt="" class="exchange-logo"><span class="font-semibold text-navy-900">Gemini</span></div></td><td class="text-right font-mono font-semibold">2.5M</td><td class="text-center"><span class="badge badge-red"><i data-lucide="arrow-down" class="w-3 h-3 mr-1 inline"></i>4.0%</span></td><td><span class="text-xs text-gray-500">Stable</span></td><td class="text-xs text-gray-500">U.S. regulated; institutional</td></tr>
+          <tr><td class="text-center font-bold text-mint-600">20</td><td><div class="flex items-center gap-3"><img src="https://www.google.com/s2/favicons?domain=bitflyer.com&sz=32" alt="" class="exchange-logo"><span class="font-semibold text-navy-900">bitFlyer</span></div></td><td class="text-right font-mono font-semibold">2.2M</td><td class="text-center"><span class="badge badge-red"><i data-lucide="arrow-down" class="w-3 h-3 mr-1 inline"></i>20%</span></td><td><span class="text-xs text-red-500">Regional</span></td><td class="text-xs text-gray-500">Japan-focused exchange</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="px-6 py-4 bg-gray-50/80 border-t border-gray-100">
+      <p class="text-[11px] text-gray-400"><strong class="text-gray-500">Notes:</strong> SimilarWeb estimated visits (desktop + mobile web). Excludes app-only traffic and OTC/DEX volume. MoM = month-over-month vs March 2026.</p>
+    </div>
+  </div>
+</section>
+
+<!-- TOP MOVERS -->
+<section id="movers" class="section max-w-6xl mx-auto px-6 pb-16">
+  <div class="flex items-center gap-3 mb-8">
+    <span class="section-label">04</span>
+    <div class="divider-green flex-1"></div>
+    <span class="section-label">Top Movers</span>
+    <div class="divider-green flex-1"></div>
+  </div>
+  <div class="grid md:grid-cols-2 gap-6">
+    <div class="card-premium p-7 relative overflow-hidden">
+      <div class="absolute top-0 left-0 right-0 h-0.5 bg-gradient-to-r from-emerald-500 to-emerald-300"></div>
+      <div class="flex items-center gap-3 mb-6"><div class="w-10 h-10 rounded-xl bg-emerald-100 flex items-center justify-center"><i data-lucide="rocket" class="w-5 h-5 text-emerald-600"></i></div><h3 class="font-semibold text-emerald-700 text-sm">Top Gainers</h3></div>
+      <div class="space-y-3">
+        <div class="flex items-center justify-between p-4 bg-emerald-50/80 rounded-xl border border-emerald-100"><div class="flex items-center gap-3"><div class="w-8 h-8 rounded-full bg-emerald-500 text-white flex items-center justify-center text-xs font-bold">1</div><div class="flex items-center gap-2"><img src="https://www.google.com/s2/favicons?domain=bingx.com&sz=32" alt="" class="exchange-logo"><span class="font-semibold text-sm text-navy-900">BingX</span></div></div><span class="font-bold text-emerald-600 font-mono">+103%</span></div>
+        <div class="flex items-center justify-between p-4 bg-gray-50 rounded-xl"><div class="flex items-center gap-3"><div class="w-8 h-8 rounded-full bg-emerald-100 text-emerald-700 flex items-center justify-center text-xs font-bold">2</div><div class="flex items-center gap-2"><img src="https://www.google.com/s2/favicons?domain=hyperliquid.xyz&sz=32" alt="" class="exchange-logo"><span class="font-medium text-sm text-navy-900">Hyperliquid</span></div></div><span class="font-bold text-emerald-600 font-mono">+5.5%</span></div>
+        <div class="flex items-center justify-between p-4 bg-gray-50 rounded-xl"><div class="flex items-center gap-3"><div class="w-8 h-8 rounded-full bg-emerald-100 text-emerald-700 flex items-center justify-center text-xs font-bold">3</div><div class="flex items-center gap-2"><img src="https://www.google.com/s2/favicons?domain=kucoin.com&sz=32" alt="" class="exchange-logo"><span class="font-medium text-sm text-navy-900">KuCoin</span></div></div><span class="font-bold text-emerald-600 font-mono">+2.6%</span></div>
+      </div>
+    </div>
+    <div class="card-premium p-7 relative overflow-hidden">
+      <div class="absolute top-0 left-0 right-0 h-0.5 bg-gradient-to-r from-red-500 to-red-300"></div>
+      <div class="flex items-center gap-3 mb-6"><div class="w-10 h-10 rounded-xl bg-red-100 flex items-center justify-center"><i data-lucide="trending-down" class="w-5 h-5 text-red-600"></i></div><h3 class="font-semibold text-red-700 text-sm">Top Decliners</h3></div>
+      <div class="space-y-3">
+        <div class="flex items-center justify-between p-4 bg-red-50/80 rounded-xl border border-red-100"><div class="flex items-center gap-3"><div class="w-8 h-8 rounded-full bg-red-500 text-white flex items-center justify-center text-xs font-bold">1</div><div class="flex items-center gap-2"><img src="https://www.google.com/s2/favicons?domain=mexc.com&sz=32" alt="" class="exchange-logo"><span class="font-semibold text-sm text-navy-900">MEXC</span></div></div><span class="font-bold text-red-600 font-mono">-61%</span></div>
+        <div class="flex items-center justify-between p-4 bg-gray-50 rounded-xl"><div class="flex items-center gap-3"><div class="w-8 h-8 rounded-full bg-red-100 text-red-700 flex items-center justify-center text-xs font-bold">2</div><div class="flex items-center gap-2"><img src="https://www.google.com/s2/favicons?domain=bitget.com&sz=32" alt="" class="exchange-logo"><span class="font-medium text-sm text-navy-900">Bitget</span></div></div><span class="font-bold text-red-600 font-mono">-47%</span></div>
+        <div class="flex items-center justify-between p-4 bg-gray-50 rounded-xl"><div class="flex items-center gap-3"><div class="w-8 h-8 rounded-full bg-red-100 text-red-700 flex items-center justify-center text-xs font-bold">3</div><div class="flex items-center gap-2"><img src="https://www.google.com/s2/favicons?domain=bitflyer.com&sz=32" alt="" class="exchange-logo"><span class="font-medium text-sm text-navy-900">bitFlyer</span></div></div><span class="font-bold text-red-600 font-mono">-20%</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- MARKET INTELLIGENCE -->
+<section id="intelligence" class="section max-w-6xl mx-auto px-6 pb-16">
+  <div class="flex items-center gap-3 mb-8">
+    <span class="section-label">05</span>
+    <div class="divider-green flex-1"></div>
+    <span class="section-label">Market Intelligence</span>
+    <div class="divider-green flex-1"></div>
+  </div>
+  <div class="grid md:grid-cols-2 gap-6">
+    <div class="card-premium p-7 relative overflow-hidden">
+      <div class="absolute top-0 left-0 w-1 h-full bg-emerald-500 rounded-r"></div>
+      <div class="pl-4">
+        <div class="w-10 h-10 rounded-xl bg-emerald-100 flex items-center justify-center mb-4"><i data-lucide="brain" class="w-5 h-5 text-emerald-600"></i></div>
+        <h3 class="font-semibold text-navy-900 mb-2">AI-Native Platforms Surge</h3>
+        <p class="text-sm text-gray-500 leading-relaxed">BingX's exceptional +103% growth demonstrates the market's appetite for AI-powered trading tools and TradFi integration. The platform's launch of 100+ traditional assets and AI suite (5M+ users) signals a new competitive paradigm.</p>
+      </div>
+    </div>
+    <div class="card-premium p-7 relative overflow-hidden">
+      <div class="absolute top-0 left-0 w-1 h-full bg-amber-500 rounded-r"></div>
+      <div class="pl-4">
+        <div class="w-10 h-10 rounded-xl bg-amber-100 flex items-center justify-center mb-4"><i data-lucide="alert-triangle" class="w-5 h-5 text-amber-600"></i></div>
+        <h3 class="font-semibold text-navy-900 mb-2">Mid-Tier Exchange Stress</h3>
+        <p class="text-sm text-gray-500 leading-relaxed">MEXC's dramatic -61% decline and Bitget's -47% drop highlight regulatory and liquidity challenges facing mid-tier platforms without clear compliance frameworks or differentiated value propositions.</p>
+      </div>
+    </div>
+    <div class="card-premium p-7 relative overflow-hidden">
+      <div class="absolute top-0 left-0 w-1 h-full bg-blue-500 rounded-r"></div>
+      <div class="pl-4">
+        <div class="w-10 h-10 rounded-xl bg-blue-100 flex items-center justify-center mb-4"><i data-lucide="shield-check" class="w-5 h-5 text-blue-600"></i></div>
+        <h3 class="font-semibold text-navy-900 mb-2">Regulatory Premium</h3>
+        <p class="text-sm text-gray-500 leading-relaxed">Coinbase, Kraken, and Bitpanda maintain stable traffic despite market contraction, validating the institutional preference for regulated venues with robust compliance infrastructure.</p>
+      </div>
+    </div>
+    <div class="card-premium p-7 relative overflow-hidden">
+      <div class="absolute top-0 left-0 w-1 h-full bg-red-500 rounded-r"></div>
+      <div class="pl-4">
+        <div class="w-10 h-10 rounded-xl bg-red-100 flex items-center justify-center mb-4"><i data-lucide="minimize-2" class="w-5 h-5 text-red-600"></i></div>
+        <h3 class="font-semibold text-navy-900 mb-2">Market Consolidation</h3>
+        <p class="text-sm text-gray-500 leading-relaxed">Overall -12% traffic decline reflects Bitcoin's consolidation near $90K-$95K, reduced retail speculation post-Q1 tax events, and institutional migration to OTC desks and ETF wrappers.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- INVESTMENT IMPLICATIONS -->
+<section id="implications" class="section hero-gradient-green text-white py-16 px-6 relative overflow-hidden">
+  <div class="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-mint-500/20 to-transparent"></div>
+  <div class="absolute bottom-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-mint-500/10 to-transparent"></div>
+  <div class="max-w-6xl mx-auto relative">
+    <div class="flex items-center gap-3 mb-3">
+      <span class="text-[11px] font-semibold tracking-[0.2em] uppercase text-mint-300">06</span>
+      <div class="shimmer-line flex-1 max-w-[40px]"></div>
+      <span class="text-[11px] font-semibold tracking-[0.2em] uppercase text-mint-300">Investment Implications</span>
+      <div class="shimmer-line flex-1 max-w-[40px]"></div>
+    </div>
+    <div class="grid md:grid-cols-2 gap-6 mt-10">
+      <div class="glass rounded-2xl p-7 relative overflow-hidden">
+        <div class="absolute top-0 left-0 right-0 h-0.5 bg-gradient-to-r from-emerald-500 to-emerald-300"></div>
+        <div class="flex items-center gap-3 mb-6"><div class="w-10 h-10 rounded-xl bg-emerald-500/20 flex items-center justify-center"><i data-lucide="trending-up" class="w-5 h-5 text-emerald-400"></i></div><h3 class="font-semibold text-emerald-300 text-sm">Opportunities</h3></div>
+        <ul class="space-y-3 text-sm text-gray-300">
+          <li class="flex items-start gap-3"><div class="w-5 h-5 rounded-full bg-emerald-500/20 flex items-center justify-center flex-shrink-0 mt-0.5"><i data-lucide="check" class="w-3 h-3 text-emerald-400"></i></div><span><strong class="text-white">Product-Led Growth:</strong> Platforms with AI, TradFi integration capturing share</span></li>
+          <li class="flex items-start gap-3"><div class="w-5 h-5 rounded-full bg-emerald-500/20 flex items-center justify-center flex-shrink-0 mt-0.5"><i data-lucide="check" class="w-3 h-3 text-emerald-400"></i></div><span><strong class="text-white">Institutional Infra:</strong> Custody, reporting, API suites for ETF/RWA growth</span></li>
+          <li class="flex items-start gap-3"><div class="w-5 h-5 rounded-full bg-emerald-500/20 flex items-center justify-center flex-shrink-0 mt-0.5"><i data-lucide="check" class="w-3 h-3 text-emerald-400"></i></div><span><strong class="text-white">Emerging Markets:</strong> LATAM/SEA platforms benefit from currency instability</span></li>
+          <li class="flex items-start gap-3"><div class="w-5 h-5 rounded-full bg-emerald-500/20 flex items-center justify-center flex-shrink-0 mt-0.5"><i data-lucide="check" class="w-3 h-3 text-emerald-400"></i></div><span><strong class="text-white">Compliance Leaders:</strong> MiCA/SEC-aligned exchanges attract institutional flows</span></li>
+        </ul>
+      </div>
+      <div class="glass rounded-2xl p-7 relative overflow-hidden">
+        <div class="absolute top-0 left-0 right-0 h-0.5 bg-gradient-to-r from-red-500 to-red-300"></div>
+        <div class="flex items-center gap-3 mb-6"><div class="w-10 h-10 rounded-xl bg-red-500/20 flex items-center justify-center"><i data-lucide="alert-circle" class="w-5 h-5 text-red-400"></i></div><h3 class="font-semibold text-red-300 text-sm">Risk Factors</h3></div>
+        <ul class="space-y-3 text-sm text-gray-300">
+          <li class="flex items-start gap-3"><div class="w-5 h-5 rounded-full bg-red-500/20 flex items-center justify-center flex-shrink-0 mt-0.5"><i data-lucide="x" class="w-3 h-3 text-red-400"></i></div><span><strong class="text-white">Regulatory Enforcement:</strong> Non-compliant exchanges face traffic attrition</span></li>
+          <li class="flex items-start gap-3"><div class="w-5 h-5 rounded-full bg-red-500/20 flex items-center justify-center flex-shrink-0 mt-0.5"><i data-lucide="x" class="w-3 h-3 text-red-400"></i></div><span><strong class="text-white">Liquidity Fragmentation:</strong> Declining traffic reduces order book depth</span></li>
+          <li class="flex items-start gap-3"><div class="w-5 h-5 rounded-full bg-red-500/20 flex items-center justify-center flex-shrink-0 mt-0.5"><i data-lucide="x" class="w-3 h-3 text-red-400"></i></div><span><strong class="text-white">AI Hype Cycle:</strong> Rapid growth warrants retention scrutiny</span></li>
+          <li class="flex items-start gap-3"><div class="w-5 h-5 rounded-full bg-red-500/20 flex items-center justify-center flex-shrink-0 mt-0.5"><i data-lucide="x" class="w-3 h-3 text-red-400"></i></div><span><strong class="text-white">Concentration Risk:</strong> Top 3 control 33% of traffic; systemic risk</span></li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- Methodology -->
+    <div class="glass-green rounded-2xl p-7 mt-8">
+      <div class="flex items-center gap-2 mb-5"><i data-lucide="info" class="w-4 h-4 text-mint-300"></i><h4 class="font-semibold text-mint-200 text-sm">Methodology & Data Sources</h4></div>
+      <div class="grid md:grid-cols-3 gap-6 text-sm text-gray-300">
+        <div><p class="text-[11px] text-mint-400 uppercase tracking-wider font-semibold mb-2">Traffic Data</p><p class="text-xs leading-relaxed">Source: SimilarWeb estimated visits (desktop + mobile web). Excludes app-only traffic and OTC/DEX volume.</p></div>
+        <div><p class="text-[11px] text-mint-400 uppercase tracking-wider font-semibold mb-2">Timeframe</p><p class="text-xs leading-relaxed">April 1–30, 2026 vs March 1–31, 2026. Month-over-month percentage change calculations.</p></div>
+        <div><p class="text-[11px] text-mint-400 uppercase tracking-wider font-semibold mb-2">Coverage</p><p class="text-xs leading-relaxed">20 largest centralized exchanges by estimated traffic. Global coverage across major markets.</p></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- KEY TAKEAWAYS -->
+<section class="max-w-6xl mx-auto px-6 pb-16 mt-16">
+  <div class="bg-navy-900 rounded-3xl p-10 md:p-12 text-white relative overflow-hidden">
+    <div class="absolute top-0 left-0 w-64 h-64 bg-mint-500/10 rounded-full blur-3xl -translate-x-1/2 -translate-y-1/2"></div>
+    <div class="absolute bottom-0 right-0 w-48 h-48 bg-mint-500/8 rounded-full blur-3xl translate-x-1/2 translate-y-1/2"></div>
+    <div class="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-mint-500/30 to-transparent"></div>
+    <div class="relative">
+      <div class="text-center mb-10">
+        <p class="text-[11px] text-mint-400 uppercase tracking-[0.2em] font-semibold mb-3">Summary</p>
+        <h2 class="text-2xl md:text-3xl font-serif font-semibold">Key Takeaways</h2>
+      </div>
+      <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-4 mb-10">
+        <div class="glass rounded-xl p-5"><div class="w-8 h-8 rounded-lg bg-red-500/20 flex items-center justify-center mb-3"><i data-lucide="trending-down" class="w-4 h-4 text-red-400"></i></div><p class="text-[11px] text-mint-400 uppercase tracking-wider font-semibold mb-2">Market Contraction</p><p class="text-sm text-navy-300 leading-relaxed">Total traffic fell 12% MoM as Q1 volatility gave way to consolidation</p></div>
+        <div class="glass rounded-xl p-5"><div class="w-8 h-8 rounded-lg bg-emerald-500/20 flex items-center justify-center mb-3"><i data-lucide="rocket" class="w-4 h-4 text-emerald-400"></i></div><p class="text-[11px] text-mint-400 uppercase tracking-wider font-semibold mb-2">AI Differentiation</p><p class="text-sm text-navy-300 leading-relaxed">BingX's +103% growth validates AI-native product strategy</p></div>
+        <div class="glass rounded-xl p-5"><div class="w-8 h-8 rounded-lg bg-amber-500/20 flex items-center justify-center mb-3"><i data-lucide="shield-alert" class="w-4 h-4 text-amber-400"></i></div><p class="text-[11px] text-mint-400 uppercase tracking-wider font-semibold mb-2">Mid-Tier Stress</p><p class="text-sm text-navy-300 leading-relaxed">MEXC (-61%) and Bitget (-47%) face existential challenges</p></div>
+        <div class="glass rounded-xl p-5"><div class="w-8 h-8 rounded-lg bg-blue-500/20 flex items-center justify-center mb-3"><i data-lucide="shield-check" class="w-4 h-4 text-blue-400"></i></div><p class="text-[11px] text-mint-400 uppercase tracking-wider font-semibold mb-2">Compliance Premium</p><p class="text-sm text-navy-300 leading-relaxed">Regulated exchanges (Coinbase, Kraken) show relative resilience</p></div>
+      </div>
+      <div class="h-px bg-gradient-to-r from-transparent via-mint-500/30 to-transparent mb-8"></div>
+      <div class="text-center">
+        <p class="text-navy-300 italic text-sm max-w-lg mx-auto leading-relaxed">"Traffic is a leading indicator of platform health. Where users go, liquidity follows."</p>
+        <p class="text-white font-semibold mt-3 text-sm">— dPrism Insights</p>
+        <p class="mt-1"><a href="/#contact" class="text-mint-400 hover:text-mint-300 text-sm font-medium transition-colors">Contact Us</a></p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer class="bg-navy-950 text-gray-500 py-10 px-6 text-sm">
+  <div class="max-w-6xl mx-auto">
+    <div class="grid md:grid-cols-2 gap-10 mb-8">
+      <div>
+        <div class="flex items-center gap-2 mb-4"><div class="w-7 h-7 rounded-md bg-navy-800 flex items-center justify-center"><span class="text-mint-400 font-bold text-[10px] tracking-wider">dp</span></div><span class="font-semibold text-white text-sm">dPrism</span></div>
+        <p class="text-xs leading-relaxed text-gray-600">Objective market analysis based on publicly verifiable SimilarWeb traffic data. No promotional relationships influence our assessments.</p>
+      </div>
+      <div>
+        <p class="font-semibold text-white text-xs uppercase tracking-wider mb-4">Data Sources</p>
+        <ul class="space-y-2 text-xs text-gray-600">
+          <li class="flex items-center gap-2"><span class="w-1 h-1 rounded-full bg-gray-700"></span>SimilarWeb estimated traffic data (April 2026)</li>
+          <li class="flex items-center gap-2"><span class="w-1 h-1 rounded-full bg-gray-700"></span>CryptoRank.io exchange metrics</li>
+          <li class="flex items-center gap-2"><span class="w-1 h-1 rounded-full bg-gray-700"></span>Exchange public disclosures</li>
+        </ul>
+      </div>
+    </div>
+    <div class="h-px bg-gradient-to-r from-transparent via-gray-800 to-transparent mb-8"></div>
+    <div class="flex flex-col md:flex-row justify-between items-center gap-3">
+      <p class="text-xs text-gray-700">&copy; 2026 dPrism. All rights reserved.</p>
+      <p class="text-[10px] text-gray-700">Report Generated: May 7, 2026</p>
+    </div>
+    <div class="mt-6 pt-4 border-t border-gray-800/50 text-center">
+      <p class="text-[11px] text-gray-700 leading-relaxed"><strong class="text-gray-500">Disclaimer:</strong> This report is for informational purposes only and does not constitute investment advice. Cryptocurrency markets are highly volatile and subject to regulatory, technological, and liquidity risks.</p>
+    </div>
+  </div>
+</footer>
+
+<script>
+  lucide.createIcons();
+  Chart.defaults.font.family = "'Inter', sans-serif";
+  Chart.defaults.font.size = 12;
+  Chart.defaults.color = '#94a3b8';
+
+  const distCtx = document.getElementById('distributionChart').getContext('2d');
+  new Chart(distCtx, {
+    type: 'doughnut',
+    data: {
+      labels: ['Binance', 'WhiteBIT', 'OKX', 'Coinbase', 'BingX', 'Others'],
+      datasets: [{ data: [38, 29, 23, 22, 17, 141], backgroundColor: ['rgba(16,185,129,0.85)','rgba(20,184,166,0.75)','rgba(6,182,212,0.7)','rgba(59,130,246,0.65)','rgba(245,158,11,0.8)','rgba(203,213,225,0.4)'], borderWidth: 1.5, borderColor: ['rgba(16,185,129,1)','rgba(20,184,166,1)','rgba(6,182,212,1)','rgba(59,130,246,1)','rgba(245,158,11,1)','rgba(203,213,225,0.6)'], hoverOffset: 6 }]
+    },
+    options: { responsive: true, maintainAspectRatio: false, cutout: '65%', plugins: { legend: { position: 'bottom', labels: { padding: 14, usePointStyle: true, pointStyle: 'rectRounded', font: { size: 11, weight: '500' } } }, tooltip: { backgroundColor: '#061510', titleColor: '#e2e8f0', bodyColor: '#a7f3d0', borderColor: 'rgba(16,185,129,0.2)', borderWidth: 1, padding: 10, cornerRadius: 8, 
+    callbacks: { label: c => { const t = c.dataset.data.reduce((a,b)=>a+b,0); return c.label+': '+c.parsed+'M ('+((c.parsed/t)*100).toFixed(1)+'%)'; } } } } }
+  });
+
+  const barCtx = document.getElementById('top10Chart').getContext('2d');
+  new Chart(barCtx, {
+    type: 'bar',
+    data: {
+      labels: ['Binance','WhiteBIT','OKX','Coinbase','BingX','KuCoin','MEXC','Gate.io','BitMart','Bybit'],
+      datasets: [{ label: 'Visits ($M)', data: [38,29,23,22,17,16,15,14,11,11], backgroundColor: ['rgba(16,185,129,0.8)','rgba(20,184,166,0.75)','rgba(6,182,212,0.7)','rgba(59,130,246,0.65)','rgba(245,158,11,0.8)','rgba(168,85,247,0.6)','rgba(239,68,68,0.7)','rgba(100,116,139,0.5)','rgba(59,130,246,0.5)','rgba(168,85,247,0.45)'], borderColor: ['rgba(16,185,129,1)','rgba(20,184,166,1)','rgba(6,182,212,1)','rgba(59,130,246,1)','rgba(245,158,11,1)','rgba(168,85,247,1)','rgba(239,68,68,1)','rgba(100,116,139,1)','rgba(59,130,246,1)','rgba(168,85,247,1)'], borderWidth: 1.5, borderRadius: 6, borderSkipped: false, barPercentage: 0.6 }]
+    },
+    options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false }, tooltip: { backgroundColor: '#061510', titleColor: '#e2e8f0', bodyColor: '#a7f3d0', borderColor: 'rgba(16,185,129,0.2)', borderWidth: 1, padding: 10, cornerRadius: 8, callbacks: { label: c => '$'+c.parsed.y+'M' } } }, scales: { y: { beginAtZero: true, grid: { color: 'rgba(0,0,0,0.04)', drawBorder: false }, border: { display: false }, ticks: { callback: v => '$'+v+'M', padding: 8 } }, x: { grid: { display: false }, border: { display: false }, ticks: { padding: 8, font: { size: 11, weight: '500' }, maxRotation: 45, minRotation: 45 } } } }
+  });
+</script>
+</body>
+</html>

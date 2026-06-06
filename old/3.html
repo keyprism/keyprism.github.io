@@ -1,0 +1,2124 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>VoltVault — Premium Electric Vehicle Parts</title>
+    <meta name="description" content="Professional-grade EV parts, batteries, chargers, and conversion kits. Certified quality with expert support.">
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>⚡</text></svg>">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: { sans: ['Inter', 'system-ui', 'sans-serif'] },
+                    colors: {
+                        volt: { 50:'#f0f9ff',100:'#e0f2fe',200:'#bae6fd',300:'#7dd3fc',400:'#38bdf8',500:'#0ea5e9',600:'#0284c7',700:'#0369a1',800:'#075985',900:'#0c4a6e' },
+                        eco: { 400:'#34d399',500:'#10b981',600:'#059669' }
+                    },
+                    keyframes: {
+                        'fade-in': { '0%':{opacity:'0',transform:'translateY(12px)'},'100%':{opacity:'1',transform:'translateY(0)'} },
+                        'slide-right': { '0%':{transform:'translateX(100%)'},'100%':{transform:'translateX(0)'} },
+                        'slide-left': { '0%':{transform:'translateX(0)'},'100%':{transform:'translateX(100%)'} },
+                        'bounce-in': { '0%':{transform:'scale(0.3)',opacity:'0'},'50%':{transform:'scale(1.1)'},'100%':{transform:'scale(1)',opacity:'1'} },
+                        'toast-in': { '0%':{transform:'translateX(120%)',opacity:'0'},'100%':{transform:'translateX(0)',opacity:'1'} },
+                        'toast-out': { '0%':{transform:'translateX(0)',opacity:'1'},'100%':{transform:'translateX(120%)',opacity:'0'} },
+                        'pulse-dot': { '0%,100%':{opacity:'1'},'50%':{opacity:'.4'} },
+                        'shimmer': { '0%':{backgroundPosition:'-200% 0'},'100%':{backgroundPosition:'200% 0'} }
+                    },
+                    animation: {
+                        'fade-in': 'fade-in 0.5s ease-out forwards',
+                        'slide-right': 'slide-right 0.3s ease-out forwards',
+                        'slide-left': 'slide-left 0.3s ease-in forwards',
+                        'bounce-in': 'bounce-in 0.4s ease-out',
+                        'toast-in': 'toast-in 0.4s ease-out forwards',
+                        'toast-out': 'toast-out 0.3s ease-in forwards',
+                        'pulse-dot': 'pulse-dot 1.5s ease-in-out infinite',
+                        'shimmer': 'shimmer 1.5s infinite'
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        * { box-sizing: border-box; }
+        body { font-family: 'Inter', system-ui, sans-serif; background: #F8FAFC; color: #0F172A; -webkit-font-smoothing: antialiased; }
+        /* Skip to main content */
+        .skip-link { position: absolute; top: -100%; left: 16px; z-index: 9999; padding: 8px 16px; background: #0ea5e9; color: white; border-radius: 8px; font-weight: 600; }
+        .skip-link:focus { top: 16px; }
+        /* Custom scrollbar */
+        ::-webkit-scrollbar { width: 6px; height: 6px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 3px; }
+        ::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
+        /* Focus styles */
+        *:focus-visible { outline: 2px solid #0ea5e9; outline-offset: 2px; border-radius: 4px; }
+        /* Hide scrollbar for horizontal scroll */
+        .hide-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+        .hide-scrollbar::-webkit-scrollbar { display: none; }
+        /* Image zoom container */
+        .img-zoom { overflow: hidden; cursor: zoom-in; }
+        .img-zoom img { transition: transform 0.4s ease; }
+        .img-zoom:hover img { transform: scale(1.15); }
+        /* Skeleton loading */
+        .skeleton { background: linear-gradient(90deg, #e2e8f0 25%, #f1f5f9 50%, #e2e8f0 75%); background-size: 200% 100%; animation: shimmer 1.5s infinite; border-radius: 8px; }
+        /* Hero pattern */
+        .hero-pattern { background-image: radial-gradient(circle at 1px 1px, rgba(14,165,233,0.07) 1px, transparent 0); background-size: 32px 32px; }
+        /* Accordion transition */
+        .accordion-body { max-height: 0; overflow: hidden; transition: max-height 0.3s ease; }
+        .accordion-body.open { max-height: 600px; }
+        /* Page transitions */
+        .page-enter { animation: fade-in 0.4s ease-out; }
+        /* Toast */
+        .toast-exit { animation: toast-out 0.3s ease-in forwards; }
+        /* Checkbox custom */
+        .custom-check { appearance: none; width: 18px; height: 18px; border: 2px solid #cbd5e1; border-radius: 4px; cursor: pointer; transition: all 0.15s; flex-shrink: 0; }
+        .custom-check:checked { background: #0ea5e9; border-color: #0ea5e9; background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 16 16' fill='white' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M12.207 4.793a1 1 0 010 1.414l-5 5a1 1 0 01-1.414 0l-2-2a1 1 0 011.414-1.414L6.5 9.086l4.293-4.293a1 1 0 011.414 0z'/%3E%3C/svg%3E"); }
+        .custom-check:focus-visible { outline: 2px solid #0ea5e9; outline-offset: 2px; }
+        /* Smooth number input */
+        input[type=number]::-webkit-inner-spin-button,
+        input[type=number]::-webkit-outer-spin-button { -webkit-appearance: none; margin: 0; }
+        input[type=number] { -moz-appearance: textfield; }
+        /* Badge pulse */
+        .badge-pulse { animation: bounce-in 0.3s ease-out; }
+    </style>
+</head>
+<body>
+    <!-- Skip link for accessibility -->
+    <a href="#main-content" class="skip-link">Skip to main content</a>
+
+    <div id="app" class="min-h-screen flex flex-col">
+        <!-- Toast container -->
+        <div id="toast-container" class="fixed top-20 right-4 z-[100] flex flex-col gap-3 pointer-events-none" aria-live="polite"></div>
+
+        <!-- Mobile menu overlay -->
+        <div id="mobile-overlay" class="fixed inset-0 bg-black/40 z-40 hidden opacity-0 transition-opacity duration-300" data-action="close-mobile-menu"></div>
+
+        <!-- Mobile menu panel -->
+        <div id="mobile-menu" class="fixed top-0 right-0 bottom-0 w-80 max-w-[85vw] bg-white z-50 transform translate-x-full transition-transform duration-300 ease-out overflow-y-auto" role="dialog" aria-label="Mobile navigation">
+            <div class="p-6" id="mobile-menu-content"></div>
+        </div>
+
+        <!-- Filter panel overlay (mobile) -->
+        <div id="filter-overlay" class="fixed inset-0 bg-black/40 z-40 hidden opacity-0 transition-opacity duration-300" data-action="close-filters"></div>
+
+        <!-- Filter panel (mobile) -->
+        <div id="filter-panel" class="fixed top-0 right-0 bottom-0 w-80 max-w-[85vw] bg-white z-50 transform translate-x-full transition-transform duration-300 ease-out overflow-y-auto" role="dialog" aria-label="Product filters">
+            <div id="filter-panel-content"></div>
+        </div>
+
+        <!-- Main header -->
+        <header id="main-header" class="sticky top-0 z-30 bg-white/95 backdrop-blur-md border-b border-slate-200/80"></header>
+
+        <!-- Main content area -->
+        <main id="main-content" class="flex-1" role="main"></main>
+
+        <!-- Main footer -->
+        <footer id="main-footer" class="bg-slate-900 text-white"></footer>
+
+        <!-- Mobile sticky cart bar (shown on product page) -->
+        <div id="mobile-sticky-bar" class="fixed bottom-0 left-0 right-0 bg-white border-t border-slate-200 p-3 z-30 hidden lg:hidden safe-area-bottom"></div>
+    </div>
+
+    <script>
+    // ==========================================
+    // PRODUCT DATA
+    // ==========================================
+    const products = [
+        {
+            id: "prod_001", name: "Tesla Model 3 Battery Module - 75kWh", sku: "TSLA-BAT-M3-75",
+            price: 4999.00, compareAtPrice: 5499.00, category: "Batteries & Cells", brand: "Tesla",
+            rating: 4.8, reviewCount: 127, inStock: true, stockQuantity: 12,
+            image: "https://images.unsplash.com/photo-1617788138017-80ad40651399?w=600&h=450&fit=crop",
+            images: ["https://images.unsplash.com/photo-1617788138017-80ad40651399?w=800&h=800&fit=crop","https://images.unsplash.com/photo-1593941707882-a5bba14938c7?w=800&h=800&fit=crop","https://images.unsplash.com/photo-1485827404703-89b55fcc595e?w=800&h=800&fit=crop","https://images.unsplash.com/photo-1566008885218-90abf9200ddb?w=800&h=800&fit=crop"],
+            compatibility: ["Tesla Model 3 (2017-2024)", "Tesla Model Y (2020-2024)"],
+            specs: { "Voltage":"400V DC","Capacity":"75 kWh","Weight":"480 kg","Dimensions":"1600 × 1100 × 130 mm","Chemistry":"Lithium-ion NMC","Warranty":"8 years / 120,000 miles" },
+            tags: ["bestseller", "sale"],
+            description: "Professional-grade 75kWh battery module designed for Tesla Model 3 and Model Y. Features NMC lithium-ion chemistry with advanced thermal management for consistent performance in all conditions. Each module is rigorously tested and certified to meet OEM specifications."
+        },
+        {
+            id: "prod_002", name: "Orion BMS 2 - 96S Battery Management System", sku: "ORBMS-2-96S",
+            price: 899.00, compareAtPrice: null, category: "Battery Management Systems", brand: "Orion BMS",
+            rating: 4.9, reviewCount: 84, inStock: true, stockQuantity: 28,
+            image: "https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=600&h=450&fit=crop",
+            images: ["https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=800&h=800&fit=crop","https://images.unsplash.com/photo-1617788138017-80ad40651399?w=800&h=800&fit=crop","https://images.unsplash.com/photo-1581092921461-eab62e97a782?w=800&h=800&fit=crop"],
+            compatibility: ["Universal/All EVs", "Custom EV Conversions"],
+            specs: { "Cell Count":"Up to 96S","Accuracy":"±2mV","Communication":"CAN bus","Current":"300A continuous","Dimensions":"200 × 120 × 35 mm","Warranty":"2 years" },
+            tags: ["bestseller"],
+            description: "The Orion BMS 2 monitors up to 96 series-connected cells with ±2mV accuracy, ensuring optimal performance and safety for your battery pack. Features CAN bus communication, active balancing, and comprehensive protection against over-voltage, under-voltage, over-current, and temperature extremes."
+        },
+        {
+            id: "prod_003", name: "Level 2 EV Charger 240V / 32A", sku: "EVSE-L2-32A",
+            price: 549.00, compareAtPrice: null, category: "Charging Equipment", brand: "Lectron",
+            rating: 4.7, reviewCount: 203, inStock: true, stockQuantity: 45,
+            image: "https://images.unsplash.com/photo-1593941707882-a5bba14938c7?w=600&h=450&fit=crop",
+            images: ["https://images.unsplash.com/photo-1593941707882-a5bba14938c7?w=800&h=800&fit=crop","https://images.unsplash.com/photo-1617788138017-80ad40651399?w=800&h=800&fit=crop"],
+            compatibility: ["Universal/All EVs", "Tesla (with adapter)", "Nissan Leaf", "Chevrolet Bolt"],
+            specs: { "Voltage":"240V AC","Current":"32A","Power":"7.68 kW","Cable Length":"25 ft","Connector":"J1772","Certification":"UL Listed, Energy Star" },
+            tags: ["new"],
+            description: "High-efficiency Level 2 charger delivering up to 7.68 kW for fast overnight charging. Features a durable 25-foot cable, NEMA 14-50 plug, and intelligent power management. Compatible with all J1772 vehicles including Tesla with adapter."
+        },
+        {
+            id: "prod_004", name: "J1772 to Tesla Adapter", sku: "ADPT-J1772-TSLA",
+            price: 89.00, compareAtPrice: null, category: "Cables & Connectors", brand: "Lectron",
+            rating: 4.6, reviewCount: 512, inStock: true, stockQuantity: 120,
+            image: "https://images.unsplash.com/photo-1566008885218-90abf9200ddb?w=600&h=450&fit=crop",
+            images: ["https://images.unsplash.com/photo-1566008885218-90abf9200ddb?w=800&h=800&fit=crop","https://images.unsplash.com/photo-1593941707882-a5bba14938c7?w=800&h=800&fit=crop"],
+            compatibility: ["Tesla Model 3", "Tesla Model Y", "Tesla Model S", "Tesla Model X"],
+            specs: { "Input":"J1772","Output":"Tesla","Max Current":"48A","Max Voltage":"250V","Material":"Aluminum alloy","Warranty":"1 year" },
+            tags: [],
+            description: "Compact and durable J1772 to Tesla charging adapter allowing Tesla owners to use any public J1772 charging station. Supports up to 48A charging speed with built-in temperature monitoring and over-current protection."
+        },
+        {
+            id: "prod_005", name: "Electric Motor 100kW AC Induction", sku: "MOT-AC-100KW",
+            price: 3299.00, compareAtPrice: null, category: "Electric Motors", brand: "Generic/OEM",
+            rating: 4.5, reviewCount: 36, inStock: true, stockQuantity: 8,
+            image: "https://images.unsplash.com/photo-1485827404703-89b55fcc595e?w=600&h=450&fit=crop",
+            images: ["https://images.unsplash.com/photo-1485827404703-89b55fcc595e?w=800&h=800&fit=crop","https://images.unsplash.com/photo-1617788138017-80ad40651399?w=800&h=800&fit=crop","https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=800&h=800&fit=crop"],
+            compatibility: ["Universal/All EVs", "Custom EV Conversions"],
+            specs: { "Power":"100 kW (134 hp)","Torque":"280 Nm","Voltage":"96-144V DC","RPM":"0-6000","Efficiency":"93%","Weight":"45 kg" },
+            tags: [],
+            description: "High-performance 100kW AC induction motor ideal for EV conversions and custom builds. Delivers 280 Nm of torque from zero RPM with 93% peak efficiency. Includes integrated encoder and temperature sensors for seamless controller integration."
+        },
+        {
+            id: "prod_006", name: "Battery Heating Pad Kit - Universal", sku: "ACC-BHP-UNV",
+            price: 199.00, compareAtPrice: null, category: "Tools & Accessories", brand: "Generic/OEM",
+            rating: 4.4, reviewCount: 67, inStock: true, stockQuantity: 55,
+            image: "https://images.unsplash.com/photo-1581092921461-eab62e97a782?w=600&h=450&fit=crop",
+            images: ["https://images.unsplash.com/photo-1581092921461-eab62e97a782?w=800&h=800&fit=crop","https://images.unsplash.com/photo-1617788138017-80ad40651399?w=800&h=800&fit=crop"],
+            compatibility: ["Universal/All EVs", "Tesla Model 3", "Nissan Leaf"],
+            specs: { "Voltage":"12V DC","Power":"120W per pad","Quantity":"4 pads","Size":"200 × 100 mm","Material":"Silicone rubber","Thermostat":"Built-in 45°C" },
+            tags: [],
+            description: "Self-adhesive silicone heating pads designed to maintain optimal battery temperature in cold conditions. Each pad includes a built-in thermostat for automatic temperature regulation. Easy peel-and-stick installation fits most battery pack configurations."
+        },
+        {
+            id: "prod_007", name: "CHAdeMO Charging Cable - 25ft", sku: "CBL-CHADEMO-25",
+            price: 449.00, compareAtPrice: 529.00, category: "Cables & Connectors", brand: "Generic/OEM",
+            rating: 4.3, reviewCount: 41, inStock: true, stockQuantity: 18,
+            image: "https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=600&h=450&fit=crop",
+            images: ["https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=800&h=800&fit=crop","https://images.unsplash.com/photo-1593941707882-a5bba14938c7?w=800&h=800&fit=crop"],
+            compatibility: ["Nissan Leaf", "Mitsubishi i-MiEV", "Kia Soul EV"],
+            specs: { "Connector":"CHAdeMO","Cable Length":"25 ft","Current":"125A max","Voltage":"500V DC","Certification":"UL, CE","Weight":"4.2 kg" },
+            tags: ["sale"],
+            description: "Heavy-duty CHAdeMO DC fast charging cable with 25-foot reach. Supports up to 125A / 500V for rapid charging. Flexible, oil-resistant cable jacket rated for -40°C to 80°C operating temperature."
+        },
+        {
+            id: "prod_008", name: "Motor Controller 300A - programmable", sku: "CTL-300A-PRO",
+            price: 699.00, compareAtPrice: null, category: "Motor Controllers", brand: "Kelly Controller",
+            rating: 4.6, reviewCount: 58, inStock: true, stockQuantity: 22,
+            image: "https://images.unsplash.com/photo-1566008885218-90abf9200ddb?w=600&h=450&fit=crop",
+            images: ["https://images.unsplash.com/photo-1566008885218-90abf9200ddb?w=800&h=800&fit=crop","https://images.unsplash.com/photo-1485827404703-89b55fcc595e?w=800&h=800&fit=crop"],
+            compatibility: ["Universal/All EVs", "Custom EV Conversions"],
+            specs: { "Current":"300A","Voltage":"72-144V DC","Protocol":"CAN bus, PWM","Regen Braking":"Yes","Dimensions":"230 × 170 × 70 mm","IP Rating":"IP67" },
+            tags: [],
+            description: "Programmable 300A motor controller with advanced features including regenerative braking, cruise control, and CAN bus integration. Fully configurable via PC software for precise tuning of acceleration curves, speed limits, and throttle response."
+        },
+        {
+            id: "prod_009", name: "Tesla Model Y All-Weather Floor Mats", sku: "TSLA-FMT-MY-AW",
+            price: 149.00, compareAtPrice: null, category: "Tools & Accessories", brand: "EVANNEX",
+            rating: 4.7, reviewCount: 289, inStock: true, stockQuantity: 75,
+            image: "https://images.unsplash.com/photo-1581092921461-eab62e97a782?w=600&h=450&fit=crop",
+            images: ["https://images.unsplash.com/photo-1581092921461-eab62e97a782?w=800&h=800&fit=crop","https://images.unsplash.com/photo-1566008885218-90abf9200ddb?w=800&h=800&fit=crop"],
+            compatibility: ["Tesla Model Y (2020-2024)"],
+            specs: { "Material":"TPE + Polyethylene","Set":"Front + Rear (4 pcs)","Fit":"Exact OEM fitment","Cleaning":"Hose off / wipe clean","Weight":"3.8 kg","Warranty":"3 years" },
+            tags: [],
+            description: "Precision-engineered all-weather floor mats designed specifically for Tesla Model Y. Made from eco-friendly TPE material with raised edges to contain spills, mud, and snow. Easy to clean — just hose off or wipe down."
+        },
+        {
+            id: "prod_010", name: "CCS Combo 2 Adapter", sku: "ADPT-CCS2-UNV",
+            price: 299.00, compareAtPrice: null, category: "Cables & Connectors", brand: "Lectron",
+            rating: 4.5, reviewCount: 93, inStock: true, stockQuantity: 40,
+            image: "https://images.unsplash.com/photo-1593941707882-a5bba14938c7?w=600&h=450&fit=crop",
+            images: ["https://images.unsplash.com/photo-1593941707882-a5bba14938c7?w=800&h=800&fit=crop","https://images.unsplash.com/photo-1566008885218-90abf9200ddb?w=800&h=800&fit=crop"],
+            compatibility: ["Tesla Model 3", "Tesla Model Y", "Tesla Model S", "Tesla Model X"],
+            specs: { "Input":"CCS Combo 2","Output":"Tesla","Max Current":"200A","Max Voltage":"500V","Power":"Up to 100 kW","Certification":"CE, FCC" },
+            tags: ["new"],
+            description: "Enable CCS Combo 2 DC fast charging for your Tesla at public charging networks across Europe and beyond. Supports up to 100 kW charging speeds with automatic protocol detection and thermal protection."
+        },
+        {
+            id: "prod_011", name: "Battery Monitoring System - 24S", sku: "BMS-MON-24S",
+            price: 399.00, compareAtPrice: null, category: "Battery Management Systems", brand: "Generic/OEM",
+            rating: 4.4, reviewCount: 45, inStock: false, stockQuantity: 0,
+            image: "https://images.unsplash.com/photo-1617788138017-80ad40651399?w=600&h=450&fit=crop",
+            images: ["https://images.unsplash.com/photo-1617788138017-80ad40651399?w=800&h=800&fit=crop","https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=800&h=800&fit=crop"],
+            compatibility: ["Universal/All EVs", "Custom EV Conversions"],
+            specs: { "Cell Count":"24S","Accuracy":"±5mV","Display":"LCD","Communication":"Bluetooth + CAN","Alarm":"Buzzer + LED","Warranty":"1 year" },
+            tags: [],
+            description: "Compact battery monitoring system for 24-series lithium battery packs. Real-time LCD display shows individual cell voltages, pack voltage, current, and temperature. Bluetooth connectivity for mobile app monitoring and data logging."
+        },
+        {
+            id: "prod_012", name: "Portable EVSE Charger 110V / 16A", sku: "EVSE-P-16A",
+            price: 349.00, compareAtPrice: null, category: "Charging Equipment", brand: "Lectron",
+            rating: 4.8, reviewCount: 176, inStock: true, stockQuantity: 60,
+            image: "https://images.unsplash.com/photo-1593941707882-a5bba14938c7?w=600&h=450&fit=crop",
+            images: ["https://images.unsplash.com/photo-1593941707882-a5bba14938c7?w=800&h=800&fit=crop","https://images.unsplash.com/photo-1566008885218-90abf9200ddb?w=800&h=800&fit=crop"],
+            compatibility: ["Universal/All EVs", "Tesla (with adapter)", "Nissan Leaf", "Chevrolet Bolt"],
+            specs: { "Voltage":"110-240V AC","Current":"16A","Power":"3.84 kW max","Cable Length":"20 ft","Connector":"J1772","Plug":"NEMA 5-15 / 14-50" },
+            tags: ["bestseller"],
+            description: "Ultra-portable Level 1/2 charger that works with any standard outlet. Delivers up to 3.84 kW on 240V or standard Level 1 charging on 120V. Perfect as a backup charger or for on-the-go charging needs."
+        }
+    ];
+
+    const categories = [
+        { name: "Batteries & BMS", slug: "batteries-bms", image: "https://images.unsplash.com/photo-1617788138017-80ad40651399?w=400&h=300&fit=crop", count: 245 },
+        { name: "Charging Equipment", slug: "charging", image: "https://images.unsplash.com/photo-1593941707882-a5bba14938c7?w=400&h=300&fit=crop", count: 128 },
+        { name: "Motors & Controllers", slug: "motors-controllers", image: "https://images.unsplash.com/photo-1485827404703-89b55fcc595e?w=400&h=300&fit=crop", count: 87 },
+        { name: "Conversion Kits", slug: "conversion-kits", image: "https://images.unsplash.com/photo-1566008885218-90abf9200ddb?w=400&h=300&fit=crop", count: 34 },
+        { name: "Cables & Connectors", slug: "cables-connectors", image: "https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=400&h=300&fit=crop", count: 196 },
+        { name: "Tools & Accessories", slug: "tools-accessories", image: "https://images.unsplash.com/photo-1581092921461-eab62e97a782?w=400&h=300&fit=crop", count: 312 }
+    ];
+
+    const testimonials = [
+        { name: "Marcus T.", role: "EV Conversion Specialist", text: "The Tesla battery module I purchased exceeded expectations. Cell balancing was perfect out of the box, and the technical support team helped me sort out my CAN configuration within an hour.", rating: 5 },
+        { name: "Sarah K.", role: "Tesla Model 3 Owner", text: "Fast shipping, great prices, and the J1772 adapter works flawlessly at every charging station I've tried. VoltVault is now my go-to for all Tesla accessories.", rating: 5 },
+        { name: "David L.", role: "Auto Shop Manager", text: "We've ordered over 50 components from VoltVault for our EV conversion projects. Consistent quality, competitive pricing, and their return process is hassle-free.", rating: 4 }
+    ];
+
+    // ==========================================
+    // STATE MANAGEMENT
+    // ==========================================
+    const state = {
+        cart: JSON.parse(localStorage.getItem('vv_cart')) || [],
+        wishlist: JSON.parse(localStorage.getItem('vv_wishlist')) || [],
+        page: 'home',
+        selectedProductId: null,
+        filters: { search: '', categories: [], brands: [], priceRange: null, rating: 0, inStockOnly: false, compatibility: [] },
+        sort: 'featured',
+        viewMode: 'grid',
+        galleryIndex: 0,
+        activeTab: 'description',
+        promoCode: '',
+        promoDiscount: 0,
+        promoMessage: ''
+    };
+
+    function saveCart() { localStorage.setItem('vv_cart', JSON.stringify(state.cart)); }
+    function saveWishlist() { localStorage.setItem('vv_wishlist', JSON.stringify(state.wishlist)); }
+
+    // ==========================================
+    // UTILITY FUNCTIONS
+    // ==========================================
+    function formatPrice(p) { return '$' + p.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ','); }
+
+    function starsHTML(rating, size = 14) {
+        let s = '';
+        for (let i = 1; i <= 5; i++) {
+            if (i <= Math.floor(rating)) s += `<i data-lucide="star" class="inline-block text-amber-400" style="width:${size}px;height:${size}px;fill:currentColor;"></i>`;
+            else if (i - rating < 1) s += `<i data-lucide="star" class="inline-block text-amber-400" style="width:${size}px;height:${size}px;fill:currentColor;opacity:0.5;"></i>`;
+            else s += `<i data-lucide="star" class="inline-block text-slate-200" style="width:${size}px;height:${size}px;"></i>`;
+        }
+        return s;
+    }
+
+    function debounce(fn, ms) { let t; return (...a) => { clearTimeout(t); t = setTimeout(() => fn(...a), ms); }; }
+
+    function getProduct(id) { return products.find(p => p.id === id); }
+
+    function cartItemCount() { return state.cart.reduce((s, i) => s + i.quantity, 0); }
+    function cartSubtotal() { return state.cart.reduce((s, i) => { const p = getProduct(i.productId); return s + (p ? p.price * i.quantity : 0); }, 0); }
+    function cartTax() { return cartSubtotal() * 0.08; }
+    function cartTotal() { return Math.max(0, cartSubtotal() + cartTax() + (cartSubtotal() >= 99 ? 0 : 9.99) - state.promoDiscount); }
+    function cartShipping() { return cartSubtotal() >= 99 ? 0 : 9.99; }
+
+    function isWished(id) { return state.wishlist.includes(id); }
+
+    function slugify(s) { return s.toLowerCase().replace(/[^a-z0-9]+/g, '-'); }
+
+    // ==========================================
+    // CART OPERATIONS
+    // ==========================================
+    function addToCart(productId, qty = 1) {
+        const product = getProduct(productId);
+        if (!product || !product.inStock) return;
+        const existing = state.cart.find(i => i.productId === productId);
+        const maxQty = Math.min(qty, product.stockQuantity);
+        if (existing) {
+            existing.quantity = Math.min(existing.quantity + maxQty, product.stockQuantity);
+        } else {
+            state.cart.push({ productId, quantity: maxQty, addedAt: new Date().toISOString() });
+        }
+        saveCart();
+        updateCartBadge();
+        showToast(`Added to cart: ${product.name}`, 'success');
+        // Animate the add-to-cart button if visible
+        const btn = document.querySelector(`[data-action="add-to-cart"][data-product-id="${productId}"]`);
+        if (btn) {
+            btn.innerHTML = '<i data-lucide="check" class="w-5 h-5 mx-auto"></i>';
+            btn.classList.add('bg-eco-500');
+            btn.classList.remove('bg-volt-500','hover:bg-volt-600');
+            lucide.createIcons({ nodes: [btn] });
+            setTimeout(() => {
+                btn.innerHTML = '<i data-lucide="shopping-cart" class="w-5 h-5 mx-auto"></i>';
+                btn.classList.remove('bg-eco-500');
+                btn.classList.add('bg-volt-500','hover:bg-volt-600');
+                lucide.createIcons({ nodes: [btn] });
+            }, 1200);
+        }
+        // Update mobile sticky bar if visible
+        renderMobileStickyBar();
+    }
+
+    function removeFromCart(productId) {
+        const product = getProduct(productId);
+        state.cart = state.cart.filter(i => i.productId !== productId);
+        saveCart();
+        updateCartBadge();
+        if (product) showToast(`Removed: ${product.name}`, 'info');
+        renderPage();
+    }
+
+    function updateQuantity(productId, qty) {
+        const product = getProduct(productId);
+        const item = state.cart.find(i => i.productId === productId);
+        if (!item || !product) return;
+        item.quantity = Math.max(1, Math.min(qty, product.stockQuantity));
+        saveCart();
+        updateCartBadge();
+        renderPage();
+    }
+
+    function applyPromo(code) {
+        state.promoMessage = '';
+        state.promoDiscount = 0;
+        if (code.trim().toUpperCase() === 'SAVE10') {
+            state.promoDiscount = cartSubtotal() * 0.10;
+            state.promoMessage = 'success';
+            showToast('Promo code applied: 10% off', 'success');
+        } else if (code.trim().toUpperCase() === 'VOLT50') {
+            state.promoDiscount = 50;
+            state.promoMessage = 'success';
+            showToast('Promo code applied: $50 off', 'success');
+        } else if (code.trim()) {
+            state.promoMessage = 'error';
+        }
+        renderPage();
+    }
+
+    function toggleWishlist(productId) {
+        const idx = state.wishlist.indexOf(productId);
+        if (idx > -1) { state.wishlist.splice(idx, 1); showToast('Removed from wishlist', 'info'); }
+        else { state.wishlist.push(productId); showToast('Added to wishlist', 'success'); }
+        saveWishlist();
+        renderPage();
+    }
+
+    // ==========================================
+    // TOAST NOTIFICATIONS
+    // ==========================================
+    function showToast(message, type = 'info') {
+        const container = document.getElementById('toast-container');
+        const colors = { success: 'bg-eco-500', error: 'bg-red-500', info: 'bg-volt-500' };
+        const icons = { success: 'check-circle', error: 'alert-circle', info: 'info' };
+        const id = 'toast-' + Date.now();
+        const el = document.createElement('div');
+        el.id = id;
+        el.className = `pointer-events-auto flex items-center gap-3 px-4 py-3 rounded-xl text-white text-sm font-medium shadow-lg animate-toast-in ${colors[type] || colors.info}`;
+        el.setAttribute('role', 'alert');
+        el.innerHTML = `<i data-lucide="${icons[type] || 'info'}" class="w-5 h-5 flex-shrink-0"></i><span class="flex-1">${message}</span><button data-action="close-toast" data-toast-id="${id}" class="ml-2 hover:opacity-70" aria-label="Close notification"><i data-lucide="x" class="w-4 h-4"></i></button>`;
+        container.appendChild(el);
+        lucide.createIcons({ nodes: [el] });
+        setTimeout(() => { const t = document.getElementById(id); if (t) { t.classList.add('toast-exit'); setTimeout(() => t.remove(), 300); } }, 4000);
+    }
+
+    // ==========================================
+    // FILTER / SORT LOGIC
+    // ==========================================
+    function getFilteredProducts() {
+        let filtered = [...products];
+        const f = state.filters;
+        if (f.search) {
+            const q = f.search.toLowerCase();
+            filtered = filtered.filter(p => p.name.toLowerCase().includes(q) || p.sku.toLowerCase().includes(q) || p.category.toLowerCase().includes(q) || p.brand.toLowerCase().includes(q));
+        }
+        if (f.categories.length) filtered = filtered.filter(p => f.categories.includes(p.category));
+        if (f.brands.length) filtered = filtered.filter(p => f.brands.includes(p.brand));
+        if (f.compatibility.length) filtered = filtered.filter(p => p.compatibility.some(c => f.compatibility.includes(c)));
+        if (f.priceRange) {
+            const [min, max] = f.priceRange;
+            filtered = filtered.filter(p => p.price >= min && (max === Infinity || p.price <= max));
+        }
+        if (f.rating) filtered = filtered.filter(p => p.rating >= f.rating);
+        if (f.inStockOnly) filtered = filtered.filter(p => p.inStock);
+
+        // Sort
+        switch (state.sort) {
+            case 'price-asc': filtered.sort((a, b) => a.price - b.price); break;
+            case 'price-desc': filtered.sort((a, b) => b.price - a.price); break;
+            case 'rating': filtered.sort((a, b) => b.rating - a.rating); break;
+            case 'newest': filtered.sort((a, b) => (b.tags.includes('new') ? 1 : 0) - (a.tags.includes('new') ? 1 : 0)); break;
+            default: filtered.sort((a, b) => (b.tags.includes('bestseller') ? 1 : 0) - (a.tags.includes('bestseller') ? 1 : 0));
+        }
+        return filtered;
+    }
+
+    function activeFilterCount() {
+        const f = state.filters;
+        let c = 0;
+        if (f.search) c++;
+        if (f.categories.length) c += f.categories.length;
+        if (f.brands.length) c += f.brands.length;
+        if (f.compatibility.length) c += f.compatibility.length;
+        if (f.priceRange) c++;
+        if (f.rating) c++;
+        if (f.inStockOnly) c++;
+        return c;
+    }
+
+    function clearFilters() {
+        state.filters = { search: '', categories: [], brands: [], priceRange: null, rating: 0, inStockOnly: false, compatibility: [] };
+        state.promoCode = '';
+        state.promoDiscount = 0;
+        state.promoMessage = '';
+        renderPage();
+    }
+
+    // ==========================================
+    // CART BADGE UPDATE
+    // ==========================================
+    function updateCartBadge() {
+        const badges = document.querySelectorAll('[data-cart-badge]');
+        const count = cartItemCount();
+        badges.forEach(b => {
+            b.textContent = count;
+            if (count > 0) { b.classList.remove('hidden'); b.classList.add('badge-pulse'); setTimeout(() => b.classList.remove('badge-pulse'), 300); }
+            else b.classList.add('hidden');
+        });
+    }
+
+    // ==========================================
+    // COMPONENTS
+    // ==========================================
+
+    // --- HEADER ---
+    function renderHeader() {
+        const count = cartItemCount();
+        const header = document.getElementById('main-header');
+        header.innerHTML = `
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex items-center justify-between h-16">
+                <!-- Logo -->
+                <a href="#home" data-action="navigate" data-page="home" class="flex items-center gap-2 flex-shrink-0" aria-label="VoltVault Home">
+                    <div class="w-8 h-8 bg-volt-500 rounded-lg flex items-center justify-center">
+                        <i data-lucide="zap" class="w-5 h-5 text-white" style="fill:white;"></i>
+                    </div>
+                    <span class="text-xl font-bold text-slate-900 tracking-tight">Volt<span class="text-volt-500">Vault</span></span>
+                </a>
+
+                <!-- Desktop Nav -->
+                <nav class="hidden lg:flex items-center gap-8" aria-label="Main navigation">
+                    <a href="#home" data-action="navigate" data-page="home" class="text-sm font-medium text-slate-600 hover:text-volt-500 transition-colors ${state.page==='home'?'text-volt-500':''}">Home</a>
+                    <a href="#catalog" data-action="navigate" data-page="catalog" class="text-sm font-medium text-slate-600 hover:text-volt-500 transition-colors ${state.page==='catalog'?'text-volt-500':''}">Shop</a>
+                    <div class="relative group">
+                        <button class="text-sm font-medium text-slate-600 hover:text-volt-500 transition-colors flex items-center gap-1 ${['catalog','product'].includes(state.page)?'text-volt-500':''}">
+                            Categories <i data-lucide="chevron-down" class="w-4 h-4"></i>
+                        </button>
+                        <div class="absolute top-full left-0 pt-2 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200">
+                            <div class="bg-white rounded-xl shadow-lg border border-slate-100 py-2 w-56">
+                                ${categories.map(c => `<a href="#catalog" data-action="navigate" data-page="catalog" data-category="${c.name}" class="block px-4 py-2 text-sm text-slate-600 hover:bg-slate-50 hover:text-volt-500 transition-colors">${c.name}</a>`).join('')}
+                            </div>
+                        </div>
+                    </div>
+                    <a href="#catalog" data-action="navigate" data-page="catalog" class="text-sm font-medium text-slate-600 hover:text-volt-500 transition-colors">Deals</a>
+                </nav>
+
+                <!-- Search Bar (desktop) -->
+                <div class="hidden md:flex flex-1 max-w-md mx-6 relative" id="header-search-wrap">
+                    <div class="relative w-full">
+                        <i data-lucide="search" class="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400"></i>
+                        <input type="text" id="header-search" placeholder="Search parts, SKUs, brands..." value="${state.filters.search}" class="w-full pl-10 pr-4 py-2 bg-slate-100 border border-transparent rounded-lg text-sm focus:bg-white focus:border-volt-500 focus:ring-2 focus:ring-volt-500/20 transition-all outline-none" aria-label="Search products">
+                    </div>
+                    <div id="search-dropdown" class="absolute top-full left-0 right-0 mt-1 bg-white rounded-xl shadow-xl border border-slate-100 overflow-hidden hidden z-50"></div>
+                </div>
+
+                <!-- Right Actions -->
+                <div class="flex items-center gap-2">
+                    <button data-action="open-mobile-search" class="md:hidden p-2 text-slate-600 hover:text-volt-500 transition-colors rounded-lg hover:bg-slate-100" aria-label="Search">
+                        <i data-lucide="search" class="w-5 h-5"></i>
+                    </button>
+                    <a href="#cart" data-action="navigate" data-page="cart" class="relative p-2 text-slate-600 hover:text-volt-500 transition-colors rounded-lg hover:bg-slate-100" aria-label="Shopping cart with ${count} items">
+                        <i data-lucide="shopping-cart" class="w-5 h-5"></i>
+                        <span data-cart-badge class="absolute -top-0.5 -right-0.5 w-5 h-5 bg-volt-500 text-white text-[10px] font-bold rounded-full flex items-center justify-center ${count > 0 ? '' : 'hidden'}">${count}</span>
+                    </a>
+                    <button data-action="open-mobile-menu" class="lg:hidden p-2 text-slate-600 hover:text-volt-500 transition-colors rounded-lg hover:bg-slate-100" aria-label="Open menu">
+                        <i data-lucide="menu" class="w-5 h-5"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+        <!-- Mobile search bar (hidden by default) -->
+        <div id="mobile-search-bar" class="md:hidden hidden border-t border-slate-100 px-4 py-3 bg-white">
+            <div class="relative">
+                <i data-lucide="search" class="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400"></i>
+                <input type="text" id="mobile-search" placeholder="Search parts, SKUs..." class="w-full pl-10 pr-10 py-2.5 bg-slate-100 border border-transparent rounded-lg text-sm focus:bg-white focus:border-volt-500 focus:ring-2 focus:ring-volt-500/20 transition-all outline-none" aria-label="Search products">
+                <button data-action="close-mobile-search" class="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600" aria-label="Close search"><i data-lucide="x" class="w-4 h-4"></i></button>
+            </div>
+            <div id="mobile-search-dropdown" class="mt-1 bg-white rounded-xl shadow-xl border border-slate-100 overflow-hidden hidden z-50"></div>
+        </div>`;
+        lucide.createIcons({ nodes: [header] });
+    }
+
+    // --- MOBILE MENU ---
+    function renderMobileMenu() {
+        const content = document.getElementById('mobile-menu-content');
+        content.innerHTML = `
+        <div class="flex items-center justify-between mb-8">
+            <span class="text-lg font-bold text-slate-900">Menu</span>
+            <button data-action="close-mobile-menu" class="p-2 hover:bg-slate-100 rounded-lg transition-colors" aria-label="Close menu"><i data-lucide="x" class="w-5 h-5 text-slate-500"></i></button>
+        </div>
+        <nav class="space-y-1" aria-label="Mobile navigation">
+            <a href="#home" data-action="navigate" data-page="home" class="flex items-center gap-3 px-3 py-3 rounded-lg text-base font-medium ${state.page==='home'?'bg-volt-50 text-volt-600':'text-slate-700 hover:bg-slate-50'} transition-colors">
+                <i data-lucide="home" class="w-5 h-5"></i> Home
+            </a>
+            <a href="#catalog" data-action="navigate" data-page="catalog" class="flex items-center gap-3 px-3 py-3 rounded-lg text-base font-medium ${state.page==='catalog'?'bg-volt-50 text-volt-600':'text-slate-700 hover:bg-slate-50'} transition-colors">
+                <i data-lucide="grid-3x3" class="w-5 h-5"></i> Shop All
+            </a>
+            <div class="pt-2 pb-1 px-3 text-xs font-semibold text-slate-400 uppercase tracking-wider">Categories</div>
+            ${categories.map(c => `<a href="#catalog" data-action="navigate" data-page="catalog" data-category="${c.name}" class="flex items-center justify-between px-3 py-2.5 rounded-lg text-sm text-slate-600 hover:bg-slate-50 hover:text-volt-500 transition-colors">${c.name}<i data-lucide="chevron-right" class="w-4 h-4 text-slate-300"></i></a>`).join('')}
+        </nav>
+        <div class="mt-8 pt-6 border-t border-slate-100 space-y-1">
+            <a href="#cart" data-action="navigate" data-page="cart" class="flex items-center gap-3 px-3 py-3 rounded-lg text-base font-medium text-slate-700 hover:bg-slate-50 transition-colors">
+                <i data-lucide="shopping-cart" class="w-5 h-5"></i> Cart (${cartItemCount()})
+            </a>
+            <a href="#" class="flex items-center gap-3 px-3 py-3 rounded-lg text-base font-medium text-slate-700 hover:bg-slate-50 transition-colors">
+                <i data-lucide="headphones" class="w-5 h-5"></i> Support
+            </a>
+        </div>`;
+        lucide.createIcons({ nodes: [content] });
+    }
+
+    // --- FOOTER ---
+    function renderFooter() {
+        const footer = document.getElementById('main-footer');
+        footer.innerHTML = `
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-10">
+                <!-- Company -->
+                <div>
+                    <a href="#home" data-action="navigate" data-page="home" class="flex items-center gap-2 mb-4">
+                        <div class="w-8 h-8 bg-volt-500 rounded-lg flex items-center justify-center"><i data-lucide="zap" class="w-5 h-5 text-white" style="fill:white;"></i></div>
+                        <span class="text-xl font-bold text-white tracking-tight">Volt<span class="text-volt-400">Vault</span></span>
+                    </a>
+                    <p class="text-slate-400 text-sm leading-relaxed mb-6">Professional-grade electric vehicle parts and accessories. Trusted by EV enthusiasts and professionals worldwide.</p>
+                    <div class="flex gap-3">
+                        <a href="#" class="w-9 h-9 rounded-lg bg-slate-800 hover:bg-volt-500 flex items-center justify-center text-slate-400 hover:text-white transition-all" aria-label="Twitter"><i data-lucide="twitter" class="w-4 h-4"></i></a>
+                        <a href="#" class="w-9 h-9 rounded-lg bg-slate-800 hover:bg-volt-500 flex items-center justify-center text-slate-400 hover:text-white transition-all" aria-label="YouTube"><i data-lucide="youtube" class="w-4 h-4"></i></a>
+                        <a href="#" class="w-9 h-9 rounded-lg bg-slate-800 hover:bg-volt-500 flex items-center justify-center text-slate-400 hover:text-white transition-all" aria-label="Instagram"><i data-lucide="instagram" class="w-4 h-4"></i></a>
+                    </div>
+                </div>
+                <!-- Shop -->
+                <div>
+                    <h4 class="text-sm font-semibold text-white uppercase tracking-wider mb-4">Shop</h4>
+                    <ul class="space-y-2.5">
+                        ${categories.slice(0,5).map(c => `<li><a href="#catalog" data-action="navigate" data-page="catalog" data-category="${c.name}" class="text-sm text-slate-400 hover:text-volt-400 transition-colors">${c.name}</a></li>`).join('')}
+                        <li><a href="#catalog" data-action="navigate" data-page="catalog" class="text-sm text-slate-400 hover:text-volt-400 transition-colors">View All Parts</a></li>
+                    </ul>
+                </div>
+                <!-- Support -->
+                <div>
+                    <h4 class="text-sm font-semibold text-white uppercase tracking-wider mb-4">Support</h4>
+                    <ul class="space-y-2.5">
+                        <li><a href="#" class="text-sm text-slate-400 hover:text-volt-400 transition-colors">Help Center</a></li>
+                        <li><a href="#" class="text-sm text-slate-400 hover:text-volt-400 transition-colors">Shipping Info</a></li>
+                        <li><a href="#" class="text-sm text-slate-400 hover:text-volt-400 transition-colors">Returns & Exchanges</a></li>
+                        <li><a href="#" class="text-sm text-slate-400 hover:text-volt-400 transition-colors">Compatibility Guide</a></li>
+                        <li><a href="#" class="text-sm text-slate-400 hover:text-volt-400 transition-colors">Contact Us</a></li>
+                    </ul>
+                </div>
+                <!-- Newsletter -->
+                <div>
+                    <h4 class="text-sm font-semibold text-white uppercase tracking-wider mb-4">Stay Updated</h4>
+                    <p class="text-sm text-slate-400 mb-4">Get exclusive deals, new arrivals, and EV tips delivered to your inbox.</p>
+                    <form data-action="newsletter" class="flex gap-2">
+                        <input type="email" placeholder="Your email" required class="flex-1 min-w-0 px-3 py-2.5 bg-slate-800 border border-slate-700 rounded-lg text-sm text-white placeholder-slate-500 focus:border-volt-500 focus:ring-1 focus:ring-volt-500 outline-none transition-all" aria-label="Email for newsletter">
+                        <button type="submit" class="px-4 py-2.5 bg-volt-500 hover:bg-volt-600 text-white text-sm font-medium rounded-lg transition-colors flex-shrink-0">Join</button>
+                    </form>
+                    <div class="mt-6 flex items-center gap-4 text-slate-500">
+                        <span class="text-xs">Secure payments:</span>
+                        <div class="flex gap-2">
+                            <span class="px-2 py-1 bg-slate-800 rounded text-[10px] font-semibold text-slate-400">VISA</span>
+                            <span class="px-2 py-1 bg-slate-800 rounded text-[10px] font-semibold text-slate-400">MC</span>
+                            <span class="px-2 py-1 bg-slate-800 rounded text-[10px] font-semibold text-slate-400">AMEX</span>
+                            <span class="px-2 py-1 bg-slate-800 rounded text-[10px] font-semibold text-slate-400">PAYPAL</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="border-t border-slate-800">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 flex flex-col sm:flex-row items-center justify-between gap-4">
+                <p class="text-xs text-slate-500">&copy; 2024 VoltVault. All rights reserved.</p>
+                <div class="flex gap-6">
+                    <a href="#" class="text-xs text-slate-500 hover:text-slate-300 transition-colors">Privacy Policy</a>
+                    <a href="#" class="text-xs text-slate-500 hover:text-slate-300 transition-colors">Terms of Service</a>
+                    <a href="#" class="text-xs text-slate-500 hover:text-slate-300 transition-colors">Accessibility</a>
+                </div>
+            </div>
+        </div>`;
+        lucide.createIcons({ nodes: [footer] });
+    }
+
+    // --- PRODUCT CARD ---
+    function productCardHTML(p) {
+        const wished = isWished(p.id);
+        const badge = p.tags.includes('bestseller') ? '<span class="absolute top-3 left-3 px-2.5 py-1 bg-amber-500 text-white text-[11px] font-semibold rounded-md uppercase tracking-wide">Best Seller</span>'
+            : p.tags.includes('new') ? '<span class="absolute top-3 left-3 px-2.5 py-1 bg-volt-500 text-white text-[11px] font-semibold rounded-md uppercase tracking-wide">New</span>'
+            : p.tags.includes('sale') ? '<span class="absolute top-3 left-3 px-2.5 py-1 bg-red-500 text-white text-[11px] font-semibold rounded-md uppercase tracking-wide">Sale</span>'
+            : !p.inStock ? '<span class="absolute top-3 left-3 px-2.5 py-1 bg-slate-700 text-white text-[11px] font-semibold rounded-md uppercase tracking-wide">Out of Stock</span>' : '';
+        return `
+        <div class="group bg-white rounded-xl border border-slate-200/80 overflow-hidden shadow-sm hover:shadow-md hover:-translate-y-1 transition-all duration-300 flex flex-col">
+            <div class="relative aspect-[4/3] overflow-hidden bg-slate-100">
+                <img src="${p.image}" alt="${p.name}" loading="lazy" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                ${badge}
+                <div class="absolute top-3 right-3 flex flex-col gap-2 opacity-0 group-hover:opacity-100 transition-opacity duration-200">
+                    <button data-action="toggle-wishlist" data-product-id="${p.id}" class="w-9 h-9 rounded-full bg-white/90 backdrop-blur-sm shadow-sm flex items-center justify-center hover:bg-white transition-colors" aria-label="${wished ? 'Remove from wishlist' : 'Add to wishlist'}">
+                        <i data-lucide="heart" class="w-4 h-4 ${wished ? 'text-red-500' : 'text-slate-500'}" ${wished ? 'style="fill:currentColor;"' : ''}></i>
+                    </button>
+                </div>
+            </div>
+            <div class="p-4 flex flex-col flex-1">
+                <div class="flex items-center gap-1.5 mb-2">
+                    <div class="flex">${starsHTML(p.rating, 12)}</div>
+                    <span class="text-xs text-slate-400">(${p.reviewCount})</span>
+                </div>
+                <a href="#product" data-action="view-product" data-product-id="${p.id}" class="text-sm font-semibold text-slate-800 hover:text-volt-500 transition-colors line-clamp-2 mb-1 leading-snug">${p.name}</a>
+                <p class="text-xs text-slate-400 flex items-center gap-1 mb-3"><i data-lucide="car" class="w-3 h-3"></i>${p.compatibility[0] || p.category}</p>
+                <div class="mt-auto flex items-end justify-between gap-2">
+                    <div>
+                        <span class="text-lg font-bold text-slate-900">${formatPrice(p.price)}</span>
+                        ${p.compareAtPrice ? `<span class="text-sm text-slate-400 line-through ml-2">${formatPrice(p.compareAtPrice)}</span>` : ''}
+                    </div>
+                    <button data-action="add-to-cart" data-product-id="${p.id}" ${!p.inStock ? 'disabled' : ''} class="w-10 h-10 rounded-lg ${p.inStock ? 'bg-volt-500 hover:bg-volt-600 text-white' : 'bg-slate-200 text-slate-400 cursor-not-allowed'} flex items-center justify-center transition-all duration-200 flex-shrink-0" aria-label="Add ${p.name} to cart">
+                        <i data-lucide="shopping-cart" class="w-4 h-4"></i>
+                    </button>
+                </div>
+            </div>
+        </div>`;
+    }
+
+    // --- MOBILE STICKY BAR (product page) ---
+    function renderMobileStickyBar() {
+        const bar = document.getElementById('mobile-sticky-bar');
+        if (state.page !== 'product' || !state.selectedProductId) { bar.classList.add('hidden'); return; }
+        const p = getProduct(state.selectedProductId);
+        if (!p) { bar.classList.add('hidden'); return; }
+        bar.classList.remove('hidden');
+        bar.innerHTML = `
+        <div class="flex items-center justify-between gap-3">
+            <div>
+                <span class="text-lg font-bold text-slate-900">${formatPrice(p.price)}</span>
+                ${p.compareAtPrice ? `<span class="text-xs text-slate-400 line-through ml-1">${formatPrice(p.compareAtPrice)}</span>` : ''}
+            </div>
+            <button data-action="add-to-cart" data-product-id="${p.id}" ${!p.inStock ? 'disabled' : ''} class="flex-1 max-w-[200px] py-3 px-6 rounded-lg ${p.inStock ? 'bg-volt-500 hover:bg-volt-600 text-white' : 'bg-slate-200 text-slate-400 cursor-not-allowed'} font-semibold text-sm transition-colors">
+                ${p.inStock ? 'Add to Cart' : 'Out of Stock'}
+            </button>
+        </div>`;
+    }
+
+    // ==========================================
+    // SEARCH FUNCTIONALITY
+    // ==========================================
+    function handleSearch(query, dropdownId) {
+        const dropdown = document.getElementById(dropdownId);
+        if (!query.trim()) { dropdown.classList.add('hidden'); return; }
+        const q = query.toLowerCase();
+        const results = products.filter(p => p.name.toLowerCase().includes(q) || p.sku.toLowerCase().includes(q) || p.brand.toLowerCase().includes(q)).slice(0, 5);
+        if (!results.length) {
+            dropdown.innerHTML = `<div class="p-4 text-sm text-slate-500 text-center">No results found for "${query}"</div>`;
+        } else {
+            dropdown.innerHTML = results.map(p => `
+                <a href="#product" data-action="view-product" data-product-id="${p.id}" class="flex items-center gap-3 px-4 py-3 hover:bg-slate-50 transition-colors">
+                    <img src="${p.image}" alt="" class="w-10 h-10 rounded-lg object-cover flex-shrink-0">
+                    <div class="flex-1 min-w-0">
+                        <p class="text-sm font-medium text-slate-800 truncate">${p.name}</p>
+                        <p class="text-xs text-slate-400">${p.category} &middot; ${p.sku}</p>
+                    </div>
+                    <span class="text-sm font-semibold text-slate-900 flex-shrink-0">${formatPrice(p.price)}</span>
+                </a>`).join('');
+        }
+        dropdown.classList.remove('hidden');
+    }
+
+    // ==========================================
+    // PAGE: HOME
+    // ==========================================
+    function renderHome() {
+        const main = document.getElementById('main-content');
+        const bestSellers = products.filter(p => p.tags.includes('bestseller')).slice(0, 4);
+        main.innerHTML = `
+        <!-- Hero Section -->
+        <section class="hero-pattern relative overflow-hidden">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 md:py-24">
+                <div class="grid lg:grid-cols-2 gap-12 lg:gap-16 items-center">
+                    <div class="page-enter">
+                        <div class="inline-flex items-center gap-2 px-3 py-1.5 bg-eco-50 text-eco-600 rounded-full text-xs font-semibold mb-6">
+                            <span class="w-1.5 h-1.5 bg-eco-500 rounded-full animate-pulse-dot"></span>
+                            Trusted by 15,000+ EV professionals
+                        </div>
+                        <h1 class="text-4xl sm:text-5xl lg:text-[3.5rem] font-bold tracking-tight text-slate-900 leading-[1.1] mb-6">
+                            Premium Electric Vehicle Parts <span class="text-volt-500">&</span> Accessories
+                        </h1>
+                        <p class="text-lg text-slate-600 leading-relaxed mb-8 max-w-xl">
+                            Professional-grade components for EV conversions, repairs, and upgrades. Certified quality with expert support.
+                        </p>
+                        <div class="flex flex-wrap gap-3 mb-10">
+                            <a href="#catalog" data-action="navigate" data-page="catalog" class="inline-flex items-center gap-2 px-6 py-3.5 bg-volt-500 hover:bg-volt-600 text-white font-semibold rounded-lg transition-colors shadow-lg shadow-volt-500/25">
+                                Shop Now <i data-lucide="arrow-right" class="w-4 h-4"></i>
+                            </a>
+                            <a href="#catalog" data-action="navigate" data-page="catalog" data-category="Conversion Kits" class="inline-flex items-center gap-2 px-6 py-3.5 bg-white hover:bg-slate-50 text-slate-700 font-semibold rounded-lg border border-slate-200 transition-colors">
+                                View Conversion Kits
+                            </a>
+                        </div>
+                        <div class="flex flex-wrap gap-x-6 gap-y-2 text-sm text-slate-500">
+                            <span class="flex items-center gap-1.5"><i data-lucide="truck" class="w-4 h-4 text-eco-500"></i> Free Shipping Over $99</span>
+                            <span class="flex items-center gap-1.5"><i data-lucide="rotate-ccw" class="w-4 h-4 text-eco-500"></i> 30-Day Returns</span>
+                            <span class="flex items-center gap-1.5"><i data-lucide="headphones" class="w-4 h-4 text-eco-500"></i> Expert Support</span>
+                        </div>
+                    </div>
+                    <div class="relative page-enter" style="animation-delay:0.15s">
+                        <div class="relative rounded-2xl overflow-hidden shadow-2xl shadow-slate-900/10">
+                            <img src="https://images.unsplash.com/photo-1593941707882-a5bba14938c7?w=800&h=600&fit=crop" alt="Electric vehicle charging station" class="w-full h-auto" loading="eager">
+                            <div class="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent"></div>
+                        </div>
+                        <div class="absolute -bottom-4 -left-4 bg-white rounded-xl shadow-lg p-4 hidden sm:flex items-center gap-3 border border-slate-100">
+                            <div class="w-10 h-10 bg-eco-50 rounded-lg flex items-center justify-center"><i data-lucide="shield-check" class="w-5 h-5 text-eco-500"></i></div>
+                            <div><p class="text-sm font-semibold text-slate-800">UL Certified</p><p class="text-xs text-slate-400">All products tested</p></div>
+                        </div>
+                        <div class="absolute -top-3 -right-3 bg-white rounded-xl shadow-lg p-3 hidden sm:flex items-center gap-2 border border-slate-100">
+                            <div class="flex -space-x-1">
+                                ${[1,2,3,4,5].map(() => '<i data-lucide="star" class="w-3.5 h-3.5 text-amber-400" style="fill:currentColor;"></i>').join('')}
+                            </div>
+                            <span class="text-xs font-semibold text-slate-700">4.8/5</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Features Grid -->
+        <section class="py-16 md:py-20 bg-white border-y border-slate-100">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="grid sm:grid-cols-3 gap-8">
+                    ${[
+                        { icon: 'layers', title: '10,000+ Parts', desc: 'Everything from battery cells to charging cables for every EV make and model.' },
+                        { icon: 'headphones', title: 'Technical Assistance', desc: 'EV specialists available 7 days a week to help with compatibility and installation.' },
+                        { icon: 'zap', title: 'Next-Day Delivery', desc: 'Free expedited shipping on orders over $99. Most orders ship within 24 hours.' }
+                    ].map((f, i) => `
+                    <div class="text-center page-enter" style="animation-delay:${i * 0.1}s">
+                        <div class="w-14 h-14 mx-auto mb-4 bg-volt-50 rounded-2xl flex items-center justify-center">
+                            <i data-lucide="${f.icon}" class="w-7 h-7 text-volt-500"></i>
+                        </div>
+                        <h3 class="text-lg font-semibold text-slate-900 mb-2">${f.title}</h3>
+                        <p class="text-sm text-slate-500 leading-relaxed max-w-xs mx-auto">${f.desc}</p>
+                    </div>`).join('')}
+                </div>
+            </div>
+        </section>
+
+        <!-- Categories -->
+        <section class="py-16 md:py-24">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="text-center mb-12">
+                    <h2 class="text-3xl md:text-4xl font-bold text-slate-900 tracking-tight mb-3">Shop by Category</h2>
+                    <p class="text-slate-500 max-w-lg mx-auto">Find exactly what you need for your electric vehicle project or repair.</p>
+                </div>
+                <div class="grid grid-cols-2 md:grid-cols-3 gap-4 md:gap-6">
+                    ${categories.map((c, i) => `
+                    <a href="#catalog" data-action="navigate" data-page="catalog" data-category="${c.name}" class="group relative rounded-xl overflow-hidden aspect-[4/3] page-enter" style="animation-delay:${i * 0.07}s">
+                        <img src="${c.image}" alt="${c.name}" loading="lazy" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                        <div class="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent"></div>
+                        <div class="absolute inset-0 flex flex-col items-center justify-center text-white p-4">
+                            <h3 class="text-lg md:text-xl font-semibold mb-1">${c.name}</h3>
+                            <p class="text-sm text-white/70">${c.count} products</p>
+                        </div>
+                        <div class="absolute top-3 right-3 w-8 h-8 bg-white/20 backdrop-blur-sm rounded-full flex items-center justify-center text-white opacity-0 group-hover:opacity-100 translate-x-2 group-hover:translate-x-0 transition-all duration-300">
+                            <i data-lucide="arrow-up-right" class="w-4 h-4"></i>
+                        </div>
+                    </a>`).join('')}
+                </div>
+            </div>
+        </section>
+
+        <!-- Best Sellers -->
+        <section class="py-16 md:py-24 bg-white border-y border-slate-100">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="flex items-end justify-between mb-10">
+                    <div>
+                        <h2 class="text-3xl md:text-4xl font-bold text-slate-900 tracking-tight mb-2">Best Sellers</h2>
+                        <p class="text-slate-500">Our most popular parts, chosen by EV professionals.</p>
+                    </div>
+                    <a href="#catalog" data-action="navigate" data-page="catalog" class="hidden sm:inline-flex items-center gap-1 text-sm font-semibold text-volt-500 hover:text-volt-600 transition-colors">
+                        View All <i data-lucide="arrow-right" class="w-4 h-4"></i>
+                    </a>
+                </div>
+                <div class="grid grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6">
+                    ${bestSellers.map((p, i) => `<div class="page-enter" style="animation-delay:${i * 0.1}s">${productCardHTML(p)}</div>`).join('')}
+                </div>
+                <div class="sm:hidden mt-6 text-center">
+                    <a href="#catalog" data-action="navigate" data-page="catalog" class="inline-flex items-center gap-1 text-sm font-semibold text-volt-500">View All Products <i data-lucide="arrow-right" class="w-4 h-4"></i></a>
+                </div>
+            </div>
+        </section>
+
+        <!-- Trust / Testimonials -->
+        <section class="py-16 md:py-24">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <!-- Certifications -->
+                <div class="flex flex-wrap justify-center gap-6 md:gap-10 mb-16">
+                    ${['UL Listed', 'CE Certified', 'ISO 9001', 'FCC Approved'].map(cert => `
+                    <div class="flex items-center gap-2 px-4 py-2.5 bg-white rounded-xl border border-slate-200 shadow-sm">
+                        <i data-lucide="shield-check" class="w-5 h-5 text-eco-500"></i>
+                        <span class="text-sm font-semibold text-slate-700">${cert}</span>
+                    </div>`).join('')}
+                </div>
+                <!-- Testimonials -->
+                <div class="text-center mb-10">
+                    <h2 class="text-3xl md:text-4xl font-bold text-slate-900 tracking-tight mb-3">What Our Customers Say</h2>
+                    <p class="text-slate-500">Real feedback from EV professionals and enthusiasts.</p>
+                </div>
+                <div class="grid md:grid-cols-3 gap-6">
+                    ${testimonials.map((t, i) => `
+                    <div class="bg-white rounded-xl border border-slate-200/80 p-6 shadow-sm page-enter" style="animation-delay:${i * 0.1}s">
+                        <div class="flex gap-0.5 mb-4">${starsHTML(t.rating, 16)}</div>
+                        <p class="text-sm text-slate-600 leading-relaxed mb-5">"${t.text}"</p>
+                        <div class="flex items-center gap-3 pt-4 border-t border-slate-100">
+                            <div class="w-10 h-10 rounded-full bg-volt-100 flex items-center justify-center text-volt-600 font-semibold text-sm">${t.name.split(' ').map(n=>n[0]).join('')}</div>
+                            <div>
+                                <p class="text-sm font-semibold text-slate-800">${t.name}</p>
+                                <p class="text-xs text-slate-400">${t.role}</p>
+                            </div>
+                        </div>
+                    </div>`).join('')}
+                </div>
+                <!-- Partner logos -->
+                <div class="mt-16 text-center">
+                    <p class="text-xs font-semibold text-slate-400 uppercase tracking-widest mb-6">Compatible with all major EV brands</p>
+                    <div class="flex flex-wrap justify-center gap-8 md:gap-12 opacity-40">
+                        ${['Tesla', 'Nissan', 'BMW', 'Chevrolet', 'Hyundai', 'Kia'].map(b => `<span class="text-lg md:text-xl font-bold text-slate-400 tracking-tight">${b}</span>`).join('')}
+                    </div>
+                </div>
+            </div>
+        </section>`;
+
+        lucide.createIcons({ nodes: [main] });
+    }
+
+    // ==========================================
+    // PAGE: CATALOG
+    // ==========================================
+    function renderCatalog() {
+        const main = document.getElementById('main-content');
+        const filtered = getFilteredProducts();
+        const afc = activeFilterCount();
+        const allCategories = [...new Set(products.map(p => p.category))].sort();
+        const allBrands = [...new Set(products.map(p => p.brand))].sort();
+        const allCompat = [...new Set(products.flatMap(p => p.compatibility))].sort();
+
+        main.innerHTML = `
+        <!-- Breadcrumb -->
+        <div class="bg-white border-b border-slate-100">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3">
+                <nav class="flex items-center gap-2 text-sm text-slate-400" aria-label="Breadcrumb">
+                    <a href="#home" data-action="navigate" data-page="home" class="hover:text-volt-500 transition-colors">Home</a>
+                    <i data-lucide="chevron-right" class="w-3.5 h-3.5"></i>
+                    <span class="text-slate-700 font-medium">Shop</span>
+                </nav>
+            </div>
+        </div>
+
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 md:py-8">
+            <!-- Top bar: mobile filter button + sort + view toggle -->
+            <div class="flex items-center justify-between gap-4 mb-6">
+                <div class="flex items-center gap-3">
+                    <button data-action="open-filters" class="lg:hidden inline-flex items-center gap-2 px-4 py-2.5 bg-white border border-slate-200 rounded-lg text-sm font-medium text-slate-700 hover:bg-slate-50 transition-colors">
+                        <i data-lucide="sliders-horizontal" class="w-4 h-4"></i> Filter${afc ? ` <span class="w-5 h-5 bg-volt-500 text-white text-[10px] font-bold rounded-full flex items-center justify-center">${afc}</span>` : ''}
+                    </button>
+                    <p class="text-sm text-slate-500 hidden sm:block">Showing <strong class="text-slate-700">${filtered.length}</strong> product${filtered.length !== 1 ? 's' : ''}</p>
+                </div>
+                <div class="flex items-center gap-3">
+                    <select id="sort-select" class="text-sm border border-slate-200 rounded-lg px-3 py-2 bg-white text-slate-700 focus:border-volt-500 focus:ring-2 focus:ring-volt-500/20 outline-none cursor-pointer" aria-label="Sort products">
+                        <option value="featured" ${state.sort==='featured'?'selected':''}>Featured</option>
+                        <option value="price-asc" ${state.sort==='price-asc'?'selected':''}>Price: Low to High</option>
+                        <option value="price-desc" ${state.sort==='price-desc'?'selected':''}>Price: High to Low</option>
+                        <option value="rating" ${state.sort==='rating'?'selected':''}>Highest Rated</option>
+                        <option value="newest" ${state.sort==='newest'?'selected':''}>Newest</option>
+                    </select>
+                    <div class="hidden sm:flex items-center border border-slate-200 rounded-lg overflow-hidden">
+                        <button data-action="set-view" data-view="grid" class="p-2 ${state.viewMode==='grid'?'bg-volt-50 text-volt-500':'text-slate-400 hover:bg-slate-50'} transition-colors" aria-label="Grid view"><i data-lucide="grid-3x3" class="w-4 h-4"></i></button>
+                        <button data-action="set-view" data-view="list" class="p-2 ${state.viewMode==='list'?'bg-volt-50 text-volt-500':'text-slate-400 hover:bg-slate-50'} transition-colors" aria-label="List view"><i data-lucide="list" class="w-4 h-4"></i></button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Active filters -->
+            ${afc > 0 ? `
+            <div class="flex flex-wrap items-center gap-2 mb-6">
+                <span class="text-xs font-medium text-slate-500">Active filters:</span>
+                ${state.filters.search ? `<span class="inline-flex items-center gap-1 px-2.5 py-1 bg-volt-50 text-volt-600 text-xs font-medium rounded-full">"${state.filters.search}" <button data-action="clear-filter" data-filter="search" class="hover:text-volt-800"><i data-lucide="x" class="w-3 h-3"></i></button></span>` : ''}
+                ${state.filters.categories.map(c => `<span class="inline-flex items-center gap-1 px-2.5 py-1 bg-volt-50 text-volt-600 text-xs font-medium rounded-full">${c} <button data-action="clear-filter" data-filter="category" data-value="${c}" class="hover:text-volt-800"><i data-lucide="x" class="w-3 h-3"></i></button></span>`).join('')}
+                ${state.filters.brands.map(b => `<span class="inline-flex items-center gap-1 px-2.5 py-1 bg-volt-50 text-volt-600 text-xs font-medium rounded-full">${b} <button data-action="clear-filter" data-filter="brand" data-value="${b}" class="hover:text-volt-800"><i data-lucide="x" class="w-3 h-3"></i></button></span>`).join('')}
+                ${state.filters.priceRange ? `<span class="inline-flex items-center gap-1 px-2.5 py-1 bg-volt-50 text-volt-600 text-xs font-medium rounded-full">${formatPrice(state.filters.priceRange[0])} - ${state.filters.priceRange[1] === Infinity ? 'Any' : formatPrice(state.filters.priceRange[1])} <button data-action="clear-filter" data-filter="priceRange" class="hover:text-volt-800"><i data-lucide="x" class="w-3 h-3"></i></button></span>` : ''}
+                ${state.filters.rating ? `<span class="inline-flex items-center gap-1 px-2.5 py-1 bg-volt-50 text-volt-600 text-xs font-medium rounded-full">${state.filters.rating}+ Stars <button data-action="clear-filter" data-filter="rating" class="hover:text-volt-800"><i data-lucide="x" class="w-3 h-3"></i></button></span>` : ''}
+                ${state.filters.inStockOnly ? `<span class="inline-flex items-center gap-1 px-2.5 py-1 bg-volt-50 text-volt-600 text-xs font-medium rounded-full">In Stock Only <button data-action="clear-filter" data-filter="inStockOnly" class="hover:text-volt-800"><i data-lucide="x" class="w-3 h-3"></i></button></span>` : ''}
+                <button data-action="clear-all-filters" class="text-xs font-medium text-red-500 hover:text-red-600 transition-colors ml-2">Clear All</button>
+            </div>` : ''}
+
+            <div class="flex gap-8">
+                <!-- Desktop Sidebar Filters -->
+                <aside class="hidden lg:block w-64 flex-shrink-0" aria-label="Product filters">
+                    <div class="sticky top-24 space-y-6">
+                        ${filterSectionHTML('Categories', 'category', allCategories.map(c => ({ value: c, label: c, count: products.filter(p => p.category === c).length })))}
+                        ${filterSectionHTML('Brand', 'brand', allBrands.map(b => ({ value: b, label: b, count: products.filter(p => p.brand === b).length })))}
+                        ${filterSectionHTML('Compatibility', 'compatibility', allCompat.map(c => ({ value: c, label: c, count: products.filter(p => p.compatibility.includes(c)).length })))}
+                        <!-- Price Range -->
+                        <div class="bg-white rounded-xl border border-slate-200/80 p-4">
+                            <h3 class="text-sm font-semibold text-slate-800 mb-3">Price Range</h3>
+                            <div class="grid grid-cols-2 gap-2 mb-3">
+                                <input type="number" id="price-min" placeholder="Min" min="0" value="${state.filters.priceRange ? state.filters.priceRange[0] : ''}" class="w-full px-3 py-2 border border-slate-200 rounded-lg text-sm focus:border-volt-500 focus:ring-1 focus:ring-volt-500/20 outline-none" aria-label="Minimum price">
+                                <input type="number" id="price-max" placeholder="Max" min="0" value="${state.filters.priceRange && state.filters.priceRange[1] !== Infinity ? state.filters.priceRange[1] : ''}" class="w-full px-3 py-2 border border-slate-200 rounded-lg text-sm focus:border-volt-500 focus:ring-1 focus:ring-volt-500/20 outline-none" aria-label="Maximum price">
+                            </div>
+                            <div class="flex flex-wrap gap-1.5 mb-3">
+                                ${[[0,50],[50,100],[100,500],[500,Infinity]].map(([min,max]) => `<button data-action="set-price" data-min="${min}" data-max="${max}" class="px-2.5 py-1 text-xs border border-slate-200 rounded-md ${state.filters.priceRange && state.filters.priceRange[0]===min && state.filters.priceRange[1]===max ? 'bg-volt-50 border-volt-200 text-volt-600' : 'text-slate-600 hover:border-slate-300'} transition-colors">$${min}-${max===Infinity?'500+':max}</button>`).join('')}
+                            </div>
+                            <button data-action="apply-price" class="w-full py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-medium rounded-lg transition-colors">Apply</button>
+                        </div>
+                        <!-- Rating -->
+                        <div class="bg-white rounded-xl border border-slate-200/80 p-4">
+                            <h3 class="text-sm font-semibold text-slate-800 mb-3">Rating</h3>
+                            <div class="space-y-2">
+                                ${[4,3,2].map(r => `
+                                <label class="flex items-center gap-2 cursor-pointer py-1">
+                                    <input type="radio" name="rating" value="${r}" ${state.filters.rating === r ? 'checked' : ''} data-action="set-rating" class="w-4 h-4 text-volt-500 border-slate-300 focus:ring-volt-500">
+                                    <div class="flex">${starsHTML(r, 14)}</div>
+                                    <span class="text-xs text-slate-400">& up</span>
+                                </label>`).join('')}
+                            </div>
+                        </div>
+                        <!-- In Stock -->
+                        <label class="flex items-center gap-3 bg-white rounded-xl border border-slate-200/80 p-4 cursor-pointer hover:border-slate-300 transition-colors">
+                            <input type="checkbox" class="custom-check" ${state.filters.inStockOnly ? 'checked' : ''} data-action="toggle-instock">
+                            <span class="text-sm text-slate-700">In Stock Only</span>
+                        </label>
+                    </div>
+                </aside>
+
+                <!-- Product Grid -->
+                <div class="flex-1 min-w-0">
+                    ${filtered.length === 0 ? `
+                    <div class="text-center py-20">
+                        <i data-lucide="search-x" class="w-16 h-16 text-slate-300 mx-auto mb-4"></i>
+                        <h3 class="text-xl font-semibold text-slate-700 mb-2">No products found</h3>
+                        <p class="text-slate-500 mb-6">We couldn't find any products matching your filters. Try adjusting your criteria.</p>
+                        <button data-action="clear-all-filters" class="px-6 py-2.5 bg-volt-500 hover:bg-volt-600 text-white font-medium rounded-lg transition-colors">Clear All Filters</button>
+                    </div>` : `
+                    <div class="${state.viewMode === 'grid' ? 'grid grid-cols-2 xl:grid-cols-3 gap-4 md:gap-6' : 'space-y-4'}">
+                        ${filtered.map((p, i) => state.viewMode === 'grid'
+                            ? `<div class="page-enter" style="animation-delay:${Math.min(i * 0.05, 0.4)}s">${productCardHTML(p)}</div>`
+                            : listCardHTML(p, i)
+                        ).join('')}
+                    </div>
+                    <!-- Pagination placeholder -->
+                    <div class="flex items-center justify-center gap-2 mt-10">
+                        <button class="px-3 py-2 text-sm font-medium text-slate-400 bg-white border border-slate-200 rounded-lg cursor-not-allowed" disabled>Previous</button>
+                        <button class="px-3.5 py-2 text-sm font-medium text-white bg-volt-500 border border-volt-500 rounded-lg">1</button>
+                        <button class="px-3.5 py-2 text-sm font-medium text-slate-600 bg-white border border-slate-200 rounded-lg hover:bg-slate-50 transition-colors">2</button>
+                        <button class="px-3.5 py-2 text-sm font-medium text-slate-600 bg-white border border-slate-200 rounded-lg hover:bg-slate-50 transition-colors">3</button>
+                        <span class="px-2 text-slate-400">...</span>
+                        <button class="px-3.5 py-2 text-sm font-medium text-slate-600 bg-white border border-slate-200 rounded-lg hover:bg-slate-50 transition-colors">10</button>
+                        <button class="px-3 py-2 text-sm font-medium text-slate-600 bg-white border border-slate-200 rounded-lg hover:bg-slate-50 transition-colors">Next</button>
+                    </div>`}
+                </div>
+            </div>
+        </div>`;
+
+        lucide.createIcons({ nodes: [main] });
+        // Attach sort listener
+        const sortSelect = document.getElementById('sort-select');
+        if (sortSelect) sortSelect.addEventListener('change', (e) => { state.sort = e.target.value; renderPage(); });
+    }
+
+    function filterSectionHTML(title, type, items) {
+        const selected = type === 'category' ? state.filters.categories : type === 'brand' ? state.filters.brands : state.filters.compatibility;
+        return `
+        <div class="bg-white rounded-xl border border-slate-200/80 p-4">
+            <h3 class="text-sm font-semibold text-slate-800 mb-3">${title}</h3>
+            <div class="space-y-2 max-h-48 overflow-y-auto">
+                ${items.map(item => `
+                <label class="flex items-center gap-2.5 cursor-pointer group">
+                    <input type="checkbox" class="custom-check" data-action="toggle-filter" data-filter-type="${type}" data-filter-value="${item.value}" ${selected.includes(item.value) ? 'checked' : ''}>
+                    <span class="text-sm text-slate-600 group-hover:text-slate-800 flex-1 truncate transition-colors">${item.label}</span>
+                    <span class="text-xs text-slate-400">${item.count}</span>
+                </label>`).join('')}
+            </div>
+        </div>`;
+    }
+
+    function listCardHTML(p, i) {
+        return `
+        <div class="bg-white rounded-xl border border-slate-200/80 overflow-hidden shadow-sm hover:shadow-md transition-all flex page-enter" style="animation-delay:${Math.min(i * 0.05, 0.4)}s">
+            <a href="#product" data-action="view-product" data-product-id="${p.id}" class="w-40 md:w-56 flex-shrink-0">
+                <img src="${p.image}" alt="${p.name}" loading="lazy" class="w-full h-full object-cover">
+            </a>
+            <div class="flex-1 p-4 flex flex-col sm:flex-row sm:items-center gap-3 sm:gap-6">
+                <div class="flex-1 min-w-0">
+                    <div class="flex items-center gap-1.5 mb-1">
+                        <div class="flex">${starsHTML(p.rating, 12)}</div>
+                        <span class="text-xs text-slate-400">(${p.reviewCount})</span>
+                    </div>
+                    <a href="#product" data-action="view-product" data-product-id="${p.id}" class="text-base font-semibold text-slate-800 hover:text-volt-500 transition-colors mb-1 line-clamp-1">${p.name}</a>
+                    <p class="text-xs text-slate-400"><i data-lucide="car" class="w-3 h-3 inline"></i> ${p.compatibility[0] || p.category} &middot; ${p.brand}</p>
+                </div>
+                <div class="flex items-center gap-4 flex-shrink-0">
+                    <div class="text-right">
+                        <span class="text-lg font-bold text-slate-900">${formatPrice(p.price)}</span>
+                        ${p.compareAtPrice ? `<br><span class="text-sm text-slate-400 line-through">${formatPrice(p.compareAtPrice)}</span>` : ''}
+                    </div>
+                    <button data-action="add-to-cart" data-product-id="${p.id}" ${!p.inStock ? 'disabled' : ''} class="w-10 h-10 rounded-lg ${p.inStock ? 'bg-volt-500 hover:bg-volt-600 text-white' : 'bg-slate-200 text-slate-400 cursor-not-allowed'} flex items-center justify-center transition-colors" aria-label="Add to cart">
+                        <i data-lucide="shopping-cart" class="w-4 h-4"></i>
+                    </button>
+                </div>
+            </div>
+        </div>`;
+    }
+
+    // --- MOBILE FILTER PANEL ---
+    function renderFilterPanel() {
+        const content = document.getElementById('filter-panel-content');
+        const allCategories = [...new Set(products.map(p => p.category))].sort();
+        const allBrands = [...new Set(products.map(p => p.brand))].sort();
+        const allCompat = [...new Set(products.flatMap(p => p.compatibility))].sort();
+
+        content.innerHTML = `
+        <div class="sticky top-0 bg-white border-b border-slate-100 px-4 py-3 flex items-center justify-between z-10">
+            <h2 class="text-base font-semibold text-slate-900">Filters</h2>
+            <button data-action="close-filters" class="p-2 hover:bg-slate-100 rounded-lg transition-colors" aria-label="Close filters"><i data-lucide="x" class="w-5 h-5 text-slate-500"></i></button>
+        </div>
+        <div class="p-4 space-y-4 pb-32">
+            ${filterSectionHTML('Categories', 'category', allCategories.map(c => ({ value: c, label: c, count: products.filter(p => p.category === c).length })))}
+            ${filterSectionHTML('Brand', 'brand', allBrands.map(b => ({ value: b, label: b, count: products.filter(p => p.brand === b).length })))}
+            ${filterSectionHTML('Compatibility', 'compatibility', allCompat.map(c => ({ value: c, label: c, count: products.filter(p => p.compatibility.includes(c)).length })))}
+            <div class="bg-white rounded-xl border border-slate-200/80 p-4">
+                <h3 class="text-sm font-semibold text-slate-800 mb-3">Price Range</h3>
+                <div class="grid grid-cols-2 gap-2 mb-3">
+                    <input type="number" id="m-price-min" placeholder="Min" min="0" value="${state.filters.priceRange ? state.filters.priceRange[0] : ''}" class="w-full px-3 py-2 border border-slate-200 rounded-lg text-sm focus:border-volt-500 outline-none" aria-label="Minimum price">
+                    <input type="number" id="m-price-max" placeholder="Max" min="0" value="${state.filters.priceRange && state.filters.priceRange[1] !== Infinity ? state.filters.priceRange[1] : ''}" class="w-full px-3 py-2 border border-slate-200 rounded-lg text-sm focus:border-volt-500 outline-none" aria-label="Maximum price">
+                </div>
+                <div class="flex flex-wrap gap-1.5">
+                    ${[[0,50],[50,100],[100,500],[500,Infinity]].map(([min,max]) => `<button data-action="set-price" data-min="${min}" data-max="${max}" class="px-2.5 py-1 text-xs border border-slate-200 rounded-md ${state.filters.priceRange && state.filters.priceRange[0]===min && state.filters.priceRange[1]===max ? 'bg-volt-50 border-volt-200 text-volt-600' : 'text-slate-600'} transition-colors">$${min}-${max===Infinity?'500+':max}</button>`).join('')}
+                </div>
+            </div>
+            <div class="bg-white rounded-xl border border-slate-200/80 p-4">
+                <h3 class="text-sm font-semibold text-slate-800 mb-3">Rating</h3>
+                <div class="space-y-2">
+                    ${[4,3,2].map(r => `
+                    <label class="flex items-center gap-2 cursor-pointer py-1">
+                        <input type="radio" name="m-rating" value="${r}" ${state.filters.rating === r ? 'checked' : ''} data-action="set-rating" class="w-4 h-4 text-volt-500 border-slate-300">
+                        <div class="flex">${starsHTML(r, 14)}</div><span class="text-xs text-slate-400">& up</span>
+                    </label>`).join('')}
+                </div>
+            </div>
+            <label class="flex items-center gap-3 bg-white rounded-xl border border-slate-200/80 p-4 cursor-pointer">
+                <input type="checkbox" class="custom-check" ${state.filters.inStockOnly ? 'checked' : ''} data-action="toggle-instock">
+                <span class="text-sm text-slate-700">In Stock Only</span>
+            </label>
+        </div>
+        <div class="fixed bottom-0 left-0 right-0 bg-white border-t border-slate-200 p-4 flex gap-3 lg:hidden" style="max-width:85vw;margin-left:auto;">
+            <button data-action="clear-all-filters" class="flex-1 py-3 border border-slate-200 text-slate-700 font-medium rounded-lg hover:bg-slate-50 transition-colors">Clear All</button>
+            <button data-action="close-filters" class="flex-1 py-3 bg-volt-500 hover:bg-volt-600 text-white font-medium rounded-lg transition-colors">Apply Filters</button>
+        </div>`;
+        lucide.createIcons({ nodes: [content] });
+    }
+
+    // ==========================================
+    // PAGE: PRODUCT DETAIL
+    // ==========================================
+    function renderProduct() {
+        const main = document.getElementById('main-content');
+        const p = getProduct(state.selectedProductId);
+        if (!p) { main.innerHTML = '<div class="max-w-7xl mx-auto px-4 py-20 text-center"><h2 class="text-2xl font-bold text-slate-700 mb-4">Product not found</h2><a href="#catalog" data-action="navigate" data-page="catalog" class="text-volt-500 font-medium">Back to Shop</a></div>'; lucide.createIcons({ nodes: [main] }); return; }
+
+        const wished = isWished(p.id);
+        const savings = p.compareAtPrice ? (p.compareAtPrice - p.price) : 0;
+        const savingsPercent = p.compareAtPrice ? Math.round((savings / p.compareAtPrice) * 100) : 0;
+        const relatedProducts = products.filter(rp => rp.id !== p.id && (rp.category === p.category || rp.compatibility.some(c => p.compatibility.includes(c)))).slice(0, 4);
+
+        main.innerHTML = `
+        <!-- Breadcrumb -->
+        <div class="bg-white border-b border-slate-100">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3">
+                <nav class="flex items-center gap-2 text-sm text-slate-400 flex-wrap" aria-label="Breadcrumb">
+                    <a href="#home" data-action="navigate" data-page="home" class="hover:text-volt-500 transition-colors">Home</a>
+                    <i data-lucide="chevron-right" class="w-3.5 h-3.5 flex-shrink-0"></i>
+                    <a href="#catalog" data-action="navigate" data-page="catalog" class="hover:text-volt-500 transition-colors">Shop</a>
+                    <i data-lucide="chevron-right" class="w-3.5 h-3.5 flex-shrink-0"></i>
+                    <a href="#catalog" data-action="navigate" data-page="catalog" data-category="${p.category}" class="hover:text-volt-500 transition-colors">${p.category}</a>
+                    <i data-lucide="chevron-right" class="w-3.5 h-3.5 flex-shrink-0"></i>
+                    <span class="text-slate-700 font-medium truncate max-w-[200px]">${p.name}</span>
+                </nav>
+            </div>
+        </div>
+
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 md:py-12">
+            <div class="grid lg:grid-cols-5 gap-8 lg:gap-12">
+                <!-- Image Gallery -->
+                <div class="lg:col-span-3 page-enter">
+                    <div class="img-zoom rounded-xl overflow-hidden bg-slate-100 mb-4" id="main-image-wrap">
+                        <img id="main-product-image" src="${p.images[state.galleryIndex]}" alt="${p.name}" class="w-full aspect-square object-cover">
+                    </div>
+                    <div class="grid grid-cols-4 gap-3">
+                        ${p.images.map((img, i) => `
+                        <button data-action="set-gallery" data-index="${i}" class="rounded-lg overflow-hidden border-2 ${i === state.galleryIndex ? 'border-volt-500' : 'border-transparent hover:border-slate-300'} transition-colors aspect-square bg-slate-100" aria-label="View image ${i + 1}">
+                            <img src="${img}" alt="" class="w-full h-full object-cover" loading="lazy">
+                        </button>`).join('')}
+                    </div>
+                </div>
+
+                <!-- Product Info -->
+                <div class="lg:col-span-2 page-enter" style="animation-delay:0.1s">
+                    <div class="sticky top-24">
+                        <!-- Tags -->
+                        ${p.tags.length ? `<div class="flex flex-wrap gap-2 mb-3">${p.tags.map(t => `<span class="px-2.5 py-1 text-[11px] font-semibold rounded-md uppercase tracking-wide ${t==='bestseller'?'bg-amber-50 text-amber-600':t==='new'?'bg-volt-50 text-volt-600':t==='sale'?'bg-red-50 text-red-600':'bg-slate-100 text-slate-600'}">${t}</span>`).join('')}</div>` : ''}
+
+                        <h1 class="text-2xl md:text-3xl font-bold text-slate-900 tracking-tight mb-2">${p.name}</h1>
+                        <p class="text-sm text-slate-400 mb-4">SKU: ${p.sku}</p>
+
+                        <!-- Rating -->
+                        <div class="flex items-center gap-2 mb-5">
+                            <div class="flex">${starsHTML(p.rating, 16)}</div>
+                            <span class="text-sm font-medium text-slate-700">${p.rating}</span>
+                            <a href="#product-reviews" class="text-sm text-volt-500 hover:text-volt-600 transition-colors">${p.reviewCount} reviews</a>
+                        </div>
+
+                        <!-- Price -->
+                        <div class="bg-slate-50 rounded-xl p-4 mb-5">
+                            <div class="flex items-baseline gap-3">
+                                <span class="text-3xl font-bold text-slate-900">${formatPrice(p.price)}</span>
+                                ${p.compareAtPrice ? `<span class="text-lg text-slate-400 line-through">${formatPrice(p.compareAtPrice)}</span>` : ''}
+                            </div>
+                            ${savings > 0 ? `<p class="text-sm font-medium text-eco-600 mt-1">Save ${formatPrice(savings)} (${savingsPercent}%)</p>` : ''}
+                            <p class="text-xs text-slate-400 mt-2">Or 4 interest-free payments of ${formatPrice(p.price / 4)}</p>
+                        </div>
+
+                        <!-- Stock -->
+                        <div class="flex items-center gap-3 mb-5">
+                            ${p.inStock
+                                ? `<span class="inline-flex items-center gap-1.5 px-3 py-1.5 bg-eco-50 text-eco-600 text-sm font-medium rounded-full"><span class="w-1.5 h-1.5 bg-eco-500 rounded-full"></span>In Stock (${p.stockQuantity} units)</span>`
+                                : `<span class="inline-flex items-center gap-1.5 px-3 py-1.5 bg-red-50 text-red-600 text-sm font-medium rounded-full">Out of Stock</span>`}
+                            ${p.inStock ? `<span class="text-xs text-slate-400 flex items-center gap-1"><i data-lucide="zap" class="w-3 h-3 text-eco-500"></i>Ships within 24 hours</span>` : ''}
+                        </div>
+
+                        <!-- Compatibility -->
+                        <div class="mb-5">
+                            <h3 class="text-sm font-semibold text-slate-800 mb-2">Compatible Vehicles</h3>
+                            <div class="flex flex-wrap gap-2">
+                                ${p.compatibility.map(c => `<span class="px-3 py-1.5 bg-volt-50 text-volt-600 text-xs font-medium rounded-lg">${c}</span>`).join('')}
+                            </div>
+                        </div>
+
+                        <!-- Quantity -->
+                        ${p.inStock ? `
+                        <div class="mb-5">
+                            <label class="text-sm font-medium text-slate-700 mb-2 block">Quantity</label>
+                            <div class="inline-flex items-center border border-slate-200 rounded-lg overflow-hidden">
+                                <button data-action="qty-change" data-delta="-1" class="w-10 h-10 flex items-center justify-center text-slate-500 hover:bg-slate-50 transition-colors" aria-label="Decrease quantity"><i data-lucide="minus" class="w-4 h-4"></i></button>
+                                <input type="number" id="product-qty" value="1" min="1" max="${p.stockQuantity}" class="w-14 h-10 text-center text-sm font-medium border-x border-slate-200 outline-none" aria-label="Quantity">
+                                <button data-action="qty-change" data-delta="1" class="w-10 h-10 flex items-center justify-center text-slate-500 hover:bg-slate-50 transition-colors" aria-label="Increase quantity"><i data-lucide="plus" class="w-4 h-4"></i></button>
+                            </div>
+                            ${p.stockQuantity <= 5 ? `<p class="text-xs text-amber-600 mt-1.5">Only ${p.stockQuantity} left in stock</p>` : ''}
+                        </div>` : ''}
+
+                        <!-- CTA Buttons -->
+                        <div class="space-y-3 mb-6">
+                            <button data-action="add-to-cart-detail" data-product-id="${p.id}" ${!p.inStock ? 'disabled' : ''} class="w-full py-3.5 px-6 rounded-lg ${p.inStock ? 'bg-volt-500 hover:bg-volt-600 text-white shadow-lg shadow-volt-500/20' : 'bg-slate-200 text-slate-400 cursor-not-allowed'} font-semibold text-sm transition-all flex items-center justify-center gap-2">
+                                <i data-lucide="shopping-cart" class="w-5 h-5"></i> ${p.inStock ? 'Add to Cart' : 'Out of Stock'}
+                            </button>
+                            <div class="flex gap-3">
+                                <button data-action="toggle-wishlist" data-product-id="${p.id}" class="flex-1 py-3 px-4 rounded-lg border ${wished ? 'border-red-200 bg-red-50 text-red-500' : 'border-slate-200 text-slate-600 hover:bg-slate-50'} font-medium text-sm transition-all flex items-center justify-center gap-2">
+                                    <i data-lucide="heart" class="w-4 h-4" ${wished ? 'style="fill:currentColor;"' : ''}></i> ${wished ? 'Wishlisted' : 'Wishlist'}
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Trust signals -->
+                        <div class="grid grid-cols-2 gap-3">
+                            ${[
+                                { icon: 'rotate-ccw', label: '30-Day Returns' },
+                                { icon: 'shield-check', label: '2-Year Warranty' },
+                                { icon: 'lock', label: 'Secure Checkout' },
+                                { icon: 'headphones', label: 'Expert Support' }
+                            ].map(t => `
+                            <div class="flex items-center gap-2 text-xs text-slate-500">
+                                <i data-lucide="${t.icon}" class="w-4 h-4 text-eco-500 flex-shrink-0"></i>
+                                ${t.label}
+                            </div>`).join('')}
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Tabs -->
+            <div class="mt-12 md:mt-16 page-enter" style="animation-delay:0.2s">
+                <div class="border-b border-slate-200 flex gap-0 overflow-x-auto hide-scrollbar" role="tablist">
+                    ${['description', 'specifications', 'compatibility', 'reviews'].map(tab => `
+                    <button data-action="set-tab" data-tab="${tab}" role="tab" aria-selected="${state.activeTab === tab}" class="px-5 py-3.5 text-sm font-medium whitespace-nowrap border-b-2 transition-colors ${state.activeTab === tab ? 'border-volt-500 text-volt-500' : 'border-transparent text-slate-500 hover:text-slate-700'}">
+                        ${tab === 'reviews' ? `Reviews (${p.reviewCount})` : tab.charAt(0).toUpperCase() + tab.slice(1)}
+                    </button>`).join('')}
+                </div>
+                <div class="py-8" id="product-tab-content">
+                    ${state.activeTab === 'description' ? `
+                    <div class="prose prose-slate max-w-none">
+                        <p class="text-slate-600 leading-relaxed mb-6">${p.description}</p>
+                        <h3 class="text-lg font-semibold text-slate-900 mb-3">Key Features</h3>
+                        <ul class="space-y-2 mb-6">
+                            ${Object.entries(p.specs).map(([k,v]) => `<li class="flex items-start gap-2 text-sm text-slate-600"><i data-lucide="check-circle" class="w-4 h-4 text-eco-500 mt-0.5 flex-shrink-0"></i><strong class="text-slate-800">${k}:</strong> ${v}</li>`).join('')}
+                        </ul>
+                        <h3 class="text-lg font-semibold text-slate-900 mb-3">What's Included</h3>
+                        <ul class="space-y-2">
+                            <li class="flex items-center gap-2 text-sm text-slate-600"><i data-lucide="check" class="w-4 h-4 text-eco-500"></i>1x ${p.name}</li>
+                            <li class="flex items-center gap-2 text-sm text-slate-600"><i data-lucide="check" class="w-4 h-4 text-eco-500"></i>Installation guide</li>
+                            <li class="flex items-center gap-2 text-sm text-slate-600"><i data-lucide="check" class="w-4 h-4 text-eco-500"></i>Warranty card</li>
+                        </ul>
+                    </div>`
+                    : state.activeTab === 'specifications' ? `
+                    <div class="max-w-2xl">
+                        <table class="w-full">
+                            <tbody>
+                                ${Object.entries(p.specs).map(([k,v], i) => `
+                                <tr class="${i % 2 === 0 ? 'bg-slate-50' : 'bg-white'}">
+                                    <td class="px-4 py-3 text-sm font-medium text-slate-700 w-1/3">${k}</td>
+                                    <td class class="px-4 py-3 text-sm text-slate-600">${v}</td>
+                                </tr>`).join('')}
+                            </tbody>
+                        </table>
+                    </div>`
+                    : state.activeTab === 'compatibility' ? `
+                    <div class="max-w-2xl">
+                        <h3 class="text-lg font-semibold text-slate-900 mb-4">Vehicle Compatibility</h3>
+                        <div class="space-y-3 mb-8">
+                            ${p.compatibility.map(c => `
+                            <div class="flex items-center gap-3 p-3 bg-slate-50 rounded-lg">
+                                <i data-lucide="check-circle" class="w-5 h-5 text-eco-500 flex-shrink-0"></i>
+                                <span class="text-sm font-medium text-slate-700">${c}</span>
+                            </div>`).join('')}
+                        </div>
+                        <h3 class="text-lg font-semibold text-slate-900 mb-3">Installation Notes</h3>
+                        <ul class="space-y-2 text-sm text-slate-600">
+                            <li class="flex items-start gap-2"><i data-lucide="info" class="w-4 h-4 text-volt-500 mt-0.5 flex-shrink-0"></i>Professional installation recommended for high-voltage components.</li>
+                            <li class="flex items-start gap-2"><i data-lucide="info" class="w-4 h-4 text-volt-500 mt-0.5 flex-shrink-0"></i>Ensure vehicle is powered off and HV battery disconnected before installation.</li>
+                            <li class="flex items-start gap-2"><i data-lucide="info" class="w-4 h-4 text-volt-500 mt-0.5 flex-shrink-0"></i>Refer to included installation guide for torque specifications and wiring diagrams.</li>
+                        </ul>
+                    </div>`
+                    : state.activeTab === 'reviews' ? `
+                    <div id="product-reviews">
+                        <div class="grid md:grid-cols-3 gap-8 mb-10">
+                            <div class="text-center md:text-left">
+                                <div class="text-5xl font-bold text-slate-900 mb-2">${p.rating}</div>
+                                <div class="flex justify-center md:justify-start mb-2">${starsHTML(p.rating, 20)}</div>
+                                <p class="text-sm text-slate-500">Based on ${p.reviewCount} reviews</p>
+                            </div>
+                            <div class="md:col-span-2 space-y-2">
+                                ${[5,4,3,2,1].map(stars => {
+                                    const pct = stars === 5 ? 72 : stars === 4 ? 20 : stars === 3 ? 5 : stars === 2 ? 2 : 1;
+                                    return `<div class="flex items-center gap-3"><span class="text-sm text-slate-500 w-8">${stars}<i data-lucide="star" class="w-3 h-3 inline text-slate-400 ml-0.5"></i></span><div class="flex-1 h-2 bg-slate-100 rounded-full overflow-hidden"><div class="h-full bg-amber-400 rounded-full transition-all" style="width:${pct}%"></div></div><span class="text-xs text-slate-400 w-10 text-right">${pct}%</span></div>`;
+                                }).join('')}
+                            </div>
+                        </div>
+                        <div class="space-y-6">
+                            ${[
+                                { name: "Alex M.", verified: true, rating: 5, date: "2 weeks ago", text: "Outstanding quality. This battery module was in perfect condition with all cells balanced within 5mV. Installation was straightforward with the included guide. Performance has been exceptional over the first 500 miles." },
+                                { name: "Jennifer R.", verified: true, rating: 5, date: "1 month ago", text: "Exactly as described. Shipped quickly with excellent packaging. The BMS integration was seamless and I'm seeing consistent range improvements in my Model 3." },
+                                { name: "Chris P.", verified: false, rating: 4, date: "2 months ago", text: "Great product overall. Cells were well-balanced and the build quality is solid. Took off one star because the installation guide could be more detailed for first-time EV builders." }
+                            ].map(r => `
+                            <div class="pb-6 border-b border-slate-100 last:border-0">
+                                <div class="flex items-start justify-between mb-2">
+                                    <div class="flex items-center gap-2">
+                                        <div class="w-8 h-8 rounded-full bg-slate-200 flex items-center justify-center text-xs font-semibold text-slate-600">${r.name.split(' ').map(n=>n[0]).join('')}</div>
+                                        <div>
+                                            <span class="text-sm font-semibold text-slate-800">${r.name}</span>
+                                            ${r.verified ? '<span class="ml-2 inline-flex items-center gap-0.5 text-[10px] font-semibold text-eco-600 bg-eco-50 px-1.5 py-0.5 rounded"><i data-lucide="badge-check" class="w-3 h-3"></i>Verified</span>' : ''}
+                                        </div>
+                                    </div>
+                                    <span class="text-xs text-slate-400">${r.date}</span>
+                                </div>
+                                <div class="flex mb-2">${starsHTML(r.rating, 14)}</div>
+                                <p class="text-sm text-slate-600 leading-relaxed">${r.text}</p>
+                                <div class="flex items-center gap-4 mt-3">
+                                    <button class="text-xs text-slate-400 hover:text-slate-600 flex items-center gap-1 transition-colors"><i data-lucide="thumbs-up" class="w-3.5 h-3.5"></i> Helpful</button>
+                                    <button class="text-xs text-slate-400 hover:text-slate-600 transition-colors">Report</button>
+                                </div>
+                            </div>`).join('')}
+                        </div>
+                        <button class="mt-8 px-6 py-3 border border-volt-500 text-volt-500 hover:bg-volt-50 font-medium text-sm rounded-lg transition-colors">Write a Review</button>
+                    </div>`
+                    : ''}
+                </div>
+            </div>
+
+            <!-- Related Products -->
+            ${relatedProducts.length ? `
+            <section class="mt-16 pt-12 border-t border-slate-200">
+                <h2 class="text-2xl font-bold text-slate-900 tracking-tight mb-8">You May Also Need</h2>
+                <div class="grid grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6">
+                    ${relatedProducts.map(rp => productCardHTML(rp)).join('')}
+                </div>
+            </section>` : ''}
+        </div>`;
+
+        lucide.createIcons({ nodes: [main] });
+        renderMobileStickyBar();
+    }
+
+    // ==========================================
+    // PAGE: CART
+    // ==========================================
+    function renderCart() {
+        const main = document.getElementById('main-content');
+        const hasItems = state.cart.length > 0;
+
+        if (!hasItems) {
+            main.innerHTML = `
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 md:py-24 text-center page-enter">
+                <div class="w-20 h-20 mx-auto mb-6 bg-slate-100 rounded-2xl flex items-center justify-center"><i data-lucide="shopping-cart" class="w-10 h-10 text-slate-300"></i></div>
+                <h1 class="text-3xl font-bold text-slate-900 mb-3">Your cart is empty</h1>
+                <p class="text-slate-500 mb-8 max-w-md mx-auto">Looks like you haven't added any parts yet. Browse our catalog to find what you need.</p>
+                <a href="#catalog" data-action="navigate" data-page="catalog" class="inline-flex items-center gap-2 px-6 py-3.5 bg-volt-500 hover:bg-volt-600 text-white font-semibold rounded-lg transition-colors">
+                    Continue Shopping <i data-lucide="arrow-right" class="w-4 h-4"></i>
+                </a>
+                <div class="mt-16">
+                    <h2 class="text-lg font-semibold text-slate-800 mb-6">Popular Products</h2>
+                    <div class="grid grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6">
+                        ${products.filter(p => p.tags.includes('bestseller')).slice(0, 4).map(p => productCardHTML(p)).join('')}
+                    </div>
+                </div>
+            </div>`;
+            lucide.createIcons({ nodes: [main] });
+            return;
+        }
+
+        const lowStockItems = state.cart.filter(i => { const p = getProduct(i.productId); return p && p.stockQuantity <= 5 && p.stockQuantity > 0; });
+
+        main.innerHTML = `
+        <!-- Breadcrumb -->
+        <div class="bg-white border-b border-slate-100">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3">
+                <nav class="flex items-center gap-2 text-sm text-slate-400" aria-label="Breadcrumb">
+                    <a href="#home" data-action="navigate" data-page="home" class="hover:text-volt-500 transition-colors">Home</a>
+                    <i data-lucide="chevron-right" class="w-3.5 h-3.5"></i>
+                    <span class="text-slate-700 font-medium">Shopping Cart</span>
+                </nav>
+            </div>
+        </div>
+
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 md:py-12">
+            ${lowStockItems.length ? `<div class="flex items-center gap-3 px-4 py-3 bg-amber-50 border border-amber-200 rounded-xl mb-6 text-sm text-amber-700"><i data-lucide="alert-triangle" class="w-5 h-5 flex-shrink-0"></i>Some items in your cart are low in stock.</div>` : ''}
+            <h1 class="text-2xl md:text-3xl font-bold text-slate-900 tracking-tight mb-8">Shopping Cart <span class="text-slate-400 font-normal text-lg">(${cartItemCount()} item${cartItemCount() !== 1 ? 's' : ''})</span></h1>
+
+            <div class="flex flex-col lg:flex-row gap-8">
+                <!-- Cart Items -->
+                <div class="flex-1 min-w-0 space-y-4 page-enter">
+                    ${state.cart.map(item => {
+                        const p = getProduct(item.productId);
+                        if (!p) return '';
+                        return `
+                        <div class="bg-white rounded-xl border border-slate-200/80 p-4 md:p-5 shadow-sm flex flex-col sm:flex-row gap-4">
+                            <a href="#product" data-action="view-product" data-product-id="${p.id}" class="w-full sm:w-24 h-24 flex-shrink-0 rounded-lg overflow-hidden bg-slate-100">
+                                <img src="${p.image}" alt="${p.name}" class="w-full h-full object-cover">
+                            </a>
+                            <div class="flex-1 min-w-0 flex flex-col sm:flex-row sm:items-center gap-3 sm:gap-5">
+                                <div class="flex-1 min-w-0">
+                                    <a href="#product" data-action="view-product" data-product-id="${p.id}" class="text-base font-semibold text-slate-800 hover:text-volt-500 transition-colors line-clamp-2">${p.name}</a>
+                                    <p class="text-xs text-slate-400 mt-0.5">SKU: ${p.sku}</p>
+                                    ${p.stockQuantity <= 5 && p.stockQuantity > 0 ? `<p class="text-xs text-amber-600 mt-1 flex items-center gap-1"><i data-lucide="alert-circle" class="w-3 h-3"></i>Only ${p.stockQuantity} left</p>` : ''}
+                                </div>
+                                <div class="flex items-center gap-4 sm:gap-6 flex-shrink-0">
+                                    <span class="text-sm font-medium text-slate-700 w-20 text-right hidden sm:block">${formatPrice(p.price)}</span>
+                                    <div class="inline-flex items-center border border-slate-200 rounded-lg overflow-hidden">
+                                        <button data-action="cart-qty" data-product-id="${p.id}" data-delta="-1" class="w-8 h-8 flex items-center justify-center text-slate-500 hover:bg-slate-50 transition-colors" aria-label="Decrease quantity"><i data-lucide="minus" class="w-3.5 h-3.5"></i></button>
+                                        <span class="w-10 h-8 flex items-center justify-center text-sm font-medium border-x border-slate-200">${item.quantity}</span>
+                                        <button data-action="cart-qty" data-product-id="${p.id}" data-delta="1" class="w-8 h-8 flex items-center justify-center text-slate-500 hover:bg-slate-50 transition-colors" aria-label="Increase quantity"><i data-lucide="plus" class="w-3.5 h-3.5"></i></button>
+                                    </div>
+                                    <span class="text-base font-bold text-slate-900 w-24 text-right">${formatPrice(p.price * item.quantity)}</span>
+                                    <button data-action="remove-from-cart" data-product-id="${p.id}" class="p-2 text-slate-400 hover:text-red-500 hover:bg-red-50 rounded-lg transition-colors" aria-label="Remove ${p.name} from cart">
+                                        <i data-lucide="trash-2" class="w-4 h-4"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>`;
+                    }).join('')}
+                </div>
+
+                <!-- Order Summary -->
+                <div class="w-full lg:w-80 flex-shrink-0 page-enter" style="animation-delay:0.1s">
+                    <div class="sticky top-24 bg-white rounded-xl border border-slate-200/80 p-6 shadow-sm">
+                        <h2 class="text-lg font-bold text-slate-900 mb-5">Order Summary</h2>
+
+                        <!-- Promo Code -->
+                        <div class="mb-5">
+                            <div class="flex gap-2">
+                                <input type="text" id="promo-input" placeholder="Promo code" value="${state.promoCode}" class="flex-1 min-w-0 px-3 py-2.5 border border-slate-200 rounded-lg text-sm focus:border-volt-500 focus:ring-1 focus:ring-volt-500/20 outline-none" aria-label="Promo code">
+                                <button data-action="apply-promo" class="px-4 py-2.5 bg-slate-100 hover:bg-slate-200 text-slate-700 text-sm font-medium rounded-lg transition-colors">Apply</button>
+                            </div>
+                            ${state.promoMessage === 'success' ? '<p class="text-xs text-eco-600 mt-1.5 flex items-center gap-1"><i data-lucide="check-circle" class="w-3 h-3"></i>Promo code applied</p>' : ''}
+                            ${state.promoMessage === 'error' ? '<p class="text-xs text-red-500 mt-1.5 flex items-center gap-1"><i data-lucide="alert-circle" class="w-3 h-3"></i>Invalid promo code. Try SAVE10</p>' : ''}
+                        </div>
+
+                        <div class="space-y-3 py-5 border-t border-slate-100">
+                            <div class="flex justify-between text-sm">
+                                <span class="text-slate-500">Subtotal (${cartItemCount()} items)</span>
+                                <span class="font-medium text-slate-700">${formatPrice(cartSubtotal())}</span>
+                            </div>
+                            <div class="flex justify-between text-sm">
+                                <span class="text-slate-500">Shipping</span>
+                                <span class="font-medium ${cartShipping() === 0 ? 'text-eco-600' : 'text-slate-700'}">${cartShipping() === 0 ? 'Free' : formatPrice(cartShipping())}</span>
+                            </div>
+                            <div class="flex justify-between text-sm">
+                                <span class="text-slate-500">Estimated Tax</span>
+                                <span class="font-medium text-slate-700">${formatPrice(cartTax())}</span>
+                            </div>
+                            ${state.promoDiscount > 0 ? `<div class="flex justify-between text-sm"><span class="text-eco-600">Discount</span><span class="font-medium text-eco-600">-${formatPrice(state.promoDiscount)}</span></div>` : ''}
+                        </div>
+                        <div class="flex justify-between items-center py-4 border-t border-slate-200 mb-6">
+                            <span class="text-base font-bold text-slate-900">Total</span>
+                            <span class="text-xl font-bold text-slate-900">${formatPrice(cartTotal())}</span>
+                        </div>
+                        <a href="#checkout" data-action="navigate" data-page="checkout" class="block w-full py-3.5 px-6 bg-volt-500 hover:bg-volt-600 text-white font-semibold text-sm rounded-lg text-center transition-colors shadow-lg shadow-volt-500/20">
+                            Proceed to Checkout
+                        </a>
+                        <div class="mt-4 space-y-1.5">
+                            <p class="text-xs text-slate-400 flex items-center gap-1.5"><i data-lucide="lock" class="w-3 h-3"></i>Secure 256-bit SSL checkout</p>
+                            <p class="text-xs text-slate-400 flex items-center gap-1.5"><i data-lucide="rotate-ccw" class="w-3 h-3"></i>30-day hassle-free returns</p>
+                            <p class="text-xs text-slate-400 flex items-center gap-1.5"><i data-lucide="badge-check" class="w-3 h-3"></i>Price match guarantee</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>`;
+
+        lucide.createIcons({ nodes: [main] });
+    }
+
+    // ==========================================
+    // PAGE: CHECKOUT
+    // ==========================================
+    function renderCheckout() {
+        const main = document.getElementById('main-content');
+        const hasItems = state.cart.length > 0;
+
+        if (!hasItems) {
+            main.innerHTML = `<div class="max-w-7xl mx-auto px-4 py-20 text-center page-enter"><div class="w-20 h-20 mx-auto mb-6 bg-slate-100 rounded-2xl flex items-center justify-center"><i data-lucide="shopping-bag" class="w-10 h-10 text-slate-300"></i></div><h1 class="text-3xl font-bold text-slate-900 mb-3">Nothing to checkout</h1><p class="text-slate-500 mb-8">Your cart is empty. Add some items before checking out.</p><a href="#catalog" data-action="navigate" data-page="catalog" class="inline-flex items-center gap-2 px-6 py-3.5 bg-volt-500 hover:bg-volt-600 text-white font-semibold rounded-lg transition-colors">Browse Products</a></div>`;
+            lucide.createIcons({ nodes: [main] });
+            return;
+        }
+
+        main.innerHTML = `
+        <div class="bg-white border-b border-slate-100">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3">
+                <nav class="flex items-center gap-2 text-sm text-slate-400" aria-label="Breadcrumb">
+                    <a href="#home" data-action="navigate" data-page="home" class="hover:text-volt-500 transition-colors">Home</a>
+                    <i data-lucide="chevron-right" class="w-3.5 h-3.5"></i>
+                    <a href="#cart" data-action="navigate" data-page="cart" class="hover:text-volt-500 transition-colors">Cart</a>
+                    <i data-lucide="chevron-right" class="w-3.5 h-3.5"></i>
+                    <span class="text-slate-700 font-medium">Checkout</span>
+                </nav>
+            </div>
+        </div>
+
+        <!-- Progress Steps -->
+        <div class="bg-white border-b border-slate-100">
+            <div class="max-w-3xl mx-auto px-4 py-5">
+                <div class="flex items-center justify-center gap-0">
+                    ${['Information', 'Shipping', 'Payment'].map((step, i) => `
+                    <div class="flex items-center gap-0 ${i < 2 ? 'flex-1' : ''}">
+                        <div class="flex items-center gap-2">
+                            <div class="w-8 h-8 rounded-full ${i === 0 ? 'bg-volt-500 text-white' : 'bg-slate-200 text-slate-500'} flex items-center justify-center text-sm font-bold">${i + 1}</div>
+                            <span class="text-sm font-medium ${i === 0 ? 'text-slate-900' : 'text-slate-400'} hidden sm:block">${step}</span>
+                        </div>
+                        ${i < 2 ? `<div class="flex-1 h-px ${i < 1 ? 'bg-volt-500' : 'bg-slate-200'} mx-4"></div>` : ''}
+                    </div>`).join('')}
+                </div>
+            </div>
+        </div>
+
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 md:py-12">
+            <div class="flex flex-col lg:flex-row gap-8">
+                <!-- Form -->
+                <div class="flex-1 min-w-0 page-enter">
+                    <form id="checkout-form" novalidate>
+                        <!-- Contact -->
+                        <div class="mb-8">
+                            <h2 class="text-lg font-bold text-slate-900 mb-5">Contact Information</h2>
+                            <div class="space-y-4">
+                                <div>
+                                    <label for="checkout-email" class="block text-sm font-medium text-slate-700 mb-1.5">Email Address <span class="text-red-500">*</span></label>
+                                    <input type="email" id="checkout-email" required placeholder="you@example.com" class="w-full px-4 py-3 border border-slate-200 rounded-lg text-sm focus:border-volt-500 focus:ring-2 focus:ring-volt-500/20 outline-none transition-all" aria-required="true">
+                                    <p class="text-xs text-red-500 mt-1 hidden" data-error="checkout-email">Please enter a valid email address</p>
+                                </div>
+                                <div>
+                                    <label for="checkout-phone" class="block text-sm font-medium text-slate-700 mb-1.5">Phone Number</label>
+                                    <input type="tel" id="checkout-phone" placeholder="(555) 123-4567" class="w-full px-4 py-3 border border-slate-200 rounded-lg text-sm focus:border-volt-500 focus:ring-2 focus:ring-volt-500/20 outline-none transition-all">
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Shipping -->
+                        <div class="mb-8">
+                            <h2 class="text-lg font-bold text-slate-900 mb-5">Shipping Address</h2>
+                            <div class="space-y-4">
+                                <div class="grid grid-cols-2 gap-4">
+                                    <div>
+                                        <label for="checkout-fname" class="block text-sm font-medium text-slate-700 mb-1.5">First Name <span class="text-red-500">*</span></label>
+                                        <input type="text" id="checkout-fname" required class="w-full px-4 py-3 border border-slate-200 rounded-lg text-sm focus:border-volt-500 focus:ring-2 focus:ring-volt-500/20 outline-none transition-all" aria-required="true">
+                                        <p class="text-xs text-red-500 mt-1 hidden" data-error="checkout-fname">First name is required</p>
+                                    </div>
+                                    <div>
+                                        <label for="checkout-lname" class="block text-sm font-medium text-slate-700 mb-1.5">Last Name <span class="text-red-500">*</span></label>
+                                        <input type="text" id="checkout-lname" required class="w-full px-4 py-3 border border-slate-200 rounded-lg text-sm focus:border-volt-500 focus:ring-2 focus:ring-volt-500/20 outline-none transition-all" aria-required="true">
+                                        <p class="text-xs text-red-500 mt-1 hidden" data-error="checkout-lname">Last name is required</p>
+                                    </div>
+                                </div>
+                                <div>
+                                    <label for="checkout-address" class="block text-sm font-medium text-slate-700 mb-1.5">Street Address <span class="text-red-500">*</span></label>
+                                    <input type="text" id="checkout-address" required placeholder="123 Main St, Unit 4" class="w-full px-4 py-3 border border-slate-200 rounded-lg text-sm focus:border-volt-500 focus:ring-2 focus:ring-volt-500/20 outline-none transition-all" aria-required="true">
+                                    <p class="text-xs text-red-500 mt-1 hidden" data-error="checkout-address">Address is required</p>
+                                </div>
+                                <div class="grid grid-cols-2 sm:grid-cols-3 gap-4">
+                                    <div>
+                                        <label for="checkout-city" class="block text-sm font-medium text-slate-700 mb-1.5">City <span class="text-red-500">*</span></label>
+                                        <input type="text" id="checkout-city" required class="w-full px-4 py-3 border border-slate-200 rounded-lg text-sm focus:border-volt-500 focus:ring-2 focus:ring-volt-500/20 outline-none transition-all" aria-required="true">
+                                        <p class="text-xs text-red-500 mt-1 hidden" data-error="checkout-city">City is required</p>
+                                    </div>
+                                    <div>
+                                        <label for="checkout-state" class="block text-sm font-medium text-slate-700 mb-1.5">State</label>
+                                        <input type="text" id="checkout-state" placeholder="CA" class="w-full px-4 py-3 border border-slate-200 rounded-lg text-sm focus:border-volt-500 focus:ring-2 focus:ring-volt-500/20 outline-none transition-all">
+                                    </div>
+                                    <div class="col-span-2 sm:col-span-1">
+                                        <label for="checkout-zip" class="block text-sm font-medium text-slate-700 mb-1.5">ZIP Code <span class="text-red-500">*</span></label>
+                                        <input type="text" id="checkout-zip" required placeholder="90210" class="w-full px-4 py-3 border border-slate-200 rounded-lg text-sm focus:border-volt-500 focus:ring-2 focus:ring-volt-500/20 outline-none transition-all" aria-required="true">
+                                        <p class="text-xs text-red-500 mt-1 hidden" data-error="checkout-zip">ZIP code is required</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Shipping Method -->
+                        <div class="mb-8">
+                            <h2 class="text-lg font-bold text-slate-900 mb-5">Shipping Method</h2>
+                            <div class="space-y-3">
+                                <label class="flex items-center gap-4 p-4 border ${cartSubtotal() >= 99 ? 'border-volt-500 bg-volt-50/50' : 'border-slate-200'} rounded-xl cursor-pointer hover:border-volt-300 transition-colors">
+                                    <input type="radio" name="shipping" value="standard" ${cartSubtotal() >= 99 ? 'checked' : ''} class="w-4 h-4 text-volt-500 border-slate-300 focus:ring-volt-500">
+                                    <div class="flex-1">
+                                        <p class="text-sm font-semibold text-slate-800">Standard Shipping ${cartSubtotal() >= 99 ? '<span class="text-xs font-normal text-eco-600 ml-1">FREE</span>' : ''}</p>
+                                        <p class="text-xs text-slate-400">5-7 business days</p>
+                                    </div>
+                                    <span class="text-sm font-semibold ${cartSubtotal() >= 99 ? 'text-eco-600' : 'text-slate-700'}">${cartSubtotal() >= 99 ? 'Free' : formatPrice(9.99)}</span>
+                                </label>
+                                <label class="flex items-center gap-4 p-4 border border-slate-200 rounded-xl cursor-pointer hover:border-volt-300 transition-colors">
+                                    <input type="radio" name="shipping" value="express" class="w-4 h-4 text-volt-500 border-slate-300 focus:ring-volt-500">
+                                    <div class="flex-1">
+                                        <p class="text-sm font-semibold text-slate-800">Express Shipping</p>
+                                        <p class="text-xs text-slate-400">2-3 business days</p>
+                                    </div>
+                                    <span class="text-sm font-semibold text-slate-700">$29.99</span>
+                                </label>
+                            </div>
+                        </div>
+
+                        <!-- Payment -->
+                        <div class="mb-8">
+                            <h2 class="text-lg font-bold text-slate-900 mb-5">Payment Details</h2>
+                            <div class="space-y-4">
+                                <div>
+                                    <label for="checkout-card" class="block text-sm font-medium text-slate-700 mb-1.5">Card Number <span class="text-red-500">*</span></label>
+                                    <div class="relative">
+                                        <input type="text" id="checkout-card" required placeholder="4242 4242 4242 4242" maxlength="19" class="w-full px-4 py-3 pr-16 border border-slate-200 rounded-lg text-sm focus:border-volt-500 focus:ring-2 focus:ring-volt-500/20 outline-none transition-all font-mono tracking-wider" aria-required="true">
+                                        <div class="absolute right-3 top-1/2 -translate-y-1/2 flex gap-1.5">
+                                            <span class="px-1.5 py-0.5 bg-slate-100 rounded text-[9px] font-bold text-slate-400">VISA</span>
+                                            <span class="px-1.5 py-0.5 bg-slate-100 rounded text-[9px] font-bold text-slate-400">MC</span>
+                                        </div>
+                                    </div>
+                                    <p class="text-xs text-red-500 mt-1 hidden" data-error="checkout-card">Please enter a valid card number</p>
+                                </div>
+                                <div class="grid grid-cols-2 gap-4">
+                                    <div>
+                                        <label for="checkout-expiry" class="block text-sm font-medium text-slate-700 mb-1.5">Expiry Date <span class="text-red-500">*</span></label>
+                                        <input type="text" id="checkout-expiry" required placeholder="MM/YY" maxlength="5" class="w-full px-4 py-3 border border-slate-200 rounded-lg text-sm focus:border-volt-500 focus:ring-2 focus:ring-volt-500/20 outline-none transition-all font-mono" aria-required="true">
+                                        <p class="text-xs text-red-500 mt-1 hidden" data-error="checkout-expiry">Enter valid expiry (MM/YY)</p>
+                                    </div>
+                                    <div>
+                                        <label for="checkout-cvc" class="block text-sm font-medium text-slate-700 mb-1.5">CVC <span class="text-red-500">*</span></label>
+                                        <input type="text" id="checkout-cvc" required placeholder="123" maxlength="4" class="w-full px-4 py-3 border border-slate-200 rounded-lg text-sm focus:border-volt-500 focus:ring-2 focus:ring-volt-500/20 outline-none transition-all font-mono" aria-required="true">
+                                        <p class="text-xs text-red-500 mt-1 hidden" data-error="checkout-cvc">Enter valid CVC</p>
+                                    </div>
+                                </div>
+                                <div>
+                                    <label for="checkout-cardname" class="block text-sm font-medium text-slate-700 mb-1.5">Name on Card <span class="text-red-500">*</span></label>
+                                    <input type="text" id="checkout-cardname" required placeholder="John Doe" class="w-full px-4 py-3 border border-slate-200 rounded-lg text-sm focus:border-volt-500 focus:ring-2 focus:ring-volt-500/20 outline-none transition-all" aria-required="true">
+                                    <p class="text-xs text-red-500 mt-1 hidden" data-error="checkout-cardname">Name on card is required</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <button type="submit" data-action="place-order" class="w-full py-4 px-6 bg-volt-500 hover:bg-volt-600 text-white font-bold text-base rounded-lg transition-colors shadow-lg shadow-volt-500/20 flex items-center justify-center gap-2">
+                            <i data-lucide="lock" class="w-4 h-4"></i> Place Order — ${formatPrice(cartTotal())}
+                        </button>
+                    </form>
+                </div>
+
+                <!-- Order Summary Sidebar -->
+                <div class="w-full lg:w-80 flex-shrink-0 page-enter" style="animation-delay:0.1s">
+                    <div class="sticky top-24 bg-white rounded-xl border border-slate-200/80 p-6 shadow-sm">
+                        <h2 class="text-lg font-bold text-slate-900 mb-5">Order Summary</h2>
+                        <div class="space-y-3 max-h-64 overflow-y-auto mb-5">
+                            ${state.cart.map(item => {
+                                const p = getProduct(item.productId);
+                                if (!p) return '';
+                                return `
+                                <div class="flex items-center gap-3">
+                                    <div class="relative w-14 h-14 rounded-lg overflow-hidden bg-slate-100 flex-shrink-0">
+                                        <img src="${p.image}" alt="" class="w-full h-full object-cover">
+                                        <span class="absolute -top-1 -right-1 w-5 h-5 bg-slate-600 text-white text-[10px] font-bold rounded-full flex items-center justify-center">${item.quantity}</span>
+                                    </div>
+                                    <div class="flex-1 min-w-0">
+                                        <p class="text-sm font-medium text-slate-800 truncate">${p.name}</p>
+                                        <p class="text-xs text-slate-400">Qty: ${item.quantity}</p>
+                                    </div>
+                                    <span class="text-sm font-semibold text-slate-700 flex-shrink-0">${formatPrice(p.price * item.quantity)}</span>
+                                </div>`;
+                            }).join('')}
+                        </div>
+                        <div class="space-y-2.5 py-4 border-t border-slate-100">
+                            <div class="flex justify-between text-sm"><span class="text-slate-500">Subtotal</span><span class="text-slate-700">${formatPrice(cartSubtotal())}</span></div>
+                            <div class="flex justify-between text-sm"><span class="text-slate-500">Shipping</span><span class="${cartShipping() === 0 ? 'text-eco-600' : 'text-slate-700'}">${cartShipping() === 0 ? 'Free' : formatPrice(cartShipping())}</span></div>
+                            <div class="flex justify-between text-sm"><span class="text-slate-500">Tax</span><span class="text-slate-700">${formatPrice(cartTax())}</span></div>
+                            ${state.promoDiscount > 0 ? `<div class="flex justify-between text-sm"><span class="text-eco-600">Discount</span><span class="text-eco-600">-${formatPrice(state.promoDiscount)}</span></div>` : ''}
+                        </div>
+                        <div class="flex justify-between items-center py-4 border-t border-slate-200">
+                            <span class="text-base font-bold text-slate-900">Total</span>
+                            <span class="text-xl font-bold text-slate-900">${formatPrice(cartTotal())}</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Order Success Modal (hidden by default) -->
+        <div id="order-success-modal" class="fixed inset-0 bg-black/50 z-50 hidden items-center justify-center p-4" style="display:none;">
+            <div class="bg-white rounded-2xl shadow-2xl max-w-md w-full p-8 text-center animate-bounce-in">
+                <div class="w-16 h-16 mx-auto mb-5 bg-eco-50 rounded-full flex items-center justify-center"><i data-lucide="check-circle" class="w-9 h-9 text-eco-500"></i></div>
+                <h2 class="text-2xl font-bold text-slate-900 mb-2">Order Placed</h2>
+                <p class="text-slate-500 mb-2">Thank you for your purchase! Your order has been confirmed.</p>
+                <p class="text-sm text-slate-400 mb-6">Order #VV-${Date.now().toString(36).toUpperCase()}</p>
+                <div class="bg-slate-50 rounded-xl p-4 mb-6 text-left space-y-2">
+                    <p class="text-xs text-slate-500">Estimated Delivery</p>
+                    <p class="text-sm font-semibold text-slate-800">${new Date(Date.now() + 5 * 86400000).toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric' })}</p>
+                </div>
+                <a href="#home" data-action="navigate" data-page="home" class="block w-full py-3.5 bg-volt-500 hover:bg-volt-600 text-white font-semibold rounded-lg transition-colors mb-3">Continue Shopping</a>
+                <p class="text-xs text-slate-400">A confirmation email will be sent shortly.</p>
+            </div>
+        </div>`;
+
+        lucide.createIcons({ nodes: [main] });
+
+        // Card number formatting
+        const cardInput = document.getElementById('checkout-card');
+        if (cardInput) {
+            cardInput.addEventListener('input', (e) => {
+                let v = e.target.value.replace(/\D/g, '').substring(0, 16);
+                e.target.value = v.replace(/(.{4})/g, '$1 ').trim();
+            });
+        }
+        // Expiry formatting
+        const expiryInput = document.getElementById('checkout-expiry');
+        if (expiryInput) {
+            expiryInput.addEventListener('input', (e) => {
+                let v = e.target.value.replace(/\D/g, '').substring(0, 4);
+                if (v.length >= 2) v = v.substring(0, 2) + '/' + v.substring(2);
+                e.target.value = v;
+            });
+        }
+    }
+
+    // ==========================================
+    // ORDER PLACEMENT
+    // ==========================================
+    function placeOrder() {
+        const fields = [
+            { id: 'checkout-email', validate: v => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v) },
+            { id: 'checkout-fname', validate: v => v.trim().length > 0 },
+            { id: 'checkout-lname', validate: v => v.trim().length > 0 },
+            { id: 'checkout-address', validate: v => v.trim().length > 0 },
+            { id: 'checkout-city', validate: v => v.trim().length > 0 },
+            { id: 'checkout-zip', validate: v => v.trim().length >= 3 },
+            { id: 'checkout-card', validate: v => v.replace(/\s/g, '').length >= 13 },
+            { id: 'checkout-expiry', validate: v => /^\d{2}\/\d{2}$/.test(v) },
+            { id: 'checkout-cvc', validate: v => v.length >= 3 },
+            { id: 'checkout-cardname', validate: v => v.trim().length > 0 }
+        ];
+
+        let valid = true;
+        fields.forEach(f => {
+            const el = document.getElementById(f.id);
+            const err = document.querySelector(`[data-error="${f.id}"]`);
+            if (!el) return;
+            if (!f.validate(el.value)) {
+                valid = false;
+                el.classList.add('border-red-400', 'ring-1', 'ring-red-200');
+                el.classList.remove('border-slate-200');
+                if (err) err.classList.remove('hidden');
+            } else {
+                el.classList.remove('border-red-400', 'ring-1', 'ring-red-200');
+                el.classList.add('border-slate-200');
+                if (err) err.classList.add('hidden');
+            }
+        });
+
+        if (!valid) {
+            showToast('Please fill in all required fields correctly', 'error');
+            return;
+        }
+
+        // Show success modal
+        const modal = document.getElementById('order-success-modal');
+        if (modal) {
+            modal.style.display = 'flex';
+            modal.classList.remove('hidden');
+            lucide.createIcons({ nodes: [modal] });
+        }
+
+        // Clear cart
+        state.cart = [];
+        saveCart();
+        updateCartBadge();
+        showToast('Order placed successfully!', 'success');
+    }
+
+    // ==========================================
+    // RENDER ORCHESTRATOR
+    // ==========================================
+    function renderPage() {
+        const main = document.getElementById('main-content');
+        main.scrollTop = 0;
+        window.scrollTo({ top: 0, behavior: 'instant' });
+        document.getElementById('mobile-sticky-bar').classList.add('hidden');
+
+        switch (state.page) {
+            case 'home': renderHome(); break;
+            case 'catalog': renderCatalog(); break;
+            case 'product': renderProduct(); break;
+            case 'cart': renderCart(); break;
+            case 'checkout': renderCheckout(); break;
+            default: renderHome();
+        }
+
+        renderHeader();
+        renderMobileMenu();
+        updateCartBadge();
+
+        // Attach search listeners
+        const headerSearch = document.getElementById('header-search');
+        const mobileSearch = document.getElementById('mobile-search');
+        if (headerSearch) {
+            headerSearch.addEventListener('input', debounce((e) => handleSearch(e.target.value, 'search-dropdown'), 300));
+            headerSearch.addEventListener('keydown', (e) => { if (e.key === 'Enter') { state.filters.search = e.target.value; navigateTo('catalog'); } });
+        }
+        if (mobileSearch) {
+            mobileSearch.addEventListener('input', debounce((e) => handleSearch(e.target.value, 'mobile-search-dropdown'), 300));
+            mobileSearch.addEventListener('keydown', (e) => { if (e.key === 'Enter') { state.filters.search = e.target.value; navigateTo('catalog'); closeMobileSearch(); } });
+        }
+
+        // Close search dropdowns on outside click
+        document.addEventListener('click', (e) => {
+            const dd = document.getElementById('search-dropdown');
+            const wrap = document.getElementById('header-search-wrap');
+            if (dd && wrap && !wrap.contains(e.target)) dd.classList.add('hidden');
+            const mdd = document.getElementById('mobile-search-dropdown');
+            const msb = document.getElementById('mobile-search-bar');
+            if (mdd && msb && !msb.contains(e.target)) mdd.classList.add('hidden');
+        });
+    }
+
+    // ==========================================
+    // NAVIGATION
+    // ==========================================
+    function navigateTo(page, opts = {}) {
+        state.page = page;
+        if (opts.productId) state.selectedProductId = opts.productId;
+        if (opts.category && page === 'catalog') {
+            state.filters.categories = [opts.category];
+        }
+        if (page === 'product') {
+            state.galleryIndex = 0;
+            state.activeTab = 'description';
+        }
+        renderPage();
+    }
+
+    // ==========================================
+    // MOBILE MENU / FILTER OPEN/CLOSE
+    // ==========================================
+    function openMobileMenu() {
+        renderMobileMenu();
+        const overlay = document.getElementById('mobile-overlay');
+        const menu = document.getElementById('mobile-menu');
+        overlay.classList.remove('hidden');
+        requestAnimationFrame(() => { overlay.classList.remove('opacity-0'); overlay.classList.add('opacity-100'); menu.classList.remove('translate-x-full'); });
+        document.body.style.overflow = 'hidden';
+    }
+    function closeMobileMenu() {
+        const overlay = document.getElementById('mobile-overlay');
+        const menu = document.getElementById('mobile-menu');
+        overlay.classList.remove('opacity-100'); overlay.classList.add('opacity-0');
+        menu.classList.add('translate-x-full');
+        setTimeout(() => { overlay.classList.add('hidden'); document.body.style.overflow = ''; }, 300);
+    }
+    function openFilters() {
+        renderFilterPanel();
+        const overlay = document.getElementById('filter-overlay');
+        const panel = document.getElementById('filter-panel');
+        overlay.classList.remove('hidden');
+        requestAnimationFrame(() => { overlay.classList.remove('opacity-0'); overlay.classList.add('opacity-100'); panel.classList.remove('translate-x-full'); });
+        document.body.style.overflow = 'hidden';
+    }
+    function closeFilters() {
+        const overlay = document.getElementById('filter-overlay');
+        const panel = document.getElementById('filter-panel');
+        overlay.classList.remove('opacity-100'); overlay.classList.add('opacity-0');
+        panel.classList.add('translate-x-full');
+        setTimeout(() => { overlay.classList.add('hidden'); document.body.style.overflow = ''; renderPage(); }, 300);
+    }
+    function closeMobileSearch() {
+        document.getElementById('mobile-search-bar').classList.add('hidden');
+    }
+
+    // ==========================================
+    // EVENT DELEGATION
+    // ==========================================
+    document.addEventListener('click', (e) => {
+        const target = e.target.closest('[data-action]');
+        if (!target) return;
+        const action = target.dataset.action;
+
+        switch (action) {
+            case 'navigate': {
+                e.preventDefault();
+                closeMobileMenu();
+                navigateTo(target.dataset.page, { category: target.dataset.category });
+                break;
+            }
+            case 'view-product': {
+                e.preventDefault();
+                navigateTo('product', { productId: target.dataset.productId });
+                break;
+            }
+            case 'add-to-cart': {
+                e.preventDefault();
+                addToCart(target.dataset.productId, 1);
+                break;
+            }
+            case 'add-to-cart-detail': {
+                e.preventDefault();
+                const qtyEl = document.getElementById('product-qty');
+                const qty = qtyEl ? parseInt(qtyEl.value) || 1 : 1;
+                addToCart(target.dataset.productId, qty);
+                break;
+            }
+            case 'toggle-wishlist': {
+                e.preventDefault();
+                toggleWishlist(target.dataset.productId);
+                break;
+            }
+            case 'remove-from-cart': {
+                e.preventDefault();
+                removeFromCart(target.dataset.productId);
+                break;
+            }
+            case 'cart-qty': {
+                e.preventDefault();
+                const item = state.cart.find(i => i.productId === target.dataset.productId);
+                if (item) {
+                    const delta = parseInt(target.dataset.delta);
+                    const newQty = item.quantity + delta;
+                    if (newQty < 1) removeFromCart(target.dataset.productId);
+                    else updateQuantity(target.dataset.productId, newQty);
+                }
+                break;
+            }
+            case 'qty-change': {
+                e.preventDefault();
+                const qtyEl = document.getElementById('product-qty');
+                if (qtyEl) {
+                    let val = parseInt(qtyEl.value) || 1;
+                    val += parseInt(target.dataset.delta);
+                    const product = getProduct(state.selectedProductId);
+                    val = Math.max(1, Math.min(val, product ? product.stockQuantity : 99));
+                    qtyEl.value = val;
+                }
+                break;
+            }
+            case 'set-gallery': {
+                e.preventDefault();
+                state.galleryIndex = parseInt(target.dataset.index);
+                const img = document.getElementById('main-product-image');
+                const p = getProduct(state.selectedProductId);
+                if (img && p) img.src = p.images[state.galleryIndex];
+                // Update thumbnail borders
+                document.querySelectorAll('[data-action="set-gallery"]').forEach((btn, i) => {
+                    btn.classList.toggle('border-volt-500', i === state.galleryIndex);
+                    btn.classList.toggle('border-transparent', i !== state.galleryIndex);
+                });
+                break;
+            }
+            case 'set-tab': {
+                e.preventDefault();
+                state.activeTab = target.dataset.tab;
+                renderPage();
+                break;
+            }
+            case 'set-view': {
+                e.preventDefault();
+                state.viewMode = target.dataset.view;
+                renderPage();
+                break;
+            }
+            case 'open-mobile-menu': openMobileMenu(); break;
+            case 'close-mobile-menu': closeMobileMenu(); break;
+            case 'open-mobile-search': {
+                e.preventDefault();
+                const bar = document.getElementById('mobile-search-bar');
+                bar.classList.toggle('hidden');
+                if (!bar.classList.contains('hidden')) {
+                    document.getElementById('mobile-search').focus();
+                }
+                break;
+            }
+            case 'close-mobile-search': closeMobileSearch(); break;
+            case 'open-filters': openFilters(); break;
+            case 'close-filters': closeFilters(); break;
+            case 'close-toast': {
+                const toast = document.getElementById(target.dataset.toastId);
+                if (toast) { toast.classList.add('toast-exit'); setTimeout(() => toast.remove(), 300); }
+                break;
+            }
+            case 'toggle-filter': {
+                const type = target.dataset.filterType;
+                const value = target.dataset.filterValue;
+                let arr;
+                if (type === 'category') arr = state.filters.categories;
+                else if (type === 'brand') arr = state.filters.brands;
+                else if (type === 'compatibility') arr = state.filters.compatibility;
+                const idx = arr.indexOf(value);
+                if (idx > -1) arr.splice(idx, 1); else arr.push(value);
+                renderPage();
+                break;
+            }
+            case 'toggle-instock': {
+                state.filters.inStockOnly = !state.filters.inStockOnly;
+                renderPage();
+                break;
+            }
+            case 'set-rating': {
+                const val = parseInt(target.value);
+                state.filters.rating = state.filters.rating === val ? 0 : val;
+                renderPage();
+                break;
+            }
+            case 'set-price': {
+                const min = parseInt(target.dataset.min);
+                const max = parseInt(target.dataset.max);
+                state.filters.priceRange = state.filters.priceRange && state.filters.priceRange[0] === min && state.filters.priceRange[1] === max ? null : [min, max];
+                renderPage();
+                break;
+            }
+            case 'apply-price': {
+                const minEl = document.getElementById('price-min') || document.getElementById('m-price-min');
+                const maxEl = document.getElementById('price-max') || document.getElementById('m-price-max');
+                const min = minEl && minEl.value ? parseFloat(minEl.value) : 0;
+                const max = maxEl && maxEl.value ? parseFloat(maxEl.value) : Infinity;
+                state.filters.priceRange = [min, max];
+                renderPage();
+                break;
+            }
+            case 'clear-filter': {
+                e.preventDefault();
+                const type = target.dataset.filter;
+                const value = target.dataset.value;
+                if (type === 'search') state.filters.search = '';
+                else if (type === 'category') state.filters.categories = state.filters.categories.filter(c => c !== value);
+                else if (type === 'brand') state.filters.brands = state.filters.brands.filter(b => b !== value);
+                else if (type === 'priceRange') state.filters.priceRange = null;
+                else if (type === 'rating') state.filters.rating = 0;
+                else if (type === 'inStockOnly') state.filters.inStockOnly = false;
+                renderPage();
+                break;
+            }
+            case 'clear-all-filters': {
+                e.preventDefault();
+                clearFilters();
+                break;
+            }
+            case 'apply-promo': {
+                e.preventDefault();
+                const input = document.getElementById('promo-input');
+                if (input) { state.promoCode = input.value; applyPromo(state.promoCode); }
+                break;
+            }
+            case 'place-order': {
+                e.preventDefault();
+                placeOrder();
+                break;
+            }
+            case 'newsletter': {
+                e.preventDefault();
+                showToast('Thanks for subscribing! Check your inbox for a welcome discount.', 'success');
+                e.target.reset();
+                break;
+            }
+        }
+    });
+
+    // Close mobile menu/filter on overlay click
+    document.getElementById('mobile-overlay').addEventListener('click', closeMobileMenu);
+    document.getElementById('filter-overlay').addEventListener('click', closeFilters);
+
+    // ==========================================
+    // HASH ROUTING
+    // ==========================================
+    function handleHash() {
+        const hash = window.location.hash.slice(1) || 'home';
+        const [page, param] = hash.split('=');
+        const pageName = page.replace(/[^a-z]/gi, '');
+
+        if (pageName === 'product' && param) {
+            state.selectedProductId = param;
+            state.page = 'product';
+        } else if (['home', 'catalog', 'cart', 'checkout'].includes(pageName)) {
+            state.page = pageName;
+        } else {
+            state.page = 'home';
+        }
+        renderPage();
+    }
+
+    window.addEventListener('hashchange', handleHash);
+
+    // ==========================================
+    // INITIALIZATION
+    // ==========================================
+    function init() {
+        renderFooter();
+        handleHash();
+        lucide.createIcons();
+    }
+
+    // Run on DOM ready
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', init);
+    } else {
+        init();
+    }
+    </script>
+</body>
+</html>

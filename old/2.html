@@ -1,0 +1,760 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>eCommerce Analytics — Executive Dashboard</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;1,400&display=swap" rel="stylesheet">
+  <script>tailwind.config={theme:{extend:{fontFamily:{sans:['Plus Jakarta Sans','sans-serif']}}}}</script>
+  <style>
+    [data-theme="dark"]{
+      --bg-base:#06080f;--bg-surface:#0c1019;--bg-elevated:#121829;--bg-hover:#1a2138;--bg-input:#0f1520;
+      --border-subtle:rgba(255,255,255,0.05);--border-default:rgba(255,255,255,0.08);--border-strong:rgba(255,255,255,0.14);
+      --text-primary:#eef1f6;--text-secondary:#8b95a8;--text-muted:#4f5b6e;
+      --accent:#f59e0b;--accent-hover:#d97706;--accent-soft:rgba(245,158,11,0.10);
+      --success:#34d399;--success-soft:rgba(52,211,153,0.10);
+      --danger:#f87171;--danger-soft:rgba(248,113,113,0.10);
+      --info:#60a5fa;--info-soft:rgba(96,165,250,0.10);
+      --chart-grid:rgba(255,255,255,0.04);--chart-label:#4f5b6e;
+      --spark-rev:#f59e0b;--spark-aov:#34d399;--spark-trans:#60a5fa;--spark-cr:#f87171;
+      --tooltip-bg:#1a2138;--tooltip-border:rgba(255,255,255,0.08);
+      --bar-fill:rgba(255,255,255,0.06);--bar-hover:rgba(255,255,255,0.12);--bar-ghost:rgba(255,255,255,0.08);
+      --loading-bg:rgba(6,8,15,0.6);--topbar-bg:rgba(6,8,15,0.8);--sidebar-bg:#0c1019;
+      --toggle-bg:#1a2138;--toggle-knob:#f59e0b;--mini-bar-track:rgba(255,255,255,0.05);
+      --footer-bg:rgba(255,255,255,0.015);--scrollbar:rgba(255,255,255,0.08);--scrollbar-hover:rgba(255,255,255,0.15);
+      --glow1:rgba(245,158,11,0.035);--glow2:rgba(52,211,153,0.02);--card-shadow:rgba(0,0,0,0.15);
+    }
+    [data-theme="light"]{
+      --bg-base:#f3f4f8;--bg-surface:#ffffff;--bg-elevated:#f0f1f5;--bg-hover:#e6e8ee;--bg-input:#f5f6fa;
+      --border-subtle:rgba(0,0,0,0.06);--border-default:rgba(0,0,0,0.09);--border-strong:rgba(0,0,0,0.16);
+      --text-primary:#111827;--text-secondary:#6b7280;--text-muted:#9ca3af;
+      --accent:#d97706;--accent-hover:#b45309;--accent-soft:rgba(217,119,6,0.07);
+      --success:#059669;--success-soft:rgba(5,150,105,0.07);
+      --danger:#dc2626;--danger-soft:rgba(220,38,38,0.07);
+      --info:#2563eb;--info-soft:rgba(37,99,235,0.07);
+      --chart-grid:rgba(0,0,0,0.05);--chart-label:#9ca3af;
+      --spark-rev:#d97706;--spark-aov:#059669;--spark-trans:#2563eb;--spark-cr:#dc2626;
+      --tooltip-bg:#ffffff;--tooltip-border:rgba(0,0,0,0.1);
+      --bar-fill:rgba(0,0,0,0.05);--bar-hover:rgba(0,0,0,0.1);--bar-ghost:rgba(0,0,0,0.06);
+      --loading-bg:rgba(255,255,255,0.6);--topbar-bg:rgba(243,244,248,0.85);--sidebar-bg:#ffffff;
+      --toggle-bg:#e5e7eb;--toggle-knob:#ffffff;--mini-bar-track:rgba(0,0,0,0.06);
+      --footer-bg:rgba(0,0,0,0.02);--scrollbar:rgba(0,0,0,0.08);--scrollbar-hover:rgba(0,0,0,0.15);
+      --glow1:rgba(217,119,6,0.04);--glow2:rgba(5,150,105,0.03);--card-shadow:rgba(0,0,0,0.06);
+    }
+    *{box-sizing:border-box}
+    body{font-family:'Plus Jakarta Sans',sans-serif;background:var(--bg-base);color:var(--text-primary);margin:0;overflow-x:hidden;transition:background .4s,color .4s}
+    ::-webkit-scrollbar{width:5px;height:5px}
+    ::-webkit-scrollbar-track{background:transparent}
+    ::-webkit-scrollbar-thumb{background:var(--scrollbar);border-radius:10px}
+    ::-webkit-scrollbar-thumb:hover{background:var(--scrollbar-hover)}
+    .bg-glow{position:fixed;top:-200px;right:-100px;width:700px;height:700px;background:radial-gradient(circle,var(--glow1) 0%,transparent 65%);pointer-events:none;z-index:0;transition:background .4s}
+    .bg-glow-2{position:fixed;bottom:-300px;left:-150px;width:600px;height:600px;background:radial-gradient(circle,var(--glow2) 0%,transparent 65%);pointer-events:none;z-index:0;transition:background .4s}
+
+    /* Sidebar */
+    .sidebar{position:fixed;left:0;top:0;bottom:0;width:72px;background:var(--sidebar-bg);border-right:1px solid var(--border-subtle);display:flex;flex-direction:column;align-items:center;padding:20px 0;z-index:50;transition:transform .3s cubic-bezier(.4,0,.2,1),background .4s,border-color .4s}
+    .sidebar-logo{width:38px;height:38px;border-radius:11px;background:linear-gradient(135deg,#f59e0b,#d97706);display:flex;align-items:center;justify-content:center;font-size:17px;color:#06080f;margin-bottom:32px;flex-shrink:0;box-shadow:0 4px 16px rgba(245,158,11,0.25)}
+    .nav-item{position:relative;width:44px;height:44px;display:flex;align-items:center;justify-content:center;border-radius:12px;color:var(--text-muted);cursor:pointer;transition:all .2s;margin-bottom:4px;font-size:16px}
+    .nav-item:hover{color:var(--text-secondary);background:var(--bg-hover)}
+    .nav-item.active{color:var(--accent);background:var(--accent-soft)}
+    .nav-item.active::before{content:'';position:absolute;left:-14px;top:50%;transform:translateY(-50%);width:3px;height:20px;background:var(--accent);border-radius:0 3px 3px 0}
+    .nav-item::after{content:attr(data-tooltip);position:absolute;left:calc(100% + 14px);top:50%;transform:translateY(-50%);padding:5px 10px;background:var(--bg-elevated);color:var(--text-primary);font-size:12px;font-weight:500;border-radius:8px;white-space:nowrap;opacity:0;pointer-events:none;transition:opacity .15s;border:1px solid var(--border-default);box-shadow:0 8px 24px rgba(0,0,0,.3)}
+    .nav-item:hover::after{opacity:1}
+    .nav-spacer{flex:1}
+
+    .main-wrap{margin-left:72px;min-height:100vh;position:relative;z-index:1}
+    .topbar{position:sticky;top:0;z-index:40;background:var(--topbar-bg);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border-bottom:1px solid var(--border-subtle);padding:0 32px;height:64px;display:flex;align-items:center;justify-content:space-between;transition:background .4s,border-color .4s}
+    .live-dot{width:7px;height:7px;border-radius:50%;background:var(--success);display:inline-block;animation:pulse-live 2s ease-in-out infinite;margin-right:8px}
+    @keyframes pulse-live{0%,100%{box-shadow:0 0 0 0 rgba(52,211,153,.4)}50%{box-shadow:0 0 0 6px rgba(52,211,153,0)}}
+    .search-box{background:var(--bg-elevated);border:1px solid var(--border-subtle);border-radius:10px;padding:8px 14px 8px 36px;color:var(--text-primary);font-size:13px;width:220px;outline:none;transition:all .2s;font-family:inherit}
+    .search-box::placeholder{color:var(--text-muted)}
+    .search-box:focus{border-color:var(--accent);box-shadow:0 0 0 3px var(--accent-soft);background:var(--bg-hover)}
+    .search-wrap{position:relative}
+    .search-wrap i{position:absolute;left:12px;top:50%;transform:translateY(-50%);color:var(--text-muted);font-size:13px;pointer-events:none}
+    .topbar-btn{width:36px;height:36px;border-radius:10px;display:flex;align-items:center;justify-content:center;color:var(--text-secondary);cursor:pointer;transition:all .2s;position:relative;border:none;background:none}
+    .topbar-btn:hover{background:var(--bg-hover);color:var(--text-primary)}
+    .notif-badge{position:absolute;top:5px;right:5px;width:7px;height:7px;border-radius:50%;background:var(--danger);border:2px solid var(--bg-base);transition:border-color .4s}
+    .user-avatar{width:32px;height:32px;border-radius:10px;object-fit:cover;border:2px solid var(--border-subtle);cursor:pointer;transition:border-color .2s}
+    .user-avatar:hover{border-color:var(--accent)}
+
+    .theme-toggle{width:52px;height:28px;border-radius:14px;background:var(--toggle-bg);border:1px solid var(--border-default);cursor:pointer;position:relative;transition:all .3s;flex-shrink:0}
+    .theme-toggle .knob{position:absolute;top:3px;left:3px;width:20px;height:20px;border-radius:50%;background:var(--toggle-knob);transition:all .3s cubic-bezier(.4,0,.2,1);display:flex;align-items:center;justify-content:center;font-size:10px;box-shadow:0 1px 4px rgba(0,0,0,.15)}
+    [data-theme="light"] .theme-toggle .knob{left:27px}
+    [data-theme="dark"] .theme-toggle .knob{color:#818cf8}
+    [data-theme="light"] .theme-toggle .knob{color:#f59e0b}
+    .theme-toggle:hover{border-color:var(--border-strong)}
+
+    .content{padding:28px 32px 40px}
+    .page-container{display:none;animation:fadePage .35s ease-out}
+    .page-container.active{display:block}
+    @keyframes fadePage{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
+
+    /* Cards */
+    .card{background:var(--bg-surface);border:1px solid var(--border-subtle);border-radius:16px;position:relative;overflow:hidden;transition:border-color .3s,box-shadow .3s,background .4s}
+    .card:hover{border-color:var(--border-default);box-shadow:0 8px 32px var(--card-shadow)}
+
+    /* KPI */
+    .kpi-card{padding:24px}
+    .kpi-card::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;opacity:0;transition:opacity .3s}
+    .kpi-card:hover::before{opacity:1}
+    .kpi-card.primary::before{background:linear-gradient(90deg,var(--spark-rev),transparent)}
+    .kpi-card.green::before{background:linear-gradient(90deg,var(--spark-aov),transparent)}
+    .kpi-card.blue::before{background:linear-gradient(90deg,var(--spark-trans),transparent)}
+    .kpi-card.red::before{background:linear-gradient(90deg,var(--spark-cr),transparent)}
+    .kpi-value{font-size:28px;font-weight:800;letter-spacing:-.5px;line-height:1.1;font-variant-numeric:tabular-nums}
+    .kpi-label{font-size:12px;font-weight:600;text-transform:uppercase;letter-spacing:.08em;color:var(--text-muted);margin-bottom:8px}
+    .trend-badge{display:inline-flex;align-items:center;gap:4px;padding:3px 8px;border-radius:6px;font-size:12px;font-weight:600}
+    .trend-up{background:var(--success-soft);color:var(--success)}
+    .trend-down{background:var(--danger-soft);color:var(--danger)}
+    .sparkline-wrap{position:absolute;bottom:0;right:0;width:130px;height:52px;opacity:.45;transition:opacity .3s}
+    .kpi-card:hover .sparkline-wrap{opacity:.75}
+
+    /* Filters */
+    .filter-bar{display:flex;flex-wrap:wrap;align-items:center;gap:10px;padding:14px 20px;margin-bottom:24px}
+    .filter-label{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:var(--text-muted);margin-right:4px}
+    .filter-select{background:var(--bg-elevated);color:var(--text-primary);border:1px solid var(--border-subtle);border-radius:10px;padding:8px 34px 8px 12px;font-size:13px;font-weight:500;font-family:inherit;outline:none;cursor:pointer;appearance:none;-webkit-appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' fill='%237e8a9e' viewBox='0 0 16 16'%3E%3Cpath d='M8 11L3 6h10z'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 10px center;transition:all .2s}
+    .filter-select:hover{border-color:var(--border-default)}
+    .filter-select:focus{border-color:var(--accent);box-shadow:0 0 0 3px var(--accent-soft)}
+    .filter-select option{background:var(--bg-elevated);color:var(--text-primary)}
+    .btn-ghost{padding:8px 14px;border-radius:10px;font-size:13px;font-weight:600;color:var(--text-secondary);background:none;border:1px solid var(--border-subtle);cursor:pointer;transition:all .2s;font-family:inherit;display:inline-flex;align-items:center;gap:6px}
+    .btn-ghost:hover{background:var(--bg-hover);color:var(--text-primary);border-color:var(--border-default)}
+    .btn-accent{padding:8px 16px;border-radius:10px;font-size:13px;font-weight:600;color:#06080f;background:var(--accent);border:none;cursor:pointer;transition:all .2s;font-family:inherit;display:inline-flex;align-items:center;gap:6px}
+    .btn-accent:hover{background:var(--accent-hover);transform:translateY(-1px);box-shadow:0 4px 12px rgba(245,158,11,.3)}
+
+    .chart-wrap{position:relative;height:300px;width:100%}
+    .chart-wrap-sm{position:relative;height:240px;width:100%}
+.card-fill{display:flex;flex-direction:column}
+.card-fill>.section-head{flex-shrink:0}
+.card-fill .chart-area{flex:1;min-height:0;padding:0 20px 20px;display:flex;flex-direction:column}
+.card-fill .chart-area .chart-inner{flex:1;position:relative;min-height:0}
+
+    /* Tables */
+    .data-table{width:100%;border-collapse:collapse;font-size:13px}
+    .data-table thead th{padding:12px 20px;text-align:left;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--text-muted);border-bottom:1px solid var(--border-subtle);transition:color .4s,border-color .4s}
+    .data-table thead th.text-right{text-align:right}
+    .data-table tbody tr{transition:background .15s;border-bottom:1px solid var(--border-subtle)}
+    .data-table tbody tr:last-child{border-bottom:none}
+    .data-table tbody tr:hover{background:var(--bg-hover)}
+    .data-table tbody td{padding:14px 20px;color:var(--text-secondary);transition:color .4s}
+    .data-table tbody td.text-right{text-align:right}
+    .data-table tbody td.font-name{color:var(--text-primary);font-weight:600}
+    .data-table tbody td.font-metric{color:var(--text-primary);font-weight:700;font-variant-numeric:tabular-nums}
+    .data-table tfoot td{padding:14px 20px;font-weight:700;color:var(--text-primary);border-top:1px solid var(--border-default);background:var(--footer-bg);font-variant-numeric:tabular-nums;transition:all .4s}
+    .data-table tfoot td.text-right{text-align:right}
+    .mini-bar-track{width:56px;height:4px;border-radius:2px;background:var(--mini-bar-track);overflow:hidden;display:inline-block;vertical-align:middle;margin-left:8px;transition:background .4s}
+    .mini-bar-fill{height:100%;border-radius:2px;background:var(--accent);transition:width .6s,background .4s}
+
+    .section-head{display:flex;justify-content:space-between;align-items:center;padding:20px 24px 0;margin-bottom:4px}
+    .section-title{font-size:15px;font-weight:700;color:var(--text-primary);transition:color .4s}
+    .section-link{font-size:12px;font-weight:600;color:var(--accent);cursor:pointer;transition:opacity .2s;text-decoration:none}
+    .section-link:hover{opacity:.7}
+
+    .loading-overlay{position:absolute;inset:0;background:var(--loading-bg);backdrop-filter:blur(2px);display:flex;align-items:center;justify-content:center;opacity:0;pointer-events:none;transition:opacity .25s,background .4s;z-index:10;border-radius:inherit}
+    .loading-overlay.active{opacity:1;pointer-events:all}
+    .spinner{width:22px;height:22px;border:2.5px solid var(--border-default);border-top-color:var(--accent);border-radius:50%;animation:spin .8s linear infinite;transition:border-color .4s}
+    @keyframes spin{to{transform:rotate(360deg)}}
+
+    @keyframes fadeSlideUp{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:translateY(0)}}
+    .anim-entry{opacity:0;animation:fadeSlideUp .5s ease-out forwards}
+
+    .sidebar-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.6);z-index:45}
+    .sidebar-overlay.active{display:block}
+    .mobile-toggle{display:none}
+
+    /* Status badges */
+    .status-badge{display:inline-flex;align-items:center;gap:5px;padding:4px 10px;border-radius:8px;font-size:12px;font-weight:600}
+    .status-pending{background:rgba(251,191,36,.1);color:#fbbf24}
+    .status-shipped{background:var(--info-soft);color:var(--info)}
+    .status-delivered{background:var(--success-soft);color:var(--success)}
+    .status-cancelled{background:var(--danger-soft);color:var(--danger)}
+    .status-active{background:var(--success-soft);color:var(--success)}
+    .status-oos{background:var(--danger-soft);color:var(--danger)}
+    .status-dot{width:6px;height:6px;border-radius:50%;background:currentColor}
+
+    /* Settings */
+    .setting-row{display:flex;justify-content:space-between;align-items:center;padding:16px 0;border-bottom:1px solid var(--border-subtle)}
+    .setting-row:last-child{border-bottom:none}
+    .setting-label{font-size:14px;font-weight:600;color:var(--text-primary)}
+    .setting-desc{font-size:12px;color:var(--text-muted);margin-top:2px}
+    .setting-toggle{width:44px;height:24px;border-radius:12px;background:var(--toggle-bg);border:1px solid var(--border-default);cursor:pointer;position:relative;transition:all .3s;flex-shrink:0}
+    .setting-toggle .sknob{position:absolute;top:2px;left:2px;width:18px;height:18px;border-radius:50%;background:var(--toggle-knob);transition:all .3s cubic-bezier(.4,0,.2,1);box-shadow:0 1px 3px rgba(0,0,0,.15)}
+    .setting-toggle.on{background:var(--accent);border-color:var(--accent)}
+    .setting-toggle.on .sknob{left:22px}
+    .setting-select{background:var(--bg-elevated);color:var(--text-primary);border:1px solid var(--border-subtle);border-radius:10px;padding:8px 32px 8px 12px;font-size:13px;font-family:inherit;outline:none;appearance:none;-webkit-appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' fill='%237e8a9e' viewBox='0 0 16 16'%3E%3Cpath d='M8 11L3 6h10z'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 10px center;cursor:pointer;transition:all .2s}
+    .setting-select:focus{border-color:var(--accent);box-shadow:0 0 0 3px var(--accent-soft)}
+    .setting-select option{background:var(--bg-elevated);color:var(--text-primary)}
+
+    /* Product image */
+    .prod-img{width:44px;height:44px;border-radius:10px;object-fit:cover;border:1px solid var(--border-subtle)}
+    .cust-avatar{width:32px;height:32px;border-radius:8px;object-fit:cover}
+
+    /* Responsive */
+    @media(max-width:1024px){.sidebar{transform:translateX(-100%)}.sidebar.open{transform:translateX(0)}.main-wrap{margin-left:0}.mobile-toggle{display:flex}.content{padding:20px 16px 32px}.topbar{padding:0 16px}.search-box{width:160px}}
+    @media(max-width:640px){.search-box{display:none}.kpi-value{font-size:22px}.filter-bar{padding:12px 14px}.data-table thead th,.data-table tbody td,.data-table tfoot td{padding:10px 12px;font-size:12px}.sparkline-wrap{width:90px;height:40px}}
+    @media(prefers-reduced-motion:reduce){*,*::before,*::after{animation-duration:.01ms!important;transition-duration:.01ms!important}}
+
+    .card-stretch{display:flex;flex-direction:column}
+.card-stretch>.section-head{flex-shrink:0}
+.card-stretch>.overflow-x-auto{flex:1;display:flex;flex-direction:column}
+.card-stretch table{flex:1;display:flex;flex-direction:column;width:100%}
+.card-stretch thead{display:table;width:100%;table-layout:fixed}
+.card-stretch tbody{display:table;width:100%;flex:1;table-layout:fixed}
+.card-stretch tfoot{display:table;width:100%;table-layout:fixed}
+.card-stretch tr{display:table-row}
+.card-stretch th,.card-stretch td{display:table-cell}
+
+.compact-table tbody td{padding:10px 20px!important}
+.compact-table thead th{padding:10px 20px!important}
+
+  </style>
+</head>
+<body>
+  <div class="bg-glow"></div>
+  <div class="bg-glow-2"></div>
+  <div class="sidebar-overlay" id="sidebarOverlay"></div>
+
+  <!-- Sidebar -->
+  <aside class="sidebar" id="sidebar">
+    <div class="sidebar-logo"><i class="fa-solid fa-bag-shopping"></i></div>
+    <div class="nav-item active" data-page="dashboard" data-tooltip="Dashboard"><i class="fa-solid fa-grip"></i></div>
+    <div class="nav-item" data-page="analytics" data-tooltip="Analytics"><i class="fa-solid fa-chart-line"></i></div>
+    <div class="nav-item" data-page="products" data-tooltip="Products"><i class="fa-solid fa-box"></i></div>
+    <div class="nav-item" data-page="customers" data-tooltip="Customers"><i class="fa-solid fa-users"></i></div>
+    <div class="nav-item" data-page="orders" data-tooltip="Orders"><i class="fa-solid fa-cart-shopping"></i></div>
+    <div class="nav-spacer"></div>
+    <div class="nav-item" data-page="settings" data-tooltip="Settings"><i class="fa-solid fa-gear"></i></div>
+  </aside>
+
+  <!-- Main -->
+  <div class="main-wrap">
+    <header class="topbar">
+      <div class="flex items-center gap-4">
+        <button class="topbar-btn mobile-toggle" id="menuToggle" aria-label="Toggle menu"><i class="fa-solid fa-bars"></i></button>
+        <h1 id="pageTitle" class="text-base font-bold tracking-tight" style="color:var(--text-primary)">eCommerce Analytics</h1>
+        <span id="liveBadge" class="hidden sm:inline-flex items-center text-xs font-semibold px-2.5 py-1 rounded-full" style="background:var(--success-soft);color:var(--success)"><span class="live-dot"></span>Live</span>
+      </div>
+      <div class="flex items-center gap-2">
+        <div class="search-wrap hidden sm:block"><i class="fa-solid fa-magnifying-glass"></i><input type="text" class="search-box" placeholder="Search metrics..."></div>
+        <div class="theme-toggle" id="themeToggle" role="switch" aria-label="Toggle theme" tabindex="0"><div class="knob" id="themeKnob"><i class="fa-solid fa-moon"></i></div></div>
+        <button class="topbar-btn" aria-label="Notifications"><i class="fa-regular fa-bell"></i><span class="notif-badge"></span></button>
+        <div class="w-px h-6 mx-1" style="background:var(--border-subtle)"></div>
+        <img src="https://picsum.photos/seed/exec-user-42/64/64.jpg" alt="User" class="user-avatar">
+      </div>
+    </header>
+
+    <main class="content">
+
+      <!-- ==================== DASHBOARD ==================== -->
+      <div id="page-dashboard" class="page-container active">
+        <div class="card filter-bar anim-entry" style="animation-delay:.05s">
+          <span class="filter-label">Filters</span>
+          <select id="timeFilter" class="filter-select"><option value="last30">Apr 11 – May 10, 2026</option><option value="last7">Last 7 Days</option><option value="lastMonth">Last Month</option><option value="ytd">Year to Date</option></select>
+          <select id="sourceFilter" class="filter-select"><option value="all">All Sources</option><option value="direct">Direct / None</option><option value="organic">Organic Search</option><option value="paid">Paid Social / CPC</option></select>
+          <select id="deviceFilter" class="filter-select"><option value="all">All Devices</option><option value="desktop">Desktop</option><option value="mobile">Mobile</option><option value="tablet">Tablet</option></select>
+          <select id="countryFilter" class="filter-select"><option value="all">All Countries</option><option value="usa">United States</option><option value="canada">Canada</option><option value="uk">United Kingdom</option></select>
+          <div class="flex-1"></div>
+          <button class="btn-ghost" id="refreshBtn"><i class="fa-solid fa-arrow-rotate-right text-xs"></i> Refresh</button>
+          <button class="btn-accent" id="exportBtn"><i class="fa-solid fa-arrow-down text-xs"></i> Export</button>
+          <button class="btn-ghost" id="resetBtn" style="border:none;padding:8px;color:var(--accent)">Reset</button>
+        </div>
+        <div class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-4 mb-6">
+          <div class="card kpi-card primary anim-entry" style="animation-delay:.1s"><div class="loading-overlay" id="load-rev"><div class="spinner"></div></div><div class="flex justify-between items-start mb-1"><p class="kpi-label">Total Revenue</p><span id="trend-rev" class="trend-badge trend-up"><i class="fa-solid fa-arrow-up text-[10px]"></i> 12.5%</span></div><p id="kpi-rev" class="kpi-value">$171,072</p><p class="text-xs mt-2" style="color:var(--text-muted)">vs previous period</p><div class="sparkline-wrap" id="spark-rev"></div></div>
+          <div class="card kpi-card green anim-entry" style="animation-delay:.15s"><div class="loading-overlay" id="load-aov"><div class="spinner"></div></div><div class="flex justify-between items-start mb-1"><p class="kpi-label">Avg. Order Value</p><span id="trend-aov" class="trend-badge trend-up"><i class="fa-solid fa-arrow-up text-[10px]"></i> 4.2%</span></div><p id="kpi-aov" class="kpi-value">$95.68</p><p class="text-xs mt-2" style="color:var(--text-muted)">Revenue / Transactions</p><div class="sparkline-wrap" id="spark-aov"></div></div>
+          <div class="card kpi-card blue anim-entry" style="animation-delay:.2s"><div class="loading-overlay" id="load-trans"><div class="spinner"></div></div><div class="flex justify-between items-start mb-1"><p class="kpi-label">Transactions</p><span id="trend-trans" class="trend-badge trend-up"><i class="fa-solid fa-arrow-up text-[10px]"></i> 8.1%</span></div><p id="kpi-trans" class="kpi-value">1,788</p><p class="text-xs mt-2" style="color:var(--text-muted)">Completed checkouts</p><div class="sparkline-wrap" id="spark-trans"></div></div>
+          <div class="card kpi-card red anim-entry" style="animation-delay:.25s"><div class="loading-overlay" id="load-cr"><div class="spinner"></div></div><div class="flex justify-between items-start mb-1"><p class="kpi-label">Conversion Rate</p><span id="trend-cr" class="trend-badge trend-up"><i class="fa-solid fa-arrow-up text-[10px]"></i> 0.4%</span></div><p id="kpi-cr" class="kpi-value">2.00%</p><p id="cr-detail" class="text-xs mt-2" style="color:var(--text-muted)">1,788 / 89,401 users</p><div class="sparkline-wrap" id="spark-cr"></div></div>
+        </div>
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-4 mb-6">
+          <div class="card lg:col-span-2 anim-entry" style="animation-delay:.3s"><div class="loading-overlay" id="load-chart1"><div class="spinner"></div></div><div class="section-head"><h3 class="section-title">Revenue & Users Over Time</h3><div class="flex items-center gap-5 text-xs font-medium" style="color:var(--text-muted)"><span class="flex items-center gap-2"><span class="w-2.5 h-2.5 rounded-full" style="background:var(--accent)"></span> Revenue</span><span class="flex items-center gap-2"><span class="w-2.5 h-2.5 rounded-full" style="background:var(--bar-fill);border:1px solid var(--border-default)"></span> Users</span></div></div><div class="px-5 pb-5"><div class="chart-wrap"><canvas id="revenueChart"></canvas></div></div></div>
+          <div class="card anim-entry" style="animation-delay:.35s"><div class="loading-overlay" id="load-chart2"><div class="spinner"></div></div><div class="section-head"><h3 class="section-title">Conversion by Day</h3></div><div class="px-5 pb-5"><div class="chart-wrap"><canvas id="crChart"></canvas></div></div></div>
+        </div>
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-4">
+          <div class="card card-stretch anim-entry" style="animation-delay:.4s"><div class="loading-overlay" id="load-tbl1"><div class="spinner"></div></div><div class="section-head"><h3 class="section-title">Acquisition Sources</h3><a class="section-link">View All <i class="fa-solid fa-arrow-right text-[10px] ml-1"></i></a></div><div class="overflow-x-auto"><table class="data-table"><thead><tr><th>Source / Medium</th><th class="text-right">Users</th><th class="text-right">AOV</th><th class="text-right">CR</th><th class="text-right">Revenue</th></tr></thead><tbody id="tbl-acq-body"></tbody><tfoot><tr><td>Grand Total</td><td id="tbl-acq-users" class="text-right">—</td><td id="tbl-acq-aov" class="text-right">—</td><td id="tbl-acq-cr" class="text-right">—</td><td id="tbl-acq-rev" class="text-right">—</td></tr></tfoot></table></div></div>
+          <div class="card anim-entry" style="animation-delay:.45s"><div class="loading-overlay" id="load-tbl2"><div class="spinner"></div></div><div class="section-head"><h3 class="section-title">Top Products</h3><a class="section-link">View All <i class="fa-solid fa-arrow-right text-[10px] ml-1"></i></a></div><div class="overflow-x-auto"><table class="data-table"><thead><tr><th>Product Name</th><th class="text-right">Purchased</th><th class="text-right">Revenue</th></tr></thead><tbody id="tbl-prod-body"></tbody><tfoot><tr><td>Total Tracked</td><td id="tbl-prod-count" class="text-right">—</td><td id="tbl-prod-rev" class="text-right">—</td></tr></tfoot></table></div></div>
+        </div>
+      </div>
+
+      <!-- ==================== ANALYTICS ==================== -->
+      <div id="page-analytics" class="page-container">
+        <div class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-4 mb-6">
+          <div class="card kpi-card primary anim-entry" style="animation-delay:.1s"><p class="kpi-label">Sessions</p><p class="kpi-value">89,401</p><p class="text-xs mt-2" style="color:var(--text-muted)">Unique visits this period</p><div class="sparkline-wrap" id="spark-an-sess"></div></div>
+          <div class="card kpi-card green anim-entry" style="animation-delay:.15s"><p class="kpi-label">Avg. Duration</p><p class="kpi-value">3m 42s</p><p class="text-xs mt-2" style="color:var(--text-muted)">Time on site</p><div class="sparkline-wrap" id="spark-an-dur"></div></div>
+          <div class="card kpi-card red anim-entry" style="animation-delay:.2s"><p class="kpi-label">Bounce Rate</p><p class="kpi-value">42.3%</p><p class="text-xs mt-2" style="color:var(--text-muted)">Single-page sessions</p><div class="sparkline-wrap" id="spark-an-br"></div></div>
+          <div class="card kpi-card blue anim-entry" style="animation-delay:.25s"><p class="kpi-label">Pages / Session</p><p class="kpi-value">4.8</p><p class="text-xs mt-2" style="color:var(--text-muted)">Depth of engagement</p><div class="sparkline-wrap" id="spark-an-pp"></div></div>
+        </div>
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-4 mb-6">
+          <div class="card lg:col-span-2 anim-entry" style="animation-delay:.3s"><div class="section-head"><h3 class="section-title">Conversion Funnel</h3></div><div class="px-5 pb-5"><div class="chart-wrap"><canvas id="funnelChart"></canvas></div></div></div>
+          <div class="card anim-entry" style="animation-delay:.35s"><div class="section-head"><h3 class="section-title">Traffic Sources</h3></div><div class="px-5 pb-5"><div class="chart-wrap"><canvas id="trafficChart"></canvas></div></div></div>
+        </div>
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-4">
+          <div class="card anim-entry" style="animation-delay:.4s"><div class="section-head"><h3 class="section-title">Device Breakdown</h3></div><div class="px-5 pb-5"><div class="chart-wrap-sm"><canvas id="deviceChart"></canvas></div></div></div>
+          <div class="card anim-entry" style="animation-delay:.45s"><div class="section-head"><h3 class="section-title">Top Pages</h3></div><div class="overflow-x-auto"><table class="data-table"><thead><tr><th>Page</th><th class="text-right">Views</th><th class="text-right">Avg. Time</th><th class="text-right">Exit Rate</th></tr></thead><tbody id="tbl-pages-body"></tbody></table></div></div>
+        </div>
+      </div>
+
+      <!-- ==================== PRODUCTS ==================== -->
+      <div id="page-products" class="page-container">
+        <div class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-4 mb-6">
+          <div class="card kpi-card primary anim-entry" style="animation-delay:.1s"><p class="kpi-label">Total Products</p><p class="kpi-value">248</p><p class="text-xs mt-2" style="color:var(--text-muted)">Active catalog size</p></div>
+          <div class="card kpi-card green anim-entry" style="animation-delay:.15s"><p class="kpi-label">In Stock</p><p class="kpi-value">231</p><p class="text-xs mt-2" style="color:var(--text-muted)">Available for purchase</p></div>
+          <div class="card kpi-card red anim-entry" style="animation-delay:.2s"><p class="kpi-label">Out of Stock</p><p class="kpi-value">17</p><p class="text-xs mt-2" style="color:var(--text-muted)">Needs restocking</p></div>
+          <div class="card kpi-card blue anim-entry" style="animation-delay:.25s"><p class="kpi-label">Avg. Price</p><p class="kpi-value">$68.50</p><p class="text-xs mt-2" style="color:var(--text-muted)">Across all SKUs</p></div>
+        </div>
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-4 mb-6">
+          <div class="card lg:col-span-2 anim-entry" style="animation-delay:.3s"><div class="section-head"><h3 class="section-title">Product Catalog</h3><a class="section-link">View All <i class="fa-solid fa-arrow-right text-[10px] ml-1"></i></a></div><div class="overflow-x-auto"><table class="data-table compact-table"><thead><tr><th>Product</th><th>Category</th><th class="text-right">Price</th><th class="text-right">Stock</th><th class="text-right">Revenue</th></tr></thead><tbody id="tbl-products-body"></tbody></table></div></div>
+          <div class="card anim-entry" style="animation-delay:.35s"><div class="section-head"><h3 class="section-title">Revenue by Category</h3></div>
+          <br /><br />
+          <div class="px-5 pb-5"><div class="chart-wrap"><canvas id="categoryChart"></canvas></div></div></div>
+        </div>
+      </div>
+
+      <!-- ==================== CUSTOMERS ==================== -->
+      <div id="page-customers" class="page-container">
+        <div class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-4 mb-6">
+          <div class="card kpi-card primary anim-entry" style="animation-delay:.1s"><p class="kpi-label">Total Customers</p><p class="kpi-value">12,847</p><p class="text-xs mt-2" style="color:var(--text-muted)">All-time registered</p><div class="sparkline-wrap" id="spark-cu-total"></div></div>
+          <div class="card kpi-card green anim-entry" style="animation-delay:.15s"><p class="kpi-label">New This Period</p><p class="kpi-value">1,423</p><p class="text-xs mt-2" style="color:var(--text-muted)">First-time buyers</p><div class="sparkline-wrap" id="spark-cu-new"></div></div>
+          <div class="card kpi-card blue anim-entry" style="animation-delay:.2s"><p class="kpi-label">Avg. Lifetime Value</p><p class="kpi-value">$312</p><p class="text-xs mt-2" style="color:var(--text-muted)">Per customer</p><div class="sparkline-wrap" id="spark-cu-ltv"></div></div>
+          <div class="card kpi-card red anim-entry" style="animation-delay:.25s"><p class="kpi-label">Retention Rate</p><p class="kpi-value">68.2%</p><p class="text-xs mt-2" style="color:var(--text-muted)">Repeat purchase rate</p><div class="sparkline-wrap" id="spark-cu-ret"></div></div>
+        </div>
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-4 mb-6">
+          <div class="card lg:col-span-2 anim-entry" style="animation-delay:.3s"><div class="section-head"><h3 class="section-title">Top Customers</h3><a class="section-link">View All <i class="fa-solid fa-arrow-right text-[10px] ml-1"></i></a></div><div class="overflow-x-auto"><table class="data-table"><thead><tr><th>Customer</th><th>Segment</th><th class="text-right">Orders</th><th class="text-right">Revenue</th><th class="text-right">Last Order</th></tr></thead><tbody id="tbl-customers-body"></tbody></table></div></div>
+<div class="card card-fill anim-entry" style="animation-delay:.35s"><div class="section-head"><h3 class="section-title">New vs Returning</h3></div><div class="chart-area"><div class="chart-inner"><canvas id="segmentChart"></canvas></div></div></div>
+        </div>
+      </div>
+
+      <!-- ==================== ORDERS ==================== -->
+      <div id="page-orders" class="page-container">
+        <div class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-4 mb-6">
+          <div class="card kpi-card primary anim-entry" style="animation-delay:.1s"><p class="kpi-label">Total Orders</p><p class="kpi-value">1,788</p><p class="text-xs mt-2" style="color:var(--text-muted)">This period</p><div class="sparkline-wrap" id="spark-or-total"></div></div>
+          <div class="card kpi-card red anim-entry" style="animation-delay:.15s"><p class="kpi-label">Pending</p><p class="kpi-value">234</p><p class="text-xs mt-2" style="color:var(--text-muted)">Awaiting fulfillment</p></div>
+          <div class="card kpi-card blue anim-entry" style="animation-delay:.2s"><p class="kpi-label">Shipped</p><p class="kpi-value">891</p><p class="text-xs mt-2" style="color:var(--text-muted)">In transit</p></div>
+          <div class="card kpi-card green anim-entry" style="animation-delay:.25s"><p class="kpi-label">Avg. Fulfillment</p><p class="kpi-value">2.4d</p><p class="text-xs mt-2" style="color:var(--text-muted)">Order to delivery</p><div class="sparkline-wrap" id="spark-or-ful"></div></div>
+        </div>
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-4 mb-6">
+          <div class="card lg:col-span-2 anim-entry" style="animation-delay:.3s"><div class="section-head"><h3 class="section-title">Recent Orders</h3><a class="section-link">View All <i class="fa-solid fa-arrow-right text-[10px] ml-1"></i></a></div><div class="overflow-x-auto"><table class="data-table"><thead><tr><th>Order</th><th>Customer</th><th class="text-right">Items</th><th class="text-right">Total</th><th>Status</th><th class="text-right">Date</th></tr></thead><tbody id="tbl-orders-body"></tbody></table></div></div>
+<div class="card card-fill anim-entry" style="animation-delay:.35s"><div class="section-head"><h3 class="section-title">Order Status</h3></div><div class="chart-area"><div class="chart-inner"><canvas id="orderStatusChart"></canvas></div></div></div>
+        </div>
+      </div>
+
+      <!-- ==================== SETTINGS ==================== -->
+      <div id="page-settings" class="page-container">
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-4">
+          <div class="card anim-entry" style="animation-delay:.1s">
+            <div class="section-head"><h3 class="section-title">Appearance</h3></div>
+            <div class="px-6 pb-4">
+              <div class="setting-row">
+                <div><p class="setting-label">Dark Mode</p><p class="setting-desc">Switch between light and dark interface</p></div>
+                <div class="setting-toggle on" id="settingDarkMode"><div class="sknob"></div></div>
+              </div>
+              <div class="setting-row">
+                <div><p class="setting-label">Compact Mode</p><p class="setting-desc">Reduce spacing and padding for denser layout</p></div>
+                <div class="setting-toggle" id="settingCompact"><div class="sknob"></div></div>
+              </div>
+              <div class="setting-row">
+                <div><p class="setting-label">Accent Color</p><p class="setting-desc">Primary color for highlights and actions</p></div>
+                <div class="flex gap-2">
+                  <div class="w-7 h-7 rounded-full cursor-pointer border-2 border-transparent hover:border-white/20 transition" style="background:#f59e0b" data-accent="amber"></div>
+                  <div class="w-7 h-7 rounded-full cursor-pointer border-2 border-transparent hover:border-white/20 transition" style="background:#10b981" data-accent="emerald"></div>
+                  <div class="w-7 h-7 rounded-full cursor-pointer border-2 border-transparent hover:border-white/20 transition" style="background:#f43f5e" data-accent="rose"></div>
+                  <div class="w-7 h-7 rounded-full cursor-pointer border-2 border-transparent hover:border-white/20 transition" style="background:#8b5cf6" data-accent="violet"></div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="card anim-entry" style="animation-delay:.15s">
+            <div class="section-head"><h3 class="section-title">Data & Refresh</h3></div>
+            <div class="px-6 pb-4">
+              <div class="setting-row">
+                <div><p class="setting-label">Default Date Range</p><p class="setting-desc">Initial period when opening dashboard</p></div>
+                <select class="setting-select"><option>Last 30 Days</option><option>Last 7 Days</option><option>Last Month</option><option>Year to Date</option></select>
+              </div>
+              <div class="setting-row">
+                <div><p class="setting-label">Auto-Refresh Interval</p><p class="setting-desc">How often data updates automatically</p></div>
+                <select class="setting-select"><option>Every 5 minutes</option><option>Every 15 minutes</option><option>Every 30 minutes</option><option>Manual only</option></select>
+              </div>
+              <div class="setting-row">
+                <div><p class="setting-label">Data Currency</p><p class="setting-desc">Display currency for monetary values</p></div>
+                <select class="setting-select"><option>USD ($)</option><option>EUR (€)</option><option>GBP (£)</option><option>CAD (C$)</option></select>
+              </div>
+            </div>
+          </div>
+          <div class="card anim-entry" style="animation-delay:.2s">
+            <div class="section-head"><h3 class="section-title">Notifications</h3></div>
+            <div class="px-6 pb-4">
+              <div class="setting-row"><div><p class="setting-label">Order Alerts</p><p class="setting-desc">Notify on new orders above threshold</p></div><div class="setting-toggle on" id="settingOrders"><div class="sknob"></div></div></div>
+              <div class="setting-row"><div><p class="setting-label">Stock Warnings</p><p class="setting-desc">Alert when products fall below minimum</p></div><div class="setting-toggle on" id="settingStock"><div class="sknob"></div></div></div>
+              <div class="setting-row"><div><p class="setting-label">Weekly Digest</p><p class="setting-desc">Summary email every Monday morning</p></div><div class="setting-toggle" id="settingDigest"><div class="sknob"></div></div></div>
+              <div class="setting-row"><div><p class="setting-label">Anomaly Detection</p><p class="setting-desc">Alert on unusual traffic or conversion dips</p></div><div class="setting-toggle on" id="settingAnomaly"><div class="sknob"></div></div></div>
+            </div>
+          </div>
+          <div class="card anim-entry" style="animation-delay:.25s">
+            <div class="section-head"><h3 class="section-title">Account</h3></div>
+            <div class="px-6 pb-4">
+              <div class="setting-row"><div><p class="setting-label">Name</p><p class="setting-desc">Display name on reports and exports</p></div><p class="text-sm font-semibold" style="color:var(--text-secondary)">Alex Morgan</p></div>
+              <div class="setting-row"><div><p class="setting-label">Email</p><p class="setting-desc">Used for notifications and login</p></div><p class="text-sm font-semibold" style="color:var(--text-secondary)">alex@company.com</p></div>
+              <div class="setting-row"><div><p class="setting-label">Role</p><p class="setting-desc">Access level and permissions</p></div><span class="text-xs font-bold px-2.5 py-1 rounded-full" style="background:var(--accent-soft);color:var(--accent)">Admin</span></div>
+              <div class="setting-row" style="border-bottom:none;padding-top:20px"><button class="btn-accent w-full justify-center" id="saveSettingsBtn"><i class="fa-solid fa-check text-xs"></i> Save Changes</button></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </main>
+  </div>
+
+  <script>
+    // =============================================
+    // DATA
+    // =============================================
+    const baseData = {
+      kpis:{revenue:171072,transactions:1788,users:89401,aov:95.68,cr:2.00},
+      sparklines:{
+        revenue:[4200,4850,4500,5100,4750,5300,5600,5200,6100,5800,5400,6300,5900,5600,6500,6800,6200,7100,6600,7200],
+        aov:[88.2,89.5,87.8,91.3,90.1,89.7,92.5,91.8,93.6,92.1,90.8,94.2,93.5,91.9,95.1,94.8,93.2,96.5,95.9,95.7],
+        trans:[120,135,128,142,138,145,155,148,162,158,150,168,160,155,172,175,165,182,175,178],
+        cr:[1.4,1.6,1.5,1.8,1.7,1.9,2.0,1.8,2.2,2.1,1.9,2.3,2.1,2.0,2.4,2.3,2.1,2.5,2.3,2.0],
+        sessions:[3800,4100,3900,4300,4200,4400,4600,4300,4900,4700,4500,5100,4800,4600,5200,5400,5000,5500,5200,5600],
+        duration:[210,195,220,205,215,198,225,210,230,218,205,235,220,215,240,228,218,245,235,222],
+        bounce:[48,46,49,44,47,43,45,42,40,43,45,41,42,44,39,40,43,38,41,42],
+        pagesPerSession:[4.2,4.4,4.1,4.6,4.5,4.7,4.9,4.6,5.1,4.8,4.5,5.2,4.9,4.7,5.3,5.1,4.8,5.4,5.2,4.8],
+        custTotal:[8200,8800,8500,9200,9000,9600,10100,9800,10600,10200,9900,11000,10600,10300,11200,11500,10900,12000,11600,12847],
+        custNew:[80,95,88,105,98,112,120,108,128,118,105,135,122,115,138,142,128,155,145,142],
+        custLTV:[280,285,278,290,288,292,298,295,302,298,294,305,300,296,308,312,305,318,312,312],
+        custRet:[64,65,63,66,65,67,68,67,69,68,66,70,69,68,71,70,68,72,70,68],
+        orders:[100,115,108,125,118,128,135,125,145,138,130,152,142,135,155,158,148,168,160,178],
+        fulfillment:[3.2,3.0,3.1,2.8,2.9,2.7,2.6,2.8,2.5,2.6,2.8,2.4,2.5,2.7,2.3,2.2,2.5,2.1,2.3,2.4],
+      },
+      charts:{
+        revenue:{labels:['Apr 11','Apr 14','Apr 17','Apr 20','Apr 23','Apr 26','Apr 29','May 2','May 5','May 8'],users:[2800,3100,2950,3200,3050,2900,3400,3150,3300,3100],rev:[5200,6100,5400,6800,5900,5600,7200,6400,7100,6200]},
+        cr:{labels:['Mon','Tue','Wed','Thu','Fri','Sat','Sun'],values:[1.8,2.1,2.4,2.0,1.9,2.6,1.5]},
+        funnel:{labels:['Visits','Product Views','Add to Cart','Checkout','Purchase'],values:[89401,34200,8940,3576,1788]},
+        traffic:{labels:['Direct','Organic','Paid','Social','Referral'],values:[42,28,15,10,5]},
+        device:{labels:['Desktop','Mobile','Tablet'],values:[55,38,7]},
+        category:{labels:['Apparel','Accessories','Home','Electronics','Food & Bev'],values:[48200,32100,28400,38600,23772]},
+      },
+      tables:{
+        acquisition:[
+          {source:'Direct / None',users:60660,aov:149.56,cr:2.4,rev:93475},
+          {source:'Google / Organic',users:11506,aov:190.46,cr:1.8,rev:33532},
+          {source:'Google / CPC',users:4953,aov:174.82,cr:3.1,rev:20628},
+          {source:'Social / Referral',users:12282,aov:48.90,cr:1.2,rev:23437}
+        ],
+        products:[
+          {name:'Nano Banana Sweatshirt',count:90,rev:5920},
+          {name:'Chrome Dino Dark Mode Tee',count:214,rev:4518},
+          {name:'Google Bike Socks',count:333,rev:4089},
+          {name:'Recycled Black Hoodie',count:78,rev:3815},
+          {name:'YouTube Old School Socks',count:279,rev:3421}
+        ],
+        pages:[
+          {page:'/home',views:32450,time:'2m 18s',exit:32.1},
+          {page:'/shop',views:28900,time:'3m 42s',exit:18.5},
+          {page:'/product/*',views:34200,time:'4m 15s',exit:24.3},
+          {page:'/cart',views:8940,time:'1m 52s',exit:45.2},
+          {page:'/checkout',views:3576,time:'3m 08s',exit:8.1},
+        ],
+        catalog:[
+          {name:'Nano Banana Sweatshirt',cat:'Apparel',price:65.78,stock:142,rev:5920,img:'prod-1'},
+          {name:'Chrome Dino Dark Mode Tee',cat:'Apparel',price:21.12,stock:0,rev:4518,img:'prod-2'},
+          {name:'Google Bike Socks',cat:'Accessories',price:12.27,stock:580,rev:4089,img:'prod-3'},
+          {name:'Recycled Black Hoodie',cat:'Apparel',price:48.91,stock:89,rev:3815,img:'prod-4'},
+          {name:'YouTube Old School Socks',cat:'Accessories',price:12.26,stock:320,rev:3421,img:'prod-5'},
+          {name:'Pixel Art Mug',cat:'Home',price:18.50,stock:215,rev:2890,img:'prod-6'},
+          {name:'Developer Desk Mat',cat:'Home',price:34.99,stock:67,rev:2680,img:'prod-7'},
+          {name:'Wireless Charging Pad',cat:'Electronics',price:42.00,stock:178,rev:5420,img:'prod-8'},
+        ],
+        customers:[
+          {name:'Sarah Chen',seg:'VIP',orders:47,rev:6840,last:'May 9',img:'cust-1'},
+          {name:'Marcus Johnson',seg:'Loyal',orders:28,rev:4120,last:'May 8',img:'cust-2'},
+          {name:'Elena Rodriguez',seg:'VIP',orders:35,rev:5680,last:'May 10',img:'cust-3'},
+          {name:'James Wilson',seg:'Regular',orders:12,rev:1840,last:'May 6',img:'cust-4'},
+          {name:'Aiko Tanaka',seg:'Loyal',orders:22,rev:3560,last:'May 9',img:'cust-5'},
+          {name:'David Park',seg:'New',orders:3,rev:420,last:'May 10',img:'cust-6'},
+        ],
+        orders:[
+          {id:'#ORD-4821',cust:'Sarah Chen',items:3,total:214.50,status:'delivered',date:'May 10'},
+          {id:'#ORD-4820',cust:'Marcus Johnson',items:1,total:89.99,status:'shipped',date:'May 10'},
+          {id:'#ORD-4819',cust:'Elena Rodriguez',items:2,total:156.00,status:'shipped',date:'May 9'},
+          {id:'#ORD-4818',cust:'James Wilson',items:4,total:312.40,status:'pending',date:'May 9'},
+          {id:'#ORD-4817',cust:'Aiko Tanaka',items:1,total:65.78,status:'delivered',date:'May 8'},
+          {id:'#ORD-4816',cust:'David Park',items:2,total:124.50,status:'pending',date:'May 8'},
+          {id:'#ORD-4815',cust:'Sarah Chen',items:5,total:445.00,status:'delivered',date:'May 7'},
+          {id:'#ORD-4814',cust:'Lisa Wang',items:1,total:42.00,status:'cancelled',date:'May 7'},
+        ]
+      }
+    };
+    const multipliers={time:{last30:1,last7:.3,lastMonth:1.1,ytd:4.5},source:{all:1,direct:.6,organic:.3,paid:.1},device:{all:1,desktop:.6,mobile:.4,tablet:.15},country:{all:1,usa:.65,canada:.15,uk:.12}};
+    function getMult(f){return multipliers.time[f.time]*multipliers.source[f.source]*multipliers.device[f.device]*multipliers.country[f.country]}
+
+    // =============================================
+    // UTILITIES
+    // =============================================
+    const fmtCur=v=>'$'+Math.round(v).toLocaleString();
+    const fmtN=v=>Math.round(v).toLocaleString();
+
+    function animateValue(el,end,dur,fmt){
+      const s=parseFloat(el.dataset.cv||'0');el.dataset.cv=end;
+      const t0=performance.now();
+      (function tick(now){const p=Math.min((now-t0)/dur,1),e=1-Math.pow(1-p,3);el.textContent=fmt(s+(end-s)*e);if(p<1)requestAnimationFrame(tick)})(t0);
+    }
+
+    function renderSparkline(id,raw,cssVar){
+      const c=document.getElementById(id);if(!c)return;
+      const color=getComputedStyle(document.documentElement).getPropertyValue(cssVar).trim();
+      const w=c.offsetWidth||130,h=c.offsetHeight||52,pad=4;
+      const sm=raw.map((v,i)=>{const p=raw[Math.max(0,i-1)],n=raw[Math.min(raw.length-1,i+1)];return(p+v+n)/3});
+      const mn=Math.min(...sm),mx=Math.max(...sm),rng=mx-mn||1;
+      const pts=sm.map((v,i)=>({x:pad+(i/(sm.length-1))*(w-pad*2),y:pad+(1-(v-mn)/rng)*(h-pad*2)}));
+      let lp=`M${pts[0].x.toFixed(1)},${pts[0].y.toFixed(1)}`;
+      for(let i=1;i<pts.length;i++){const p=pts[i-1],q=pts[i];lp+=` C${(p.x+(q.x-p.x)*.4).toFixed(1)},${p.y.toFixed(1)} ${(q.x-(q.x-p.x)*.4).toFixed(1)},${q.y.toFixed(1)} ${q.x.toFixed(1)},${q.y.toFixed(1)}`}
+      const ap=lp+` L${pts[pts.length-1].x.toFixed(1)},${h} L${pts[0].x.toFixed(1)},${h} Z`;
+      const gid='sg-'+id;
+      c.innerHTML=`<svg width="${w}" height="${h}" viewBox="0 0 ${w} ${h}" preserveAspectRatio="none" style="overflow:visible"><defs><linearGradient id="${gid}" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="${color}" stop-opacity="0.35"/><stop offset="80%" stop-color="${color}" stop-opacity="0.03"/><stop offset="100%" stop-color="${color}" stop-opacity="0"/></linearGradient></defs><path d="${ap}" fill="url(#${gid})"/><path d="${lp}" fill="none" stroke="${color}" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" stroke-dasharray="500" stroke-dashoffset="500" style="animation:drawSpark 1.2s ease-out .3s forwards"/><circle cx="${pts[pts.length-1].x.toFixed(1)}" cy="${pts[pts.length-1].y.toFixed(1)}" r="2.5" fill="${color}" opacity="0" style="animation:dotAppear .3s ease-out 1.4s forwards"/></svg>`;
+      if(!document.getElementById('spark-anim-style')){const s=document.createElement('style');s.id='spark-anim-style';s.textContent='@keyframes drawSpark{to{stroke-dashoffset:0}}@keyframes dotAppear{to{opacity:.9}}';document.head.appendChild(s)}
+    }
+
+    // =============================================
+    // THEME
+    // =============================================
+    function setTheme(t){
+      document.documentElement.setAttribute('data-theme',t);
+      localStorage.setItem('dash-theme',t);
+      document.getElementById('themeKnob').innerHTML=t==='dark'?'<i class="fa-solid fa-moon"></i>':'<i class="fa-solid fa-sun"></i>';
+      const sd=document.getElementById('settingDarkMode');
+      if(sd){t==='dark'?sd.classList.add('on'):sd.classList.remove('on')}
+      setTimeout(()=>{renderAllSparklines();updateAllChartThemes()},150);
+    }
+    document.getElementById('themeToggle').addEventListener('click',()=>setTheme(document.documentElement.getAttribute('data-theme')==='dark'?'light':'dark'));
+    document.getElementById('themeToggle').addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();document.getElementById('themeToggle').click()}});
+    const saved=localStorage.getItem('dash-theme');if(saved)setTheme(saved);
+
+    // =============================================
+    // CHART MANAGEMENT
+    // =============================================
+    const charts={};
+    Chart.defaults.font.family="'Plus Jakarta Sans',sans-serif";
+
+    function cc(){const s=getComputedStyle(document.documentElement);return{accent:s.getPropertyValue('--accent').trim(),barFill:s.getPropertyValue('--bar-fill').trim(),barHover:s.getPropertyValue('--bar-hover').trim(),barGhost:s.getPropertyValue('--bar-ghost').trim(),grid:s.getPropertyValue('--chart-grid').trim(),label:s.getPropertyValue('--chart-label').trim(),ttBg:s.getPropertyValue('--tooltip-bg').trim(),ttBdr:s.getPropertyValue('--tooltip-border').trim(),txtP:s.getPropertyValue('--text-primary').trim(),txtS:s.getPropertyValue('--text-secondary').trim(),success:s.getPropertyValue('--success').trim(),info:s.getPropertyValue('--info').trim(),danger:s.getPropertyValue('--danger').trim()}}
+
+    // function cc(){const s=getComputedStyle(document.documentElement);return{accent:s.getPropertyValue('--accent').trim(),barFill:s.getPropertyValue('--bar-fill').trim(),barHover:s.getPropertyValue('--bar-hover').trim(),barGhost:s.getPropertyValue('--bar-ghost').trim(),grid:s.getPropertyValue('--chart-grid').trim(),label:s.getPropertyValue('--chart-label').trim(),ttBg:s.getPropertyValue('--tooltip-bg').trim(),ttBdr:s.getPropertyValue('--tooltip-border').trim(),txtP:s.getPropertyValue('--text-primary').trim(),txtS:s.getPropertyValue('--text-secondary').trim()}}
+    function ttCfg(c){return{backgroundColor:c.ttBg,titleColor:c.txtP,bodyColor:c.txtS,borderColor:c.ttBdr,borderWidth:1,padding:12,cornerRadius:10,boxPadding:4,titleFont:{weight:'700',size:13},bodyFont:{size:12},usePointStyle:true}}
+function destroyPageCharts(prefix){const map={dashboard:'dash',analytics:'an',products:'prod',customers:'cust',orders:'or'};const p=map[prefix]||prefix;Object.keys(charts).forEach(k=>{if(k.startsWith(p)){charts[k].destroy();delete charts[k]}})}
+    function axisOpts(c,extra={}){return{grid:{borderDash:[3,3],color:c.grid,...extra.grid},ticks:{font:{size:11},color:c.label,...extra.ticks},border:{display:false},...extra}}
+
+    // =============================================
+    // PAGE ROUTING
+    // =============================================
+    const pageTitles={dashboard:'eCommerce Analytics',analytics:'Analytics',products:'Products',customers:'Customers',orders:'Orders',settings:'Settings'};
+    let currentPage='dashboard';
+
+function switchPage(page){
+  if(page===currentPage)return;
+  destroyPageCharts(currentPage);
+  document.querySelectorAll('.page-container').forEach(p=>p.classList.remove('active'));
+  const target=document.getElementById('page-'+page);
+  if(target)target.classList.add('active');
+  document.querySelectorAll('.nav-item').forEach(n=>n.classList.remove('active'));
+  document.querySelector(`.nav-item[data-page="${page}"]`)?.classList.add('active');
+  document.getElementById('pageTitle').textContent=pageTitles[page]||'Dashboard';
+  document.getElementById('liveBadge').style.display=page==='dashboard'?'':'none';
+  currentPage=page;
+  setTimeout(()=>initPage(page),30);
+  document.getElementById('sidebar').classList.remove('open');
+  document.getElementById('sidebarOverlay').classList.remove('active');
+}
+
+    document.querySelectorAll('.nav-item[data-page]').forEach(n=>n.addEventListener('click',()=>switchPage(n.dataset.page)));
+
+    function initPage(page){
+      switch(page){
+        case'dashboard':initDashboard();break;
+        case'analytics':initAnalytics();break;
+        case'products':initProducts();break;
+        case'customers':initCustomers();break;
+        case'orders':initOrders();break;
+        case'settings':initSettings();break;
+      }
+    }
+
+    function renderAllSparklines(){
+      const m=getMult(getFilters());
+      // Dashboard
+      renderSparkline('spark-rev',baseData.sparklines.revenue.map(v=>v*m),'--spark-rev');
+      renderSparkline('spark-aov',baseData.sparklines.aov,'--spark-aov');
+      renderSparkline('spark-trans',baseData.sparklines.trans.map(v=>v*m),'--spark-trans');
+      renderSparkline('spark-cr',baseData.sparklines.cr,'--spark-cr');
+      // Analytics
+      renderSparkline('spark-an-sess',baseData.sparklines.sessions,'--spark-rev');
+      renderSparkline('spark-an-dur',baseData.sparklines.duration,'--spark-aov');
+      renderSparkline('spark-an-br',baseData.sparklines.bounce,'--spark-cr');
+      renderSparkline('spark-an-pp',baseData.sparklines.pagesPerSession,'--spark-trans');
+      // Customers
+      renderSparkline('spark-cu-total',baseData.sparklines.custTotal,'--spark-rev');
+      renderSparkline('spark-cu-new',baseData.sparklines.custNew,'--spark-aov');
+      renderSparkline('spark-cu-ltv',baseData.sparklines.custLTV,'--spark-trans');
+      renderSparkline('spark-cu-ret',baseData.sparklines.custRet,'--spark-cr');
+      // Orders
+      renderSparkline('spark-or-total',baseData.sparklines.orders.map(v=>v*m),'--spark-rev');
+      renderSparkline('spark-or-ful',baseData.sparklines.fulfillment,'--spark-aov');
+    }
+
+    function updateAllChartThemes(){
+      if(currentPage==='dashboard')updateDashboardChartTheme();
+      // For other pages, re-init since theme colors change significantly
+      if(currentPage!=='dashboard'&&currentPage!=='settings')initPage(currentPage);
+    }
+
+    // =============================================
+    // DASHBOARD PAGE
+    // =============================================
+    function getFilters(){return{time:document.getElementById('timeFilter').value,source:document.getElementById('sourceFilter').value,device:document.getElementById('deviceFilter').value,country:document.getElementById('countryFilter').value}}
+
+function initDashboard(){
+  if(!charts.dashRev)initDashboardCharts();
+  renderAllSparklines();
+  updateDashboardData();
+}
+
+    function initDashboardCharts(){
+      const c=cc();Chart.defaults.color=c.label;
+      const ctx=document.getElementById('revenueChart').getContext('2d');
+      const g=ctx.createLinearGradient(0,0,0,300);g.addColorStop(0,c.accent+'40');g.addColorStop(1,c.accent+'00');
+      charts.dashRev=new Chart(ctx,{type:'bar',data:{labels:baseData.charts.revenue.labels,datasets:[{label:'Users',data:baseData.charts.revenue.users,backgroundColor:c.barFill,hoverBackgroundColor:c.barHover,borderRadius:6,borderSkipped:false,yAxisID:'y1',order:2,barPercentage:.55},{label:'Revenue',data:baseData.charts.revenue.rev,type:'line',borderColor:c.accent,backgroundColor:g,borderWidth:2.5,tension:.4,fill:true,pointRadius:0,pointHoverRadius:6,pointHoverBackgroundColor:c.accent,pointHoverBorderColor:c.ttBg,pointHoverBorderWidth:3,yAxisID:'y',order:1}]},options:{responsive:true,maintainAspectRatio:false,interaction:{mode:'index',intersect:false},hover:{animationDuration:0},plugins:{legend:{display:false},tooltip:{...ttCfg(c),callbacks:{label:ctx=>ctx.datasetIndex===0?' Users: '+fmtN(ctx.parsed.y):' Revenue: '+fmtCur(ctx.parsed.y)}}},scales:{x:{grid:{display:false},ticks:{font:{size:11,weight:'500'}},border:{display:false}},y:{position:'left',ticks:{callback:v=>'$'+(v/1000).toFixed(0)+'k',font:{size:11}},...axisOpts(c,{grid:{borderDash:[3,3],color:c.grid}})},y1:{position:'right',grid:{drawOnChartArea:false},ticks:{callback:v=>(v/1000).toFixed(1)+'k',font:{size:11}},border:{display:false}}}}});
+      const crMax=Math.max(...baseData.charts.cr.values);
+      const crC=baseData.charts.cr.values.map(v=>{const r=v/crMax;return r>.9?c.accent:r>.75?c.accent+'80':c.barGhost});
+      charts.dashCR=new Chart(document.getElementById('crChart'),{type:'bar',data:{labels:baseData.charts.cr.labels,datasets:[{data:baseData.charts.cr.values,backgroundColor:crC,borderRadius:8,borderSkipped:false,barPercentage:.55}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false},tooltip:{...ttCfg(c),callbacks:{label:ctx=>' CR: '+ctx.parsed.y.toFixed(1)+'%'}}},scales:{x:{grid:{display:false},ticks:{font:{size:12,weight:'600'}},border:{display:false}},y:{beginAtZero:true,max:3.5,ticks:{callback:v=>v+'%',font:{size:11},stepSize:1},...axisOpts(c)}}}});
+    }
+
+    function updateDashboardChartTheme(){
+      if(!charts.dashRev)return;const c=cc();
+      const ctx=document.getElementById('revenueChart').getContext('2d');
+      const g=ctx.createLinearGradient(0,0,0,300);g.addColorStop(0,c.accent+'40');g.addColorStop(1,c.accent+'00');
+      charts.dashRev.data.datasets[0].backgroundColor=c.barFill;charts.dashRev.data.datasets[0].hoverBackgroundColor=c.barHover;
+      charts.dashRev.data.datasets[1].borderColor=c.accent;charts.dashRev.data.datasets[1].backgroundColor=g;charts.dashRev.data.datasets[1].pointHoverBackgroundColor=c.accent;charts.dashRev.data.datasets[1].pointHoverBorderColor=c.ttBg;
+      charts.dashRev.options.plugins.tooltip=ttCfg(c);charts.dashRev.options.scales.y.grid.color=c.grid;charts.dashRev.options.scales.y.ticks.color=c.label;charts.dashRev.options.scales.y1.ticks.color=c.label;charts.dashRev.options.scales.x.ticks.color=c.label;charts.dashRev.update('none');
+      const crMax=Math.max(...charts.dashCR.data.datasets[0].data);
+      charts.dashCR.data.datasets[0].backgroundColor=charts.dashCR.data.datasets[0].data.map(v=>{const r=v/crMax;return r>.9?c.accent:r>.75?c.accent+'80':c.barGhost});
+      charts.dashCR.options.plugins.tooltip=ttCfg(c);charts.dashCR.options.scales.y.grid.color=c.grid;charts.dashCR.options.scales.y.ticks.color=c.label;charts.dashCR.options.scales.x.ticks.color=c.label;charts.dashCR.update('none');
+    }
+
+    function updateDashboardData(){
+      document.querySelectorAll('#page-dashboard .loading-overlay').forEach(e=>e.classList.add('active'));
+      const f=getFilters(),m=getMult(f);
+      setTimeout(()=>{
+        const nr=baseData.kpis.revenue*m,nt=baseData.kpis.transactions*m,nu=baseData.kpis.users*m,na=nr/Math.max(nt,1),nc=(nt/Math.max(nu,1))*100;
+        animateValue(document.getElementById('kpi-rev'),nr,600,fmtCur);
+        animateValue(document.getElementById('kpi-trans'),nt,600,fmtN);
+        animateValue(document.getElementById('kpi-aov'),na,600,v=>'$'+v.toFixed(2));
+        animateValue(document.getElementById('kpi-cr'),nc,600,v=>v.toFixed(2)+'%');
+        document.getElementById('cr-detail').textContent=fmtN(nt)+' / '+fmtN(nu)+' users';
+        renderAllSparklines();
+        const c=cc();
+        if(f.time==='last7'){charts.dashRev.data.labels=['May 4','May 5','May 6','May 7','May 8'];charts.dashRev.data.datasets[0].data=[3100,3300,2900,3400,3100].map(v=>v*m);charts.dashRev.data.datasets[1].data=[5600,6200,5400,6800,6200].map(v=>v*m)}
+        else{charts.dashRev.data.labels=baseData.charts.revenue.labels;charts.dashRev.data.datasets[0].data=baseData.charts.revenue.users.map(v=>v*m);charts.dashRev.data.datasets[1].data=baseData.charts.revenue.rev.map(v=>v*m)}
+        charts.dashRev.update();
+        const crM=f.device==='mobile'?.8:1,newCR=baseData.charts.cr.values.map(v=>v*crM),crMax=Math.max(...newCR);
+        charts.dashCR.data.datasets[0].data=newCR;charts.dashCR.data.datasets[0].backgroundColor=newCR.map(v=>{const r=v/crMax;return r>.9?c.accent:r>.75?c.accent+'80':c.barGhost});charts.dashCR.update();
+        // Acquisition table
+        const ab=document.getElementById('tbl-acq-body');ab.innerHTML='';let tU=0,tR=0,tT=0;const mxR=Math.max(...baseData.tables.acquisition.map(r=>r.rev*m*.5));
+        baseData.tables.acquisition.forEach(row=>{if(f.source!=='all'&&!row.source.toLowerCase().includes(f.source))return;const rU=row.users*m*.5,rR=row.rev*m*.5,rT=rR/row.aov,rCR=(rT/Math.max(rU,1))*100;tU+=rU;tR+=rR;tT+=rT;const bw=Math.max(5,(rR/mxR)*100);const tr=document.createElement('tr');tr.innerHTML=`<td class="font-name">${row.source}</td><td class="text-right">${fmtN(rU)}</td><td class="text-right">$${row.aov.toFixed(2)}</td><td class="text-right" style="color:var(--success);font-weight:600">${rCR.toFixed(1)}%</td><td class="text-right font-metric">${fmtCur(rR)}<span class="mini-bar-track"><span class="mini-bar-fill" style="width:${bw}%"></span></span></td>`;ab.appendChild(tr)});
+        document.getElementById('tbl-acq-users').textContent=fmtN(tU);document.getElementById('tbl-acq-rev').textContent=fmtCur(tR);document.getElementById('tbl-acq-aov').textContent='$'+(tR/Math.max(tT,1)).toFixed(2);document.getElementById('tbl-acq-cr').textContent=((tT/Math.max(tU,1))*100).toFixed(2)+'%';
+        // Products table
+        const pb=document.getElementById('tbl-prod-body');pb.innerHTML='';let pC=0,pR=0;const mxP=Math.max(...baseData.tables.products.map(r=>r.rev*m));
+        baseData.tables.products.forEach(row=>{const rc=row.count*m,rr=row.rev*m;pC+=rc;pR+=rr;const bw=Math.max(5,(rr/mxP)*100);const tr=document.createElement('tr');tr.innerHTML=`<td class="font-name">${row.name}</td><td class="text-right">${fmtN(rc)}</td><td class="text-right font-metric">${fmtCur(rr)}<span class="mini-bar-track"><span class="mini-bar-fill" style="width:${bw}%"></span></span></td>`;pb.appendChild(tr)});
+        document.getElementById('tbl-prod-count').textContent=fmtN(pC);document.getElementById('tbl-prod-rev').textContent=fmtCur(pR);
+        document.querySelectorAll('#page-dashboard .loading-overlay').forEach(e=>e.classList.remove('active'));
+      },400);
+    }
+
+    // Dashboard filter events
+    ['timeFilter','sourceFilter','deviceFilter','countryFilter'].forEach(id=>document.getElementById(id).addEventListener('change',updateDashboardData));
+    document.getElementById('resetBtn').addEventListener('click',()=>{['timeFilter','sourceFilter','deviceFilter','countryFilter'].forEach((id,i)=>{document.getElementById(id).selectedIndex=0});updateDashboardData()});
+    document.getElementById('refreshBtn').addEventListener('click',updateDashboardData);
+    document.getElementById('exportBtn').addEventListener('click',()=>showToast('Report exported successfully'));
+
+    // =============================================
+    // ANALYTICS PAGE
+    // =============================================
+function initAnalytics(){
+  const c=cc();Chart.defaults.color=c.label;
+  renderAllSparklines();
+  const funnelColors=[c.accent,c.accent+'cc',c.accent+'99',c.accent+'66',c.accent+'44'];
+  charts.anFunnel=new Chart(document.getElementById('funnelChart'),{type:'bar',data:{labels:baseData.charts.funnel.labels,datasets:[{data:baseData.charts.funnel.values,backgroundColor:funnelColors,borderRadius:8,borderSkipped:false,barPercentage:.7}]},options:{indexAxis:'y',responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false},tooltip:{...ttCfg(c),callbacks:{label:ctx=>' '+fmtN(ctx.parsed.x)+' ('+(ctx.parsed.x/baseData.charts.funnel.values[0]*100).toFixed(1)+'%)'}}},scales:{x:{ticks:{callback:v=>v>=1000?(v/1000).toFixed(0)+'k':v,font:{size:11}},...axisOpts(c)},y:{grid:{display:false},ticks:{font:{size:13,weight:'600'},color:c.txtS},border:{display:false}}}}});
+  const trafficColors=[c.accent,c.accent+'99',c.accent+'66',c.barHover,c.barGhost];
+  charts.anTraffic=new Chart(document.getElementById('trafficChart'),{type:'doughnut',data:{labels:baseData.charts.traffic.labels,datasets:[{data:baseData.charts.traffic.values,backgroundColor:trafficColors,borderWidth:0,hoverOffset:8}]},options:{responsive:true,maintainAspectRatio:false,cutout:'68%',plugins:{legend:{position:'bottom',labels:{padding:16,usePointStyle:true,font:{size:12,weight:'500'},color:c.txtS}},tooltip:{...ttCfg(c),callbacks:{label:ctx=>' '+ctx.label+': '+ctx.parsed+'%'}}}}});
+  charts.anDevice=new Chart(document.getElementById('deviceChart'),{type:'bar',data:{labels:baseData.charts.device.labels,datasets:[{data:baseData.charts.device.values,backgroundColor:[c.accent,c.accent+'80',c.barGhost],borderRadius:8,borderSkipped:false,barPercentage:.5}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false},tooltip:{...ttCfg(c),callbacks:{label:ctx=>' '+ctx.parsed.y+'%'}}},scales:{x:{grid:{display:false},ticks:{font:{size:12,weight:'600'}},border:{display:false}},y:{beginAtZero:true,max:70,ticks:{callback:v=>v+'%',font:{size:11}},...axisOpts(c)}}}});
+  const tb=document.getElementById('tbl-pages-body');tb.innerHTML='';
+  baseData.tables.pages.forEach(r=>{const tr=document.createElement('tr');tr.innerHTML=`<td class="font-name" style="font-family:monospace;font-size:12px">${r.page}</td><td class="text-right font-metric">${fmtN(r.views)}</td><td class="text-right">${r.time}</td><td class="text-right" style="color:${r.exit>35?'var(--danger)':'var(--success)'};font-weight:600">${r.exit}%</td>`;tb.appendChild(tr)});
+}
+
+    // =============================================
+    // PRODUCTS PAGE
+    // =============================================
+    function initProducts(){
+      const c=cc();Chart.defaults.color=c.label;
+      const catColors=[c.accent,c.accent+'cc',c.accent+'99',c.accent+'77',c.accent+'55'];
+
+      charts.prodCat=new Chart(document.getElementById('categoryChart'),{type:'bar',data:{labels:baseData.charts.category.labels,datasets:[{data:baseData.charts.category.values,backgroundColor:catColors,borderRadius:8,borderSkipped:false,barPercentage:.55}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false},tooltip:{...ttCfg(c),callbacks:{label:ctx=>' '+fmtCur(ctx.parsed.y)}}},scales:{x:{grid:{display:false},ticks:{font:{size:11}},border:{display:false}},y:{ticks:{callback:v=>'$'+(v/1000).toFixed(0)+'k',font:{size:11}},...axisOpts(c)}}}});
+
+      const tb=document.getElementById('tbl-products-body');tb.innerHTML='';
+      const mxR=Math.max(...baseData.tables.catalog.map(r=>r.rev));
+      baseData.tables.catalog.forEach(r=>{const bw=Math.max(5,(r.rev/mxR)*100);const st=r.stock===0?'oos':'active';const tr=document.createElement('tr');tr.innerHTML=`<td class="font-name"><div class="flex items-center gap-3"><span>${r.name}</span></div></td><td><span class="text-xs font-semibold px-2 py-1 rounded" style="background:var(--bg-elevated);color:var(--text-muted)">${r.cat}</span></td><td class="text-right">$${r.price.toFixed(2)}</td><td class="text-right"><span class="status-badge status-${st}"><span class="status-dot"></span>${r.stock===0?'Out of Stock':fmtN(r.stock)}</span></td><td class="text-right font-metric">${fmtCur(r.rev)}<span class="mini-bar-track"><span class="mini-bar-fill" style="width:${bw}%"></span></span></td>`;tb.appendChild(tr)});
+    }
+
+    // =============================================
+    // CUSTOMERS PAGE
+    // =============================================
+function initCustomers(){
+  const c=cc();Chart.defaults.color=c.label;
+  renderAllSparklines();
+  charts.custSeg=new Chart(document.getElementById('segmentChart'),{type:'doughnut',data:{labels:['Returning','New'],datasets:[{data:[62,38],backgroundColor:[c.accent,c.barHover],borderWidth:0,hoverOffset:8}]},options:{responsive:true,maintainAspectRatio:false,layout:{padding:{top:24,bottom:28}},cutout:'68%',plugins:{legend:{position:'bottom',labels:{padding:16,usePointStyle:true,font:{size:13,weight:'600'},color:c.txtS}},tooltip:{...ttCfg(c),callbacks:{label:ctx=>' '+ctx.label+': '+ctx.parsed+'%'}}}}});
+  const segColors={VIP:'var(--accent)',Loyal:'var(--success)',Regular:'var(--info)',New:'var(--text-muted)'};
+  const tb=document.getElementById('tbl-customers-body');tb.innerHTML='';
+  baseData.tables.customers.forEach(r=>{const tr=document.createElement('tr');tr.innerHTML=`<td class="font-name"><div class="flex items-center gap-3">${r.name}</div></td><td><span class="text-xs font-bold px-2.5 py-1 rounded-full" style="background:${segColors[r.seg]}15;color:${segColors[r.seg]}">${r.seg}</span></td><td class="text-right">${r.orders}</td><td class="text-right font-metric">${fmtCur(r.rev)}</td><td class="text-right">${r.last}</td>`;tb.appendChild(tr)});
+}
+
+    // =============================================
+    // ORDERS PAGE
+    // =============================================
+function initOrders(){
+  const c=cc();Chart.defaults.color=c.label;
+  renderAllSparklines();
+  const stColors=[c.success,c.info,'#fbbf24',c.danger];
+  charts.orStatus=new Chart(document.getElementById('orderStatusChart'),{type:'doughnut',data:{labels:['Delivered','Shipped','Pending','Cancelled'],datasets:[{data:[663,891,234,0],backgroundColor:stColors,borderWidth:0,hoverOffset:8}]},options:{responsive:true,maintainAspectRatio:false,layout:{padding:{top:24,bottom:28}},cutout:'68%',plugins:{legend:{position:'bottom',labels:{padding:16,usePointStyle:true,font:{size:12,weight:'500'},color:c.txtS}},tooltip:{...ttCfg(c),callbacks:{label:ctx=>' '+ctx.label+': '+fmtN(ctx.parsed)}}}}});
+  const tb=document.getElementById('tbl-orders-body');tb.innerHTML='';
+  const stMap={delivered:'delivered',shipped:'shipped',pending:'pending',cancelled:'cancelled'};
+  const stLabel={delivered:'Delivered',shipped:'Shipped',pending:'Pending',cancelled:'Cancelled'};
+  baseData.tables.orders.forEach(r=>{const tr=document.createElement('tr');tr.innerHTML=`<td class="font-name" style="font-family:monospace;font-size:12px">${r.id}</td><td>${r.cust}</td><td class="text-right">${r.items}</td><td class="text-right font-metric">${fmtCur(r.total)}</td><td><span class="status-badge status-${stMap[r.status]}"><span class="status-dot"></span>${stLabel[r.status]}</span></td><td class="text-right" style="color:var(--text-muted)">${r.date}</td>`;tb.appendChild(tr)});
+}
+
+    // =============================================
+    // SETTINGS PAGE
+    // =============================================
+    function initSettings(){
+      // Wire toggles
+      document.querySelectorAll('.setting-toggle').forEach(t=>{t.addEventListener('click',()=>{t.classList.toggle('on');
+        if(t.id==='settingDarkMode')setTheme(t.classList.contains('on')?'dark':'light');
+      })});
+      // Save button
+      document.getElementById('saveSettingsBtn').addEventListener('click',()=>showToast('Settings saved successfully'));
+    }
+
+    // =============================================
+    // SIDEBAR MOBILE
+    // =============================================
+    document.getElementById('menuToggle').addEventListener('click',()=>{document.getElementById('sidebar').classList.toggle('open');document.getElementById('sidebarOverlay').classList.toggle('active')});
+    document.getElementById('sidebarOverlay').addEventListener('click',()=>{document.getElementById('sidebar').classList.remove('open');document.getElementById('sidebarOverlay').classList.remove('active')});
+
+    // =============================================
+    // TOAST
+    // =============================================
+    function showToast(msg){const o=document.querySelector('.toast-msg');if(o)o.remove();const t=document.createElement('div');t.className='toast-msg';t.style.cssText=`position:fixed;bottom:28px;right:28px;z-index:9999;background:var(--bg-elevated);color:var(--text-primary);border:1px solid var(--border-default);border-radius:12px;padding:14px 22px;font-size:13px;font-weight:600;box-shadow:0 16px 48px rgba(0,0,0,.35);display:flex;align-items:center;gap:10px;transform:translateY(20px);opacity:0;transition:all .3s cubic-bezier(.4,0,.2,1)`;t.innerHTML=`<i class="fa-solid fa-circle-check" style="color:var(--success)"></i> ${msg}`;document.body.appendChild(t);requestAnimationFrame(()=>{t.style.transform='translateY(0)';t.style.opacity='1'});setTimeout(()=>{t.style.transform='translateY(20px)';t.style.opacity='0';setTimeout(()=>t.remove(),300)},2800)}
+
+    // =============================================
+    // INIT
+    // =============================================
+    initDashboard();
+  </script>
+</body>
+</html>
