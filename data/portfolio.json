@@ -234,5 +234,41 @@
     "title": "Digital Assets Volatility Index: Financial Research Report Design",
     "imageUrl": "./img/digital-assets-volatility-index:-financial-researc.jpg",
     "tags": ["report"]
+  },
+  {
+    "id": "flow-pro-e-commerce-dashboard-analysis-email-design",
+    "title": "Flow.pro E-commerce Dashboard Analysis Email Design",
+    "imageUrl": "./img/email/1flow email 1.png",
+    "tags": ["email"]
+  },
+  {
+    "id": "chartr-newsletter-consumer-spending-data-story-design",
+    "title": "Chartr Newsletter - Consumer Spending Data Story Design",
+    "imageUrl": "./img/email/Chartr mail 3.png",
+    "tags": ["email"]
+  },
+  {
+    "id": "the-context-window-newsletter-ai-research-analysis-email-design",
+    "title": "The Context Window Newsletter - AI Research Analysis Email Design",
+    "imageUrl": "./img/email/Context Window mail 1.png",
+    "tags": ["email"]
+  },
+  {
+    "id": "finimize-newsletter-financial-market-update-email-design",
+    "title": "Finimize Newsletter - Financial Market Update Email Design",
+    "imageUrl": "./img/email/Finimize 1.png",
+    "tags": ["email"]
+  },
+  {
+    "id": "the-morning-brief-private-client-edition-newsletter-design",
+    "title": "The Morning Brief - Private Client Edition Newsletter Design",
+    "imageUrl": "./img/email/Morning Brief mail 2.png",
+    "tags": ["email"]
+  },
+  {
+    "id": "the-threat-vector-newsletter-cybersecurity-intelligence-email-design",
+    "title": "The Threat Vector Newsletter - Cybersecurity Intelligence Email Design",
+    "imageUrl": "./img/email/Threat Vector Email 1.png",
+    "tags": ["email"]
   }
 ]
